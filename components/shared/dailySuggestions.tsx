@@ -2,7 +2,7 @@ import React from "react";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import Image from "next/image";
 
-interface DailySuggestionProps {
+interface DailySuggestionsData {
   title: string;
   description: string;
   imageSrc: string;
@@ -10,51 +10,58 @@ interface DailySuggestionProps {
   color: string;
 }
 
-const dailySuggestionsData: DailySuggestionProps[] = [
+const dailySuggestions: DailySuggestionsData[] = [
   {
-    title: "Jogging",
+    title: "Umbrellas",
     description: "Highly suggested",
-    imageSrc: "assets/dailyIcons/jog.svg",
-    altText: "Jog",
+    imageSrc: "assets/dailyIcons/umbrella.svg",
+    altText: "Umbrella",
     color: "green-500",
   },
   {
-    title: "Cycling",
+    title: "Refreshments",
     description: "Highly suggested",
-    imageSrc: "assets/dailyIcons/cycle.svg",
-    altText: "Cycle",
+    imageSrc: "assets/dailyIcons/bottle.svg",
+    altText: "Refreshment",
     color: "green-500",
   },
   {
-    title: "Swimming",
+    title: "Sunscreen",
     description: "Highly suggested",
-    imageSrc: "assets/dailyIcons/swim.svg",
-    altText: "Swim",
+    imageSrc: "assets/dailyIcons/sunscreen.svg",
+    altText: "Sunscreen",
     color: "green-500",
   },
   {
-    title: "Camping",
+    title: "Clothing",
     description: "Highly suggested",
-    imageSrc: "assets/dailyIcons/camp.svg",
-    altText: "Camp",
+    imageSrc: "assets/dailyIcons/clothing.svg",
+    altText: "Clothing",
     color: "yellow-500",
   },
   {
-    title: "Sports",
+    title: "Driving Conditions",
     description: "Safe",
-    imageSrc: "assets/dailyIcons/ball.svg",
-    altText: "Sports",
+    imageSrc: "assets/dailyIcons/car.svg",
+    altText: "Car",
     color: "green-500",
+  },
+  {
+    title: "Heat Stroke",
+    description: "Danger",
+    imageSrc: "assets/dailyIcons/temp.svg",
+    altText: "Temp",
+    color: "red-500",
   },
 ];
 
-const DailySuggestions = () => {
+const DailyActivities = () => {
   return (
     <div className="flex gap-2 px-1 flex-col w-full">
-      {dailySuggestionsData.map((card, index) => (
+      {dailySuggestions.map((card, index) => (
         <Card
           key={index}
-          className="p-3 px-4 flex gap-3 bg-[#FBFBFB] bg-opacity-50 border-transparent rounded-md w-72"
+          className="p-3 px-4 flex gap-3 bg-[#FBFBFB] bg-opacity-50 border-transparent rounded-md w-80"
         >
           <div className="flex items-start">
             <Image
@@ -82,4 +89,4 @@ const DailySuggestions = () => {
   );
 };
 
-export default DailySuggestions;
+export default DailyActivities;
