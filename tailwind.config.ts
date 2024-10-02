@@ -55,9 +55,27 @@ const config: Config = {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
   			sm: 'calc(var(--radius) - 4px)'
-  		}
+  		},
+		  animation: {
+			'custom-grow-spin': 'grow-spin 1.5s ease-in-out forwards', 
+		  },
+		  keyframes: {
+			'grow-spin': {
+			  '0%': {
+				transform: 'scale(0.9) translate(0, 0) rotate(0deg)', 
+			  },	
+			  '50%': {
+				transform: 'scale(1.5) rotate(90deg)', 
+			  },
+			  '100%': {
+				transform: 'scale(1)  rotate(90deg)', 
+			  },
+		},
+	},
+		
   	}
   },
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   plugins: [require("tailwindcss-animate")],
 };
 export default config;
