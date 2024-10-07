@@ -22,34 +22,34 @@ import {
 interface Location {
   value: string;
   label: string;
-  location: string;
+  area: string;
 }
 
 const locations: Location[] = [
   {
     value: "Pto Rivas Ibaba",
     label: "Pto Rivas Ibaba",
-    location: "Balanga City, Bataan",
+    area: "Balanga City, Bataan",
   },
   {
     value: "SvelteKit",
     label: "SvelteKit",
-    location: "Balanga City, Bataan",
+    area: "Balanga City, Bataan",
   },
   {
     value: "Nuxt.js",
     label: "Nuxt.js",
-    location: "Balanga City, Bataan",
+    area: "Balanga City, Bataan",
   },
   {
     value: "Remix",
     label: "Remix",
-    location: "Balanga City, Bataan",
+    area: "Balanga City, Bataan",
   },
   {
     value: "Astro",
     label: "Astro",
-    location: "Balanga City, Bataan",
+    area: "Balanga City, Bataan",
   },
 ];
 
@@ -86,7 +86,7 @@ export function ComboBox({
           <span className="font-bold text-2xl">
             {value
               ? locations.find((location) => location.value === value)?.label
-              : "Select location..."}
+              : "Select location"}
           </span>
         </Button>
       </PopoverTrigger>
@@ -121,7 +121,7 @@ export function ComboBox({
                     />
                     <div className="flex flex-col px-2">
                       <span className="font-bold">{location.label}</span>
-                      <span>{location.location}</span>
+                      <span>{location.area}</span>
                     </div>
                   </div>
                   <Navigation
