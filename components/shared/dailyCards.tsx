@@ -9,23 +9,23 @@ const DailyCards = () => {
   );
 
   return (
-    <div className="flex flex-col gap-3">
-      <div className="flex rounded-xl">
+    <div className="flex flex-col gap-3 py-3">
+      <div className="flex rounded-lg px-1">
         <div
-          className={`px-2 py-1 font-bold rounded-l-xl cursor-pointer ${
+          className={`px-2 py-1 font-bold rounded-l-lg cursor-pointer ${
             activeTab === "suggestions"
-              ? "bg-yellow-400"
+              ? "bg-[#FBD008]"
               : "bg-white hover:bg-yellow-100"
           } transition duration-100`}
           onClick={() => setActiveTab("suggestions")}
         >
           Daily Suggestions
         </div>
-        <div className="py-1 font-bold bg-yellow-400">|</div>
+        <div className="py-1 font-bold bg-[#FBD008]">|</div>
         <div
-          className={`px-2 py-1 font-bold rounded-r-xl cursor-pointer ${
+          className={`px-3 py-1 font-bold rounded-r-lg cursor-pointer ${
             activeTab === "activities"
-              ? "bg-yellow-400"
+              ? "bg-[#FBD008]"
               : "bg-white hover:bg-yellow-100"
           } transition duration-100`}
           onClick={() => setActiveTab("activities")}

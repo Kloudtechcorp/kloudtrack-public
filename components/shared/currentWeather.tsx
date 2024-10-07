@@ -3,7 +3,7 @@ import React from "react";
 const CurrentWeather = () => {
   return (
     <div className="">
-      <div className="flex flex-col py-2">
+      <div className="flex flex-col">
         <span className="font-medium text-lg">Current Weather</span>
         <span className="font-medium italic text-5xl">Clear Skies</span>
       </div>

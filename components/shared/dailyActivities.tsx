@@ -69,7 +69,15 @@ const DailyActivities = () => {
 
             <div className="flex justify-start items-center gap-1">
               <span
-                className={`border-${card.color} border-4 rounded h-2 flex`}
+                className={`border-4 rounded h-2 flex ${
+                  card.color === "green-500"
+                    ? "border-green-500"
+                    : card.color === "yellow-500"
+                    ? "border-yellow-500"
+                    : card.color === "red-500"
+                    ? "border-red-500"
+                    : "border-gray-500"
+                }`}
               ></span>
               <CardDescription className="text-black">
                 {card.description}
