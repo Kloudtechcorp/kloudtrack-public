@@ -57,11 +57,11 @@ const dailySuggestions: DailySuggestionsData[] = [
 
 const DailyActivities = () => {
   return (
-    <div className="flex gap-2 px-1 flex-col w-full">
+    <div className="flex gap-2 px-1 flex-col w-[22rem]">
       {dailySuggestions.map((card, index) => (
         <Card
           key={index}
-          className="p-3 px-4 flex gap-3 bg-[#FBFBFB] bg-opacity-50 border-transparent rounded-md w-80"
+          className="p-3 px-4 flex gap-3 bg-[#FBFBFB] bg-opacity-50 border-transparent rounded-md w-full"
         >
           <div className="flex items-start">
             <Image

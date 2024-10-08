@@ -54,8 +54,8 @@ const locations: Location[] = [
 ];
 
 interface ComboBoxProps {
-  selectedLocations: string[]; // List of selected locations
-  setSelectedLocations: React.Dispatch<React.SetStateAction<string[]>>; // Function to update selected locations in the parent
+  selectedLocations: string[];
+  setSelectedLocations: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
 export function ComboBox({
@@ -66,11 +66,17 @@ export function ComboBox({
   const [value, setValue] = React.useState<string>("");
 
   const onMapPinClick = (locationValue: string) => {
-    setSelectedLocations((prevState) =>
-      prevState.includes(locationValue)
-        ? prevState.filter((item) => item !== locationValue)
-        : [...prevState, locationValue]
-    );
+    setSelectedLocations((prevState) => {
+      if (prevState.includes(locationValue)) {
+        return prevState.filter((item) => item !== locationValue);
+      }
+
+      if (prevState.length < 3) {
+        return [...prevState, locationValue];
+      }
+
+      return prevState;
+    });
   };
 
   return (
@@ -101,8 +107,9 @@ export function ComboBox({
                   key={location.value}
                   value={location.value}
                   onSelect={(currentValue) => {
-                    setValue(currentValue === value ? "" : currentValue);
-                    setOpen(false);
+                    if (currentValue !== value) {
+                      setValue(currentValue);
+                    }
                   }}
                   className="flex items-center justify-between"
                 >

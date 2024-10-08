@@ -1,7 +1,7 @@
 import React from "react";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import { ChartContainer, type ChartConfig } from "@/components/ui/chart";
-import { Bar, BarChart, CartesianGrid, Line, LineChart, XAxis } from "recharts";
+import { Line, LineChart } from "recharts";
 
 const chartConfig = {
   desktop: {
@@ -15,9 +15,9 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 const chartData = [
-  { time: "3PM", value: 0, showDot: false }, // No dot
-  { time: "4PM", value: 50, showDot: true }, // Show dot
-  { time: "5PM", value: 65, showDot: false }, // No dot
+  { time: "3PM", value: 0 },
+  { time: "4PM", value: 50 },
+  { time: "5PM", value: 65 },
 ];
 
 interface InfoCardProps {
@@ -68,7 +68,7 @@ const infoCardData: InfoCardProps[] = [
   },
 ];
 
-const InfoCards = () => {
+const InfoCards = React.memo(() => {
   return (
     <div className="flex gap-3 px-1 py-32 flex-wrap w-full ">
       {infoCardData.map((card, index) => (
@@ -82,24 +82,31 @@ const InfoCards = () => {
             <Card className="p-6 shadow-none bg-[#545454] bg-opacity-10 border-none">
               <ChartContainer
                 config={chartConfig}
-                className="min-h-[150px] w-full flex justify-center items-center" // This will center the chart
+                className="min-h-[150px] w-full flex justify-center items-center"
               >
-                <LineChart accessibilityLayer data={chartData}>
+                <LineChart
+                  accessibilityLayer
+                  data={chartData}
+                  margin={{ top: 30, right: 10, bottom: 30, left: 10 }}
+                >
                   <Line
                     dataKey="value"
                     type="monotone"
                     strokeWidth={4}
                     dot={(dotProps) => {
-                      const { payload } = dotProps;
-                      // Show the dot only if showDot is true in the data point
-                      return payload.showDot ? (
-                        <circle
-                          r={16}
-                          fill="var(--color-desktop)"
-                          cx={dotProps.cx}
-                          cy={dotProps.cy}
-                        />
-                      ) : null;
+                      const { index, cx, cy } = dotProps;
+
+                      if (index > 0 && index < chartData.length - 1) {
+                        return (
+                          <circle
+                            r={16}
+                            fill="var(--color-desktop)"
+                            cx={cx}
+                            cy={cy}
+                          />
+                        );
+                      }
+                      return <></>;
                     }}
                   />
                 </LineChart>
@@ -120,6 +127,8 @@ const InfoCards = () => {
       ))}
     </div>
   );
-};
+});
+
+InfoCards.displayName = "InfoCards";
 
 export default InfoCards;
