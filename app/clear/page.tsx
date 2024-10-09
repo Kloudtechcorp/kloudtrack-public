@@ -17,12 +17,12 @@ export default function Clear() {
         selectedLocations={selectedLocations}
         setSelectedLocations={setSelectedLocations}
       />
-      <main className="flex flex-col container mx-auto py-2">
+      <div className="flex flex-col container mx-auto">
         <SelectedLocation locations={selectedLocations} />
         <CurrentWeather />
         <DailyCards />
         <InfoCards />
-      </main>
+      </div>
     </div>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { Card } from "./card";
 
 interface OptionSelectorProps {
   selectedParameter: string;
@@ -11,22 +12,28 @@ const OptionSelector: React.FC<OptionSelectorProps> = ({
   selectedParameter,
   onParameterChange,
 }) => {
-  const parameters = ["temperature", "humidity", "heatIndex", "airPressure"];
+  const parameters = [
+    "temperature",
+    "humidity",
+    "heatIndex",
+    "airPressure",
+    "uvIndex",
+  ];
 
   return (
-    <div className="w-full flex justify-center space-x-4 my-4">
+    <div className="w-full flex flex-wrap  gap-3 font-medium justify-start">
       {parameters.map((param) => (
-        <button
+        <Card
           key={param}
-          className={`p-2 border-b-2 transition-colors ${
+          className={`p-2 rounded-md transition-colors cursor-pointer ${
             selectedParameter === param
-              ? "border-blue-500 text-blue-500"
+              ? "bg-[#FBD008] font-bold"
               : "border-transparent"
           }`}
           onClick={() => onParameterChange(param)}
         >
           {param.charAt(0).toUpperCase() + param.slice(1)}
-        </button>
+        </Card>
       ))}
     </div>
   );

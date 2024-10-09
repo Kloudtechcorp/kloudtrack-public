@@ -63,10 +63,12 @@ export function ComboBox({
   setSelectedLocations,
 }: ComboBoxProps) {
   const [open, setOpen] = React.useState(false);
-  const [value, setValue] = React.useState<string>("");
+  const [value, setValue] = React.useState<string>("Pto Rivas Ibaba");
 
   const onMapPinClick = (locationValue: string) => {
     setSelectedLocations((prevState) => {
+      if (!prevState) return [locationValue];
+
       if (prevState.includes(locationValue)) {
         return prevState.filter((item) => item !== locationValue);
       }
