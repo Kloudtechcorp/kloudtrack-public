@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
-import DailyActivities from "./dailyActivities";
-import DailySuggestions from "./dailySuggestions";
+import DailyActivities from "./dailyActivity";
+import DailySuggestions from "./dailySuggestion";
 
 const DailyCards = () => {
   const [activeTab, setActiveTab] = useState<"suggestions" | "activities">(

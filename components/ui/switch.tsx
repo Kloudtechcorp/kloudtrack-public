@@ -19,7 +19,7 @@ const Switch = React.forwardRef<
       {...props}
       ref={ref}
       checked={isChecked}
-      onCheckedChange={setIsChecked} // Update the state when the switch is toggled
+      onCheckedChange={setIsChecked}
     >
       <SwitchPrimitives.Thumb
         className={cn(

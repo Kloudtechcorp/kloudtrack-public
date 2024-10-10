@@ -1,57 +1,16 @@
 import React from "react";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import Image from "next/image";
+import { dailyActivityArray } from "@/lib/objects/arrays";
 
-interface DailySuggestionProps {
-  title: string;
-  description: string;
-  imageSrc: string;
-  altText: string;
-  color: string;
-}
+const DailyActivity = () => {
+  if (!dailyActivityArray || dailyActivityArray.length === 0) {
+    return <div>No activities available.</div>;
+  }
 
-const dailySuggestionsData: DailySuggestionProps[] = [
-  {
-    title: "Jogging",
-    description: "Highly suggested",
-    imageSrc: "assets/dailyIcons/jog.svg",
-    altText: "Jog",
-    color: "green-500",
-  },
-  {
-    title: "Cycling",
-    description: "Highly suggested",
-    imageSrc: "assets/dailyIcons/cycle.svg",
-    altText: "Cycle",
-    color: "green-500",
-  },
-  {
-    title: "Swimming",
-    description: "Highly suggested",
-    imageSrc: "assets/dailyIcons/swim.svg",
-    altText: "Swim",
-    color: "green-500",
-  },
-  {
-    title: "Camping",
-    description: "Highly suggested",
-    imageSrc: "assets/dailyIcons/camp.svg",
-    altText: "Camp",
-    color: "yellow-500",
-  },
-  {
-    title: "Sports",
-    description: "Safe",
-    imageSrc: "assets/dailyIcons/ball.svg",
-    altText: "Sports",
-    color: "green-500",
-  },
-];
-
-const DailyActivities = () => {
   return (
     <div className="flex gap-2 px-1 flex-col w-[22rem] ">
-      {dailySuggestionsData.map((card, index) => (
+      {dailyActivityArray.map((card, index) => (
         <Card
           key={index}
           className="p-3 px-4 flex gap-3 bg-[#FBFBFB] bg-opacity-50 border-transparent rounded-md w-full"
@@ -90,4 +49,4 @@ const DailyActivities = () => {
   );
 };
 
-export default DailyActivities;
+export default DailyActivity;

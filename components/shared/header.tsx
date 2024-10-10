@@ -4,13 +4,13 @@ import React from "react";
 import Image from "next/image";
 import { ComboBox } from "./comboBox";
 import { Switch } from "@/components/ui/switch";
+import { HeaderProps } from "@/lib/types";
 
-interface HeaderProps {
-  selectedLocations: string[];
-  setSelectedLocations: React.Dispatch<React.SetStateAction<string[]>>;
-}
-
-const Header = ({ selectedLocations, setSelectedLocations }: HeaderProps) => {
+const Header = ({
+  selectedLocations,
+  setSelectedLocations,
+  setCurrentWeather,
+}: HeaderProps) => {
   return (
     <div className="w-full bg-[#D9D9D9] bg-opacity-25 h-16 flex text-center ">
       <div className="items-center flex w-full flex-row justify-start container mx-auto">
@@ -27,6 +27,7 @@ const Header = ({ selectedLocations, setSelectedLocations }: HeaderProps) => {
             <ComboBox
               selectedLocations={selectedLocations}
               setSelectedLocations={setSelectedLocations}
+              setCurrentWeather={setCurrentWeather}
             />
           </span>
           <span className="">
