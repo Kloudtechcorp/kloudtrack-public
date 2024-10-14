@@ -2,6 +2,7 @@ import React from "react";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import { ChartContainer, type ChartConfig } from "@/components/ui/chart";
 import { Line, LineChart } from "recharts";
+import { useRouter } from "next/navigation";
 
 const chartConfig = {
   desktop: {
@@ -24,51 +25,62 @@ interface InfoCardProps {
   title: string;
   description: string;
   explanation: string;
+  route: string;
 }
 const infoCardData: InfoCardProps[] = [
   {
     title: "Temperature",
     description: "Increase in Temperature",
     explanation: "This is an explanation of temperature",
+    route: "temperature",
   },
   {
     title: "Heat Index",
     description: "Increase in Temperature",
     explanation: "This is an explanation of heat index",
+    route: "heatIndex",
   },
   {
     title: "UV",
     description: "Low (2)",
     explanation: "This is an explanation of UV",
+    route: "uvIndex",
   },
   {
     title: "Precipitation",
     description: "Rising slowly",
     explanation: "This is an explanation of precipitation",
+    route: "precipitation",
   },
   {
     title: "Wind",
     description: "Force: 5 (Fresh Breeze)",
     explanation: "This is an explanation of wind",
+    route: "wind",
   },
   {
     title: "Pressure",
     description: "Rising slowly",
     explanation: "This is an explanation of pressure",
+    route: "airPressure",
   },
   {
     title: "Humidity",
     description: "Relatively Humid (50%)",
     explanation: "This is an explanation of humidity",
+    route: "humidity",
   },
   {
     title: "Cloud Cover",
     description: "Mostly Clear (32%)",
     explanation: "This is an explanation of cloud cover",
+    route: "cloudCover",
   },
 ];
 
 const InfoCards = React.memo(() => {
+  const router = useRouter();
+
   return (
     <div className="flex gap-3 px-1 py-32 flex-wrap w-full ">
       {infoCardData.map((card, index) => (
@@ -76,53 +88,58 @@ const InfoCards = React.memo(() => {
           key={index}
           className="p-3 flex bg-[#545454] bg-opacity-5 border-transparent rounded-md w-[23%]"
         >
-          <div className="flex flex-col justify-center gap-2 w-full">
-            <CardTitle>{card.title}</CardTitle>
+          <button
+            type="button"
+            onClick={() => router.push(`graphs/${card.route}`)}
+          >
+            <div className="flex flex-col justify-center gap-2 w-full">
+              <CardTitle>{card.title}</CardTitle>
 
-            <Card className="p-6 shadow-none bg-[#545454] bg-opacity-10 border-none">
-              <ChartContainer
-                config={chartConfig}
-                className="min-h-[150px] w-full flex justify-center items-center"
-              >
-                <LineChart
-                  accessibilityLayer
-                  data={chartData}
-                  margin={{ top: 30, right: 10, bottom: 30, left: 10 }}
+              <Card className="p-6 shadow-none bg-[#545454] bg-opacity-10 border-none">
+                <ChartContainer
+                  config={chartConfig}
+                  className="min-h-[150px] w-full flex justify-center items-center"
                 >
-                  <Line
-                    dataKey="value"
-                    type="monotone"
-                    strokeWidth={4}
-                    dot={(dotProps) => {
-                      const { index, cx, cy } = dotProps;
+                  <LineChart
+                    accessibilityLayer
+                    data={chartData}
+                    margin={{ top: 30, right: 10, bottom: 30, left: 10 }}
+                  >
+                    <Line
+                      dataKey="value"
+                      type="monotone"
+                      strokeWidth={4}
+                      dot={(dotProps) => {
+                        const { index, cx, cy } = dotProps;
 
-                      if (index > 0 && index < chartData.length - 1) {
-                        return (
-                          <circle
-                            r={16}
-                            fill="var(--color-desktop)"
-                            cx={cx}
-                            cy={cy}
-                          />
-                        );
-                      }
-                      return <></>;
-                    }}
-                  />
-                </LineChart>
-              </ChartContainer>
+                        if (index > 0 && index < chartData.length - 1) {
+                          return (
+                            <circle
+                              r={16}
+                              fill="var(--color-desktop)"
+                              cx={cx}
+                              cy={cy}
+                            />
+                          );
+                        }
+                        return <></>;
+                      }}
+                    />
+                  </LineChart>
+                </ChartContainer>
 
-              <div className="flex justify-end font-medium text-5xl items-end px-4">
-                30
-                <span className="text-4xl">°C</span>
-              </div>
-            </Card>
+                <div className="flex justify-end font-medium text-5xl items-end px-4">
+                  30
+                  <span className="text-4xl">°C</span>
+                </div>
+              </Card>
 
-            <CardTitle>{card.description}</CardTitle>
-            <CardDescription className="text-black">
-              {card.explanation}
-            </CardDescription>
-          </div>
+              <CardTitle>{card.description}</CardTitle>
+              <CardDescription className="text-black">
+                {card.explanation}
+              </CardDescription>
+            </div>
+          </button>
         </Card>
       ))}
     </div>

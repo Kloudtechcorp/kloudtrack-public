@@ -13,11 +13,14 @@ const OptionSelector: React.FC<OptionSelectorProps> = ({
   onParameterChange,
 }) => {
   const parameters = [
-    "temperature",
-    "humidity",
-    "heatIndex",
-    "airPressure",
-    "uvIndex",
+    "Temperature",
+    "Humidity",
+    "Heat Index",
+    "Precipitation",
+    "Air Pressure",
+    "Wind",
+    "UV Index",
+    "Cloud Cover",
   ];
 
   return (
