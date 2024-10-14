@@ -10,7 +10,7 @@ import {
   Tooltip,
 } from "recharts";
 import { useParams, useRouter } from "next/navigation";
-import Header from "@/components/ui/header";
+import Header from "@/components/shared/header";
 import OptionSelector from "@/components/ui/optionSelector";
 import { ChartConfig, ChartContainer } from "@/components/ui/chart";
 import { AreaChart, BarChart } from "recharts";
@@ -35,11 +35,13 @@ const dummyData = [
     heatIndex: 23,
     precipitation: 4,
     airPressure: 1011,
-    uvIndex: 5,
     wind: 4,
+    uvIndex: 0,
+    cloudCover: 25,
   },
   {
     hour: "02:00",
+    temperature: 20,
     humidity: 80,
     heatIndex: 22,
     precipitation: 2,
@@ -224,7 +226,7 @@ const GraphPage = () => {
 
   return (
     <div className="w-full h-full flex flex-col items-center justify-start">
-      <Header />
+      {/* <Header /> */}
       <div className="container">
         <OptionSelector
           selectedParameter={selectedParameter}

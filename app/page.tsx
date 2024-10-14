@@ -1,3 +1,14 @@
-export default function Home() {
-  return <h1>This is the initial page!</h1>;
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="en">
+      <body>
+        {/* Layout UI */}
+        <main>{children}</main>
+      </body>
+    </html>
+  );
 }
