@@ -8,6 +8,8 @@ import OptionSelector from "@/components/ui/optionSelector";
 import { ChartConfig, ChartContainer } from "@/components/ui/chart";
 import { AreaChart, BarChart } from "recharts";
 import { Card } from "@/components/ui/card";
+import { locationArray } from "@/lib/objects/arrays";
+import { WeatherDataProps } from "@/lib/types";
 
 const dummyData = [
   {
@@ -156,9 +158,14 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 const GraphPage = () => {
-  const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
   const { parameters } = useParams();
-
+  const defaultLocation = locationArray[0];
+  const [selectedLocations, setSelectedLocations] = useState<string[]>([
+    defaultLocation.location,
+  ]);
+  const [weatherData, setWeatherData] = useState<WeatherDataProps | null>(
+    defaultLocation
+  );
   const initialParameter = Array.isArray(parameters)
     ? parameters[0]
     : parameters || "temperature";
@@ -179,6 +186,7 @@ const GraphPage = () => {
       <Header
         selectedLocations={selectedLocations}
         setSelectedLocations={setSelectedLocations}
+        setCurrentWeather={setWeatherData}
       />
       <div className="mx-auto container ">
         <div className="bg-[#545454] bg-opacity-5 rounded-md flex flex-col p-4 my-2 gap-3 ">

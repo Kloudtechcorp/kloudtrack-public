@@ -9,6 +9,7 @@ import SelectedLocation from "@/components/shared/selectedLocation";
 import InfoCard from "@/components/shared/infoCard";
 import { WeatherDataProps } from "@/lib/types";
 import { locationArray } from "@/lib/objects/arrays";
+import Link from "next/link";
 
 export default function Clear() {
   const defaultLocation = locationArray[0];
@@ -35,6 +36,9 @@ export default function Clear() {
         <CurrentWeather currentWeather={weatherData} />
         <DailyCard />
         <InfoCard />
+        <Link href="../graphs/page.tsx">
+          <div className="bg-red-200">ASDASD</div>
+        </Link>
       </div>
     </div>
   );

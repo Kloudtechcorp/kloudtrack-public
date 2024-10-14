@@ -2,6 +2,14 @@ import React from "react";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import { ChartContainer, type ChartConfig } from "@/components/ui/chart";
 import { Line, LineChart } from "recharts";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { HelpCircle } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 const chartConfig = {
   desktop: {
@@ -24,60 +32,84 @@ interface InfoCardProps {
   title: string;
   description: string;
   explanation: string;
+  tooltip: string;
 }
 const infoCardData: InfoCardProps[] = [
   {
     title: "Temperature",
     description: "Increase in Temperature",
     explanation: "This is an explanation of temperature",
+    tooltip: "This is a tooltip for temperature",
   },
   {
     title: "Heat Index",
     description: "Increase in Temperature",
     explanation: "This is an explanation of heat index",
+    tooltip: "This is a tooltip for temperature",
   },
   {
     title: "UV",
     description: "Low (2)",
     explanation: "This is an explanation of UV",
+    tooltip: "This is a tooltip for temperature",
   },
   {
     title: "Precipitation",
     description: "Rising slowly",
     explanation: "This is an explanation of precipitation",
+    tooltip: "This is a tooltip for temperature",
   },
+
   {
     title: "Wind",
     description: "Force: 5 (Fresh Breeze)",
     explanation: "This is an explanation of wind",
+    tooltip: "This is a tooltip for temperature",
   },
   {
     title: "Pressure",
     description: "Rising slowly",
     explanation: "This is an explanation of pressure",
+    tooltip: "This is a tooltip for temperature",
   },
   {
     title: "Humidity",
     description: "Relatively Humid (50%)",
     explanation: "This is an explanation of humidity",
+    tooltip: "This is a tooltip for temperature",
   },
   {
     title: "Cloud Cover",
     description: "Mostly Clear (32%)",
     explanation: "This is an explanation of cloud cover",
+    tooltip: "This is a tooltip for temperature",
   },
 ];
 
 const InfoCards = React.memo(() => {
+  const router = useRouter();
   return (
     <div className="flex gap-3 px-1 py-32 flex-wrap w-full ">
       {infoCardData.map((card, index) => (
         <Card
           key={index}
           className="p-3 flex bg-[#545454] bg-opacity-5 border-transparent rounded-md w-[23%]"
+          onClick={() => router.push("/dashboard")}
         >
           <div className="flex flex-col justify-center gap-2 w-full">
-            <CardTitle>{card.title}</CardTitle>
+            <div className="flex items-center gap-2">
+              <CardTitle>{card.title}</CardTitle>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <HelpCircle height={20} width={20} fill="#FDB008" />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>{card.tooltip}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
 
             <Card className="p-6 shadow-none bg-[#545454] bg-opacity-10 border-none">
               <ChartContainer
