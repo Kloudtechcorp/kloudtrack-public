@@ -6,8 +6,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        {/* Layout UI */}
         <main>{children}</main>
+        <div>This is the landing page.</div>
       </body>
     </html>
   );

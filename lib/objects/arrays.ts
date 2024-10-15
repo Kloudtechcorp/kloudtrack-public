@@ -34,7 +34,7 @@ export const locationArray = [
     irradiance: 40000,
     lux: 5400,
     batteryLevel: 35,
-    weather: "Clear",
+    weather: "Rainy",
   },
   {
     stationId: 3,
@@ -52,7 +52,7 @@ export const locationArray = [
     irradiance: 400,
     lux: 500,
     batteryLevel: 25,
-    weather: "Clear",
+    weather: "Sadge",
   },
   {
     stationId: 4,
@@ -70,7 +70,7 @@ export const locationArray = [
     irradiance: 40000,
     lux: 5400,
     batteryLevel: 69,
-    weather: "Clear",
+    weather: "Aaaa",
   },
 
   {
@@ -89,14 +89,14 @@ export const locationArray = [
     irradiance: 40000,
     lux: 5400,
     batteryLevel: 78,
-    weather: "Clear",
+    weather: "Partly Rainy",
   },
   {
     stationId: 6,
     name: "Foxtrot",
     location: "Abucay, Bataan",
     area: "Balanga City, Bataan",
-    temperature: 20,
+    temperature: 50,
     heatIndex: 30,
     humidity: 40,
     precipitation: 100,
@@ -108,7 +108,7 @@ export const locationArray = [
     irradiance: 40000,
     lux: 5400,
     batteryLevel: 56,
-    weather: "Clear",
+    weather: "Hell",
   },
 ];
 

@@ -15,36 +15,37 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { locationArray } from "@/lib/objects/arrays";
-import { ComboBoxProps } from "@/lib/types";
+import { useLocationContext } from "@/app/context/locationContext";
 
-export function ComboBox({
-  selectedLocations,
-  setSelectedLocations,
-  setCurrentWeather,
-}: ComboBoxProps) {
-  const defaultLocation = locationArray[0].location;
+export function ComboBox() {
+  const {
+    locationData,
+    selectedLocation,
+    setSelectedLocation,
+    favoriteLocations,
+    addFavoriteLocation,
+    removeFavoriteLocation,
+  } = useLocationContext();
   const [open, setOpen] = React.useState(false);
-  const [value, setValue] = React.useState<string>(defaultLocation);
-  const [isLocationSelected, setIsLocationSelected] = React.useState(false);
 
-  const onMapPinClick = (locationValue: string) => {
-    setIsLocationSelected(true);
-    setSelectedLocations((prevState) => {
-      if (prevState.includes(locationValue)) {
-        return prevState.filter((item) => item !== locationValue);
-      }
-      if (prevState.length < 3) {
-        return [...prevState, locationValue];
-      }
-      return prevState;
-    });
+  const onLocationSelect = (locationValue: string) => {
+    const selected = locationData.find((loc) => loc.location === locationValue);
+    if (selected) {
+      setSelectedLocation({ location: selected.location, area: selected.area });
+    }
   };
 
-  React.useEffect(() => {
-    if (isLocationSelected && value !== defaultLocation) {
+  const onFavoriteClick = (location: { location: string; area: string }) => {
+    const isAlreadyFavorite = favoriteLocations.some(
+      (favLocation) => favLocation.location === location.location
+    );
+
+    if (isAlreadyFavorite) {
+      removeFavoriteLocation(location);
+    } else {
+      addFavoriteLocation(location);
     }
-  }, [value, isLocationSelected, defaultLocation]);
+  };
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -57,10 +58,7 @@ export function ComboBox({
         >
           <MapPin className="mr-2 size-5 shrink-0 " />
           <span className="font-bold text-2xl">
-            {value
-              ? locationArray.find((location) => location.location === value)
-                  ?.location
-              : "Select location"}
+            {selectedLocation?.location || "Select location"}
           </span>
         </Button>
       </PopoverTrigger>
@@ -70,34 +68,27 @@ export function ComboBox({
           <CommandList>
             <CommandEmpty>No location found.</CommandEmpty>
             <CommandGroup>
-              {locationArray.map((location) => (
+              {locationData.map((location) => (
                 <CommandItem
                   key={location.location}
                   value={location.location}
-                  onSelect={(currentValue) => {
-                    if (currentValue !== value) {
-                      setValue(currentValue);
-                      const selectedLocationData = locationArray.find(
-                        (loc) => loc.location === currentValue
-                      );
-                      if (selectedLocationData) {
-                        setCurrentWeather(selectedLocationData);
-                      }
-                    }
-                  }}
+                  onSelect={() => onLocationSelect(location.location)}
                   className="flex items-center justify-between"
                 >
                   <div className="flex items-center">
                     <MapPin
                       className={cn(
                         "mr-2 h-4 w-4 cursor-pointer",
-                        selectedLocations.includes(location.location)
-                          ? "opacity-100"
-                          : "opacity-10"
+                        favoriteLocations.some(
+                          (favLocation) =>
+                            favLocation.location === location.location
+                        )
+                          ? "text-black"
+                          : "text-gray-500"
                       )}
                       onClick={(e) => {
                         e.stopPropagation();
-                        onMapPinClick(location.location);
+                        onFavoriteClick(location);
                       }}
                     />
                     <div className="flex flex-col px-2">
@@ -105,10 +96,13 @@ export function ComboBox({
                       <span>{location.area}</span>
                     </div>
                   </div>
+
                   <Navigation
                     className={cn(
                       "h-4 w-4",
-                      value === location.location ? "opacity-100" : "opacity-0"
+                      selectedLocation?.location === location.location
+                        ? "opacity-100"
+                        : "opacity-0"
                     )}
                   />
                 </CommandItem>

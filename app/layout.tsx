@@ -1,6 +1,9 @@
+import { LocationProvider } from "./context/locationContext";
+import "./globals.css";
 import type { Metadata } from "next";
 import "./globals.css";
 import { Montserrat } from "next/font/google";
+import Header from "@/components/shared/header";
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 
@@ -17,8 +20,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={montserrat.className}>
-        <div>Test</div>
-        {children}
+        <LocationProvider>
+          <Header />
+          {children}
+        </LocationProvider>
       </body>
     </html>
   );

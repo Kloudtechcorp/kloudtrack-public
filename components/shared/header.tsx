@@ -1,24 +1,18 @@
 "use client";
-
 import React from "react";
 import Image from "next/image";
 import { ComboBox } from "./comboBox";
 import { Switch } from "@/components/ui/switch";
-import { HeaderProps } from "@/lib/types";
 import { useRouter } from "next/navigation";
 
-const Header = ({
-  selectedLocations,
-  setSelectedLocations,
-  setCurrentWeather,
-}: HeaderProps) => {
+const Header = () => {
   const router = useRouter();
 
   return (
-    <div className="w-full bg-[#D9D9D9] bg-opacity-25 h-16 flex text-center">
+    <div className="w-full bg-gray-100 bg-opacity-85 h-16 flex text-center">
       <div className="items-center flex w-full flex-row justify-start container mx-auto">
         <div className="flex w-full items-center">
-          <span onClick={() => router.push("../../app/clear/page")}>
+          <span onClick={() => router.push("/test")}>
             <Image
               src="/assets/icons/logo.png"
               alt="Logo"
@@ -27,12 +21,9 @@ const Header = ({
             />
           </span>
           <span className="flex w-full justify-center">
-            <ComboBox
-              selectedLocations={selectedLocations}
-              setSelectedLocations={setSelectedLocations}
-              setCurrentWeather={setCurrentWeather}
-            />
+            <ComboBox />
           </span>
+
           <span>
             <Switch />
           </span>
