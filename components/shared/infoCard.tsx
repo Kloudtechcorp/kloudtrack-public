@@ -105,7 +105,7 @@ const InfoCards = React.memo(() => {
           key={index}
           className="p-3 flex bg-[#545454] bg-opacity-5 border-transparent rounded-md w-[23%]"
         >
-          <div onClick={() => router.push(`graphs/${card.route}`)}>
+          <div onClick={() => router.push(`graphs`)}>
             <div className="flex flex-col justify-center gap-2 w-full">
               <div className="flex items-center gap-2">
                 <CardTitle>{card.title}</CardTitle>

@@ -15,6 +15,16 @@ export type LocationContextType = {
   removeFavoriteLocation: (location: LocationProps) => void;
 };
 
+export type PayloadProps = {
+  name: string;
+  value: number | string;
+};
+
+export type TooltipProps = {
+  payload: PayloadProps[];
+  label: string;
+};
+
 export type LocationProps = {
   location: string;
   area: string;

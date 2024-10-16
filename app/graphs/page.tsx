@@ -3,134 +3,16 @@
 import React, { useState } from "react";
 import { XAxis, YAxis, CartesianGrid, Tooltip, Area, Bar } from "recharts";
 import { useParams } from "next/navigation";
-import Header from "@/components/shared/header";
 import OptionSelector from "@/components/ui/optionSelector";
 import { ChartConfig, ChartContainer } from "@/components/ui/chart";
 import { AreaChart, BarChart } from "recharts";
 import { Card } from "@/components/ui/card";
-import { locationArray } from "@/lib/objects/arrays";
-import { WeatherDataProps } from "@/lib/types";
-
-const dummyData = [
-  {
-    hour: "00:00",
-    temperature: 20,
-    humidity: 85,
-    heatIndex: 22,
-    airPressure: 1010,
-    uvIndex: 3,
-  },
-  {
-    hour: "01:00",
-    temperature: 21,
-    humidity: 82,
-    heatIndex: 23,
-    airPressure: 1011,
-    uvIndex: 5,
-  },
-  {
-    hour: "02:00",
-    temperature: 20,
-    humidity: 80,
-    heatIndex: 22,
-    airPressure: 1012,
-    uvIndex: 5,
-  },
-  {
-    hour: "03:00",
-    temperature: 19,
-    humidity: 83,
-    heatIndex: 21,
-    airPressure: 1013,
-    uvIndex: 5,
-  },
-  {
-    hour: "04:00",
-    temperature: 18,
-    humidity: 85,
-    heatIndex: 20,
-    airPressure: 1014,
-    uvIndex: 5,
-  },
-  {
-    hour: "05:00",
-    temperature: 17,
-    humidity: 86,
-    heatIndex: 19,
-    airPressure: 1015,
-    uvIndex: 5,
-  },
-  {
-    hour: "06:00",
-    temperature: 18,
-    humidity: 83,
-    heatIndex: 20,
-    airPressure: 1016,
-    uvIndex: 5,
-  },
-  {
-    hour: "07:00",
-    temperature: 20,
-    humidity: 80,
-    heatIndex: 22,
-    airPressure: 1017,
-    uvIndex: 5,
-  },
-  {
-    hour: "08:00",
-    temperature: 22,
-    humidity: 78,
-    heatIndex: 24,
-    airPressure: 1018,
-    uvIndex: 5,
-  },
-  {
-    hour: "09:00",
-    temperature: 24,
-    humidity: 75,
-    heatIndex: 26,
-    airPressure: 1019,
-    uvIndex: 5,
-  },
-  {
-    hour: "10:00",
-    temperature: 26,
-    humidity: 70,
-    heatIndex: 28,
-    airPressure: 1020,
-    uvIndex: 5,
-  },
-  {
-    hour: "11:00",
-    temperature: 27,
-    humidity: 68,
-    heatIndex: 29,
-    airPressure: 1021,
-    uvIndex: 5,
-  },
-  {
-    hour: "12:00",
-    temperature: 28,
-    humidity: 65,
-    heatIndex: 30,
-    airPressure: 1022,
-    uvIndex: 5,
-  },
-];
+import { TooltipProps } from "@/lib/types";
+import { dummyData } from "@/lib/objects/arrays";
 
 const sliceDetails = (repeat: number, value: string) => {
   return value;
 };
-
-interface PayloadProps {
-  name: string;
-  value: number | string;
-}
-
-interface TooltipProps {
-  payload: PayloadProps[];
-  label: string;
-}
 
 const CustomTooltip = ({ payload, label }: TooltipProps) => {
   if (payload && payload.length) {

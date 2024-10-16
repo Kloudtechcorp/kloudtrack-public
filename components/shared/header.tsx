@@ -12,7 +12,7 @@ const Header = () => {
     <div className="w-full bg-gray-100 bg-opacity-85 h-16 flex text-center">
       <div className="items-center flex w-full flex-row justify-start container mx-auto">
         <div className="flex w-full items-center">
-          <span onClick={() => router.push("/test")}>
+          <span onClick={() => router.push("/")}>
             <Image
               src="/assets/icons/logo.png"
               alt="Logo"
