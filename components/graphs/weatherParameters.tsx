@@ -1,126 +1,133 @@
 "use client";
 
-import React from "react";
-import { Card, CardDescription, CardTitle } from "@/components/ui/card";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
+import React, { useState } from "react";
+import { XAxis, YAxis, CartesianGrid, Tooltip, Area, Bar } from "recharts";
+import { useParams } from "next/navigation";
+import OptionSelector from "@/components/ui/optionSelector";
+import { ChartConfig, ChartContainer } from "@/components/ui/chart";
+import { AreaChart, BarChart } from "recharts";
+import { Card } from "@/components/ui/card";
+import { TooltipProps } from "@/lib/types";
+import { dummyData } from "@/lib/objects/arrays";
 
-interface WeatherParametersProps {
-  title: string;
-  description: string;
-  parameter: string;
-  imageSrc: string;
-  altText: string;
-  color: string;
-}
+const sliceDetails = (repeat: number, value: string) => {
+  return value;
+};
 
-const WeatherParametersData: WeatherParametersProps[] = [
-  {
-    title: "Temperature",
-    description: "Highly suggested",
-    parameter: "temperature",
-    imageSrc: "assets/dailyIcons/umbrella.svg",
-    altText: "Umbrella",
-    color: "green-500",
-  },
-  {
-    title: "Heat Index",
-    description: "Highly suggested",
-    parameter: "heatIndex",
-    imageSrc: "assets/dailyIcons/bottle.svg",
-    altText: "Refreshment",
-    color: "green-500",
-  },
-  {
-    title: "UV Index",
-    description: "Highly suggested",
-    parameter: "uvIndex",
-    imageSrc: "assets/dailyIcons/sunscreen.svg",
-    altText: "Sunscreen",
-    color: "green-500",
-  },
-  {
-    title: "Precipitation",
-    description: "Highly suggested",
-    parameter: "precipitation",
-    imageSrc: "assets/dailyIcons/clothing.svg",
-    altText: "Clothing",
-    color: "yellow-500",
-  },
-  {
-    title: "Wind",
-    description: "Safe",
-    parameter: "wind",
-    imageSrc: "assets/dailyIcons/car.svg",
-    altText: "Car",
-    color: "green-500",
-  },
-  {
-    title: "Air Pressure",
-    description: "Danger",
-    parameter: "airPressure",
-    imageSrc: "assets/dailyIcons/temp.svg",
-    altText: "Temp",
-    color: "red-500",
-  },
+const CustomTooltip = ({ payload, label }: TooltipProps) => {
+  if (payload && payload.length) {
+    return (
+      <Card className="custom-tooltip p-2 rounded-md">
+        <p className="font-bold">{`Time: ${label}`}</p>
+        {payload[0] && (
+          <p className="font-bold">{`${payload[0].name}: ${payload[0].value}`}</p>
+        )}
+      </Card>
+    );
+  }
+  return null;
+};
 
-  {
-    title: "Humidity",
-    description: "Danger",
-    parameter: "humidity",
-    imageSrc: "assets/dailyIcons/temp.svg",
-    altText: "Temp",
-    color: "red-500",
+const chartConfig = {
+  desktop: {
+    label: "Desktop",
+    color: "#2563eb",
   },
-  {
-    title: "Cloud Cover",
-    description: "Danger",
-    parameter: "cloudCover",
-    imageSrc: "assets/dailyIcons/temp.svg",
-    altText: "Temp",
-    color: "red-500",
+  mobile: {
+    label: "Mobile",
+    color: "#60a5fa",
   },
-];
+} satisfies ChartConfig;
 
-const WeatherParameters = () => {
-  const router = useRouter();
+const GraphPage = () => {
+  const { parameters } = useParams();
+
+  const initialParameter = Array.isArray(parameters)
+    ? parameters[0]
+    : parameters || "temperature";
+
+  // Keeping the original capitalization, then mapping to camelCase using dataKeyMap
+  const [selectedParameter, setSelectedParameter] = useState(initialParameter);
+
+  // Match human-readable strings to the camelCase keys
+  const dataKeyMap: Record<string, string> = {
+    Temperature: "temperature",
+    Humidity: "humidity",
+    "Heat Index": "heatIndex",
+    Precipitation: "precipitation",
+    "Air Pressure": "airPressure",
+    Wind: "wind",
+    "UV Index": "uvIndex",
+    "Cloud Cover": "cloudCover",
+  };
 
   return (
-    <div className="flex gap-2 px-1 flex-row w-full">
-      {WeatherParametersData.map((card, index) => (
-        <Card
-          key={index}
-          className="p-3 px-4 flex flex-col gap-3 bg-[#FBFBFB] bg-opacity-50 border-transparent rounded-md w-72"
-        >
-          <button
-            type="button"
-            onClick={() => router.push(`/graphs/${card.parameter}`)}
-          >
-            <CardTitle>{card.title}</CardTitle>
-
-            <div className="flex items-start">
-              <Image
-                src={card.imageSrc}
-                alt={card.altText}
-                width={40}
-                height={40}
-              />
-            </div>
-            <div className="flex flex-col justify-center pr-3">
-              <div className="flex justify-start items-center gap-1">
-                <span
-                  className={`border-${card.color} border-4 rounded h-2 flex`}
-                ></span>
-                <CardDescription className="text-black">
-                  {card.description}
-                </CardDescription>
-              </div>
-            </div>
-          </button>
-        </Card>
-      ))}
+    <div className="flex flex-col items-center justify-center">
+      <div className="mx-auto container ">
+        <div className="bg-[#545454] bg-opacity-5 rounded-md flex flex-col p-4 my-2 gap-3 ">
+          <OptionSelector
+            selectedParameter={selectedParameter}
+            onParameterChange={setSelectedParameter} // No need to convert to lowercase
+          />
+          <div className="bg-[#FFFFFF] rounded-md ">
+            <ChartContainer
+              config={chartConfig}
+              className="min-h-[150px] justify-center items-center "
+            >
+              {selectedParameter === "UV Index" ||
+              selectedParameter === "Humidity" ? (
+                <BarChart
+                  data={dummyData}
+                  margin={{ top: 30, right: 30, bottom: 15 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis
+                    dataKey="hour"
+                    tickFormatter={(value) => sliceDetails(0, value)}
+                  />
+                  <YAxis />
+                  <Tooltip
+                    content={<CustomTooltip payload={[]} label={""} />}
+                  />
+                  <Bar dataKey="uvIndex" fill="#FBD008" name="UV Index" />
+                </BarChart>
+              ) : (
+                <AreaChart
+                  data={dummyData}
+                  margin={{ top: 30, right: 30, bottom: 15 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis
+                    dataKey="hour"
+                    tickFormatter={(value) => sliceDetails(0, value)}
+                  />
+                  <YAxis />
+                  <Tooltip
+                    content={<CustomTooltip payload={[]} label={""} />}
+                  />
+                  <defs>
+                    <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="50%" stopColor="#FBD008" />
+                      <stop offset="100%" stopColor="#FFFFFF" />
+                    </linearGradient>
+                  </defs>
+                  <Area
+                    type="monotone"
+                    dataKey={dataKeyMap[selectedParameter]} // Use camelCase data key
+                    stroke="#545454"
+                    fill="url(#colorUv)"
+                    strokeWidth={2}
+                    dot={{ r: 4 }}
+                    name={selectedParameter}
+                  />
+                </AreaChart>
+              )}
+            </ChartContainer>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
 
-export default WeatherParameters;
+export default GraphPage;

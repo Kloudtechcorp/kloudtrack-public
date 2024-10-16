@@ -28,6 +28,7 @@ const CustomTooltip = ({ payload, label }: TooltipProps) => {
   return null;
 };
 
+// Chart config, you can update colors or styles here
 const chartConfig = {
   desktop: {
     label: "Desktop",
@@ -46,16 +47,23 @@ const GraphPage = () => {
     ? parameters[0]
     : parameters || "temperature";
 
+  // Keeping the original capitalization, then mapping to camelCase using dataKeyMap
   const [selectedParameter, setSelectedParameter] = useState(initialParameter);
 
+  // Mapping the display name to the actual data keys
   const dataKeyMap: Record<string, string> = {
-    temperature: "temperature",
-    humidity: "humidity",
-    heatIndex: "heatIndex",
-    airPressure: "airPressure",
-    precipitation: "precipitation",
-    uvIndex: "uvIndex",
+    Temperature: "temperature",
+    Humidity: "humidity",
+    "Heat Index": "heatIndex",
+    Precipitation: "precipitation",
+    "Air Pressure": "airPressure",
+    Wind: "windSpeed",
+    "UV Index": "uvIndex",
+    "Cloud Cover": "cloudCover",
   };
+
+  // Defining which parameters should be displayed as bar charts
+  const barChartParameters = ["UV Index", "Precipitation"];
 
   return (
     <div className="flex flex-col items-center justify-center">
@@ -70,8 +78,8 @@ const GraphPage = () => {
               config={chartConfig}
               className="min-h-[150px] justify-center items-center "
             >
-              {selectedParameter === "uvIndex" ||
-              selectedParameter === "humidity" ? (
+              {/* Determine chart type based on selected parameter */}
+              {barChartParameters.includes(selectedParameter) ? (
                 <BarChart
                   data={dummyData}
                   margin={{ top: 30, right: 30, bottom: 15 }}
@@ -85,7 +93,11 @@ const GraphPage = () => {
                   <Tooltip
                     content={<CustomTooltip payload={[]} label={""} />}
                   />
-                  <Bar dataKey="uvIndex" fill="#FBD008" name="UV Index" />
+                  <Bar
+                    dataKey={dataKeyMap[selectedParameter]}
+                    fill="#FBD008"
+                    name={selectedParameter}
+                  />
                 </BarChart>
               ) : (
                 <AreaChart
@@ -114,10 +126,7 @@ const GraphPage = () => {
                     fill="url(#colorUv)"
                     strokeWidth={2}
                     dot={{ r: 4 }}
-                    name={
-                      selectedParameter.charAt(0).toUpperCase() +
-                      selectedParameter.slice(1)
-                    }
+                    name={selectedParameter}
                   />
                 </AreaChart>
               )}
