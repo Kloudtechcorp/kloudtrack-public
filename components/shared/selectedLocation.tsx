@@ -1,4 +1,4 @@
-import { useLocationContext } from "@/app/context/locationContext";
+import { useLocationContext } from "@/context/locationContext";
 import { EllipsisVertical } from "lucide-react";
 import { Card } from "../ui/card";
 import {

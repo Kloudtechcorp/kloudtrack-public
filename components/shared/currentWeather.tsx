@@ -1,4 +1,4 @@
-import { useLocationContext } from "@/app/context/locationContext";
+import { useLocationContext } from "@/context/locationContext";
 
 const CurrentWeather = () => {
   const { selectedLocation, locationData } = useLocationContext();

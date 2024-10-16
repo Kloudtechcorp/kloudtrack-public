@@ -16,7 +16,7 @@ export default function Clear() {
             <CurrentWeather />
             <DailyCard />
           </div>
-          <div className="w-[50%] flex justify-end ">
+          <div className="w-[50%] flex justify-end p-12">
             <Sun />
           </div>
         </div>

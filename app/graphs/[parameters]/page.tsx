@@ -1,18 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Bar,
-  Area,
-} from "recharts";
+import { XAxis, YAxis, CartesianGrid, Tooltip, Bar, Area } from "recharts";
 import { useParams, useRouter } from "next/navigation";
-import Header from "@/components/shared/header";
 import OptionSelector from "@/components/ui/optionSelector";
 import { ChartConfig, ChartContainer } from "@/components/ui/chart";
 import { AreaChart, BarChart } from "recharts";
@@ -240,11 +230,6 @@ const GraphPage = () => {
 
   return (
     <div className="flex flex-col items-center justify-center">
-      {/* <Header
-        selectedLocations={selectedLocations}
-        setSelectedLocations={setSelectedLocations}
-        setCurrentWeather={setWeatherData}
-      /> */}
       <div className="mx-auto container ">
         <div className="bg-[#545454] bg-opacity-5 rounded-md flex flex-col p-4 my-2 gap-3 ">
           <OptionSelector

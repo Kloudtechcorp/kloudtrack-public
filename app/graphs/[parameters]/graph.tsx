@@ -177,11 +177,6 @@ const GraphPage = () => {
 
   return (
     <div className="flex flex-col items-center justify-center">
-      {/* <Header
-        selectedLocations={selectedLocations}
-        setSelectedLocations={setSelectedLocations}
-        setCurrentWeather={setWeatherData}
-      /> */}
       <div className="mx-auto container ">
         <div className="bg-[#545454] bg-opacity-5 rounded-md flex flex-col p-4 my-2 gap-3 ">
           <OptionSelector

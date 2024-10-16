@@ -15,7 +15,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useLocationContext } from "@/app/context/locationContext";
+import { useLocationContext } from "@/context/locationContext";
 
 export function ComboBox() {
   const {
