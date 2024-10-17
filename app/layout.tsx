@@ -1,4 +1,6 @@
 import { LocationProvider } from "../context/locationContext";
+import { ParameterProvider } from "../context/parametersContext";
+
 import type { Metadata } from "next";
 import "./globals.css";
 import { Montserrat } from "next/font/google";
@@ -20,8 +22,10 @@ export default function RootLayout({
     <html lang="en">
       <body className={montserrat.className}>
         <LocationProvider>
-          <Header />
-          {children}
+          <ParameterProvider>
+            <Header />
+            {children}
+          </ParameterProvider>
         </LocationProvider>
       </body>
     </html>

@@ -15,6 +15,13 @@ export type LocationContextType = {
   removeFavoriteLocation: (location: LocationProps) => void;
 };
 
+export type ParameterContextType = {
+  parameters: string[];
+  selectedParameter: string;
+  setSelectedParameter: (parameter: string) => void;
+};
+
+
 export type PayloadProps = {
   name: string;
   value: number | string;

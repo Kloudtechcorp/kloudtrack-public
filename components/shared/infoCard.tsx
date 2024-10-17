@@ -11,6 +11,8 @@ import {
 import { HelpCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 
+import { useParameterContext } from "@/context/parametersContext";
+
 const chartConfig = {
   desktop: {
     label: "Desktop",
@@ -32,7 +34,6 @@ interface InfoCardProps {
   title: string;
   description: string;
   explanation: string;
-  route: string;
   tooltip: string;
 }
 const infoCardData: InfoCardProps[] = [
@@ -40,28 +41,24 @@ const infoCardData: InfoCardProps[] = [
     title: "Temperature",
     description: "Increase in Temperature",
     explanation: "This is an explanation of temperature",
-    route: "temperature",
     tooltip: "This is a tooltip for temperature",
   },
   {
     title: "Heat Index",
     description: "Increase in Temperature",
     explanation: "This is an explanation of heat index",
-    route: "heatIndex",
     tooltip: "This is a tooltip for temperature",
   },
   {
     title: "UV",
     description: "Low (2)",
     explanation: "This is an explanation of UV",
-    route: "uvIndex",
     tooltip: "This is a tooltip for temperature",
   },
   {
     title: "Precipitation",
     description: "Rising slowly",
     explanation: "This is an explanation of precipitation",
-    route: "precipitation",
     tooltip: "This is a tooltip for temperature",
   },
 
@@ -69,34 +66,31 @@ const infoCardData: InfoCardProps[] = [
     title: "Wind",
     description: "Force: 5 (Fresh Breeze)",
     explanation: "This is an explanation of wind",
-    route: "wind",
     tooltip: "This is a tooltip for temperature",
   },
   {
-    title: "Pressure",
+    title: "Air Pressure",
     description: "Rising slowly",
     explanation: "This is an explanation of pressure",
-    route: "airPressure",
     tooltip: "This is a tooltip for temperature",
   },
   {
     title: "Humidity",
     description: "Relatively Humid (50%)",
     explanation: "This is an explanation of humidity",
-    route: "humidity",
     tooltip: "This is a tooltip for temperature",
   },
   {
     title: "Cloud Cover",
     description: "Mostly Clear (32%)",
     explanation: "This is an explanation of cloud cover",
-    route: "cloudCover",
     tooltip: "This is a tooltip for temperature",
   },
 ];
 
 const InfoCards = React.memo(() => {
   const router = useRouter();
+  const { setSelectedParameter } = useParameterContext();
 
   return (
     <div className="flex gap-3 px-1 py-32 flex-wrap w-full ">
@@ -105,7 +99,12 @@ const InfoCards = React.memo(() => {
           key={index}
           className="p-3 flex bg-[#545454] bg-opacity-5 border-transparent rounded-md w-[23%]"
         >
-          <div onClick={() => router.push(`graphs`)}>
+          <div
+            onClick={() => {
+              setSelectedParameter(card.title);
+              router.push("graphs");
+            }}
+          >
             <div className="flex flex-col justify-center gap-2 w-full">
               <div className="flex items-center gap-2">
                 <CardTitle>{card.title}</CardTitle>

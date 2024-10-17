@@ -1,14 +1,13 @@
 "use client";
 
-import React, { useState } from "react";
 import { XAxis, YAxis, CartesianGrid, Tooltip, Area, Bar } from "recharts";
-import { useParams } from "next/navigation";
 import OptionSelector from "@/components/ui/optionSelector";
 import { ChartConfig, ChartContainer } from "@/components/ui/chart";
 import { AreaChart, BarChart } from "recharts";
 import { Card } from "@/components/ui/card";
 import { TooltipProps } from "@/lib/types";
 import { dummyData } from "@/lib/objects/arrays";
+import { useParameterContext } from "@/context/parametersContext";
 
 const sliceDetails = (repeat: number, value: string) => {
   return value;
@@ -28,7 +27,6 @@ const CustomTooltip = ({ payload, label }: TooltipProps) => {
   return null;
 };
 
-// Chart config, you can update colors or styles here
 const chartConfig = {
   desktop: {
     label: "Desktop",
@@ -41,44 +39,31 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 const GraphPage = () => {
-  const { parameters } = useParams();
+  const { selectedParameter } = useParameterContext();
 
-  const initialParameter = Array.isArray(parameters)
-    ? parameters[0]
-    : parameters || "temperature";
-
-  // Keeping the original capitalization, then mapping to camelCase using dataKeyMap
-  const [selectedParameter, setSelectedParameter] = useState(initialParameter);
-
-  // Mapping the display name to the actual data keys
   const dataKeyMap: Record<string, string> = {
     Temperature: "temperature",
     Humidity: "humidity",
     "Heat Index": "heatIndex",
     Precipitation: "precipitation",
     "Air Pressure": "airPressure",
-    Wind: "windSpeed",
+    Wind: "wind",
     "UV Index": "uvIndex",
     "Cloud Cover": "cloudCover",
   };
 
-  // Defining which parameters should be displayed as bar charts
   const barChartParameters = ["UV Index", "Precipitation"];
 
   return (
     <div className="flex flex-col items-center justify-center">
       <div className="mx-auto container ">
         <div className="bg-[#545454] bg-opacity-5 rounded-md flex flex-col p-4 my-2 gap-3 ">
-          <OptionSelector
-            selectedParameter={selectedParameter}
-            onParameterChange={setSelectedParameter}
-          />
+          <OptionSelector />
           <div className="bg-[#FFFFFF] rounded-md ">
             <ChartContainer
               config={chartConfig}
               className="min-h-[150px] justify-center items-center "
             >
-              {/* Determine chart type based on selected parameter */}
               {barChartParameters.includes(selectedParameter) ? (
                 <BarChart
                   data={dummyData}

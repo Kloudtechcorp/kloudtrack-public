@@ -176,10 +176,7 @@ const GraphPage = () => {
     <div className="flex flex-col items-center justify-center">
       <div className="mx-auto container ">
         <div className="bg-[#545454] bg-opacity-5 rounded-md flex flex-col p-4 my-2 gap-3 ">
-          <OptionSelector
-            selectedParameter={selectedParameter}
-            onParameterChange={setSelectedParameter}
-          />
+          <OptionSelector />
           <div className="bg-[#FFFFFF] rounded-md ">
             <ChartContainer
               config={chartConfig}

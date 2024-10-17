@@ -2,38 +2,23 @@
 
 import React from "react";
 import { Card } from "./card";
+import { useParameterContext } from "@/context/parametersContext";
+import { parametersArray } from "@/lib/objects/arrays";
 
-interface OptionSelectorProps {
-  selectedParameter: string;
-  onParameterChange: (parameter: string) => void;
-}
-
-const OptionSelector: React.FC<OptionSelectorProps> = ({
-  selectedParameter,
-  onParameterChange,
-}) => {
-  const parameters = [
-    "Temperature",
-    "Humidity",
-    "Heat Index",
-    "Precipitation",
-    "Air Pressure",
-    "Wind",
-    "UV Index",
-    "Cloud Cover",
-  ];
+const OptionSelector = () => {
+  const { selectedParameter, setSelectedParameter } = useParameterContext();
 
   return (
-    <div className="w-full flex flex-wrap  gap-3 font-medium justify-start">
-      {parameters.map((param) => (
+    <div className="w-full flex flex-wrap gap-3 font-medium justify-start">
+      {parametersArray.map((param) => (
         <Card
           key={param}
-          className={`p-2 rounded-md transition-colors cursor-pointer ${
-            selectedParameter === param
-              ? "bg-[#FBD008] font-bold"
-              : "border-transparent"
+          className={`p-2 rounded-md transition-colors cursor-pointer border-transparent ${
+            selectedParameter === param ? "bg-[#FBD008] font-bold" : ""
           }`}
-          onClick={() => onParameterChange(param)}
+          onClick={() => {
+            setSelectedParameter(param);
+          }}
         >
           {param.charAt(0).toUpperCase() + param.slice(1)}
         </Card>
