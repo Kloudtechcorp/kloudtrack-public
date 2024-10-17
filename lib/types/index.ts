@@ -13,6 +13,18 @@ export type LocationContextType = {
   favoriteLocations: LocationProps[];
   addFavoriteLocation: (location: LocationProps) => void;
   removeFavoriteLocation: (location: LocationProps) => void;
+  currentWeather: WeatherData | null; // Add currentWeather here
+  setCurrentWeather: (weather: WeatherData) => void; // Add setCurrentWeather here
+};
+
+export type WeatherData = {
+  temperature: number;
+  feelsLike: number;
+  uvIndex: number;
+  windSpeed: number;
+  visibility: number;
+  humidity: number;
+  skyCondition: string;
 };
 
 export type ParameterContextType = {
@@ -20,7 +32,6 @@ export type ParameterContextType = {
   selectedParameter: string;
   setSelectedParameter: (parameter: string) => void;
 };
-
 
 export type PayloadProps = {
   name: string;

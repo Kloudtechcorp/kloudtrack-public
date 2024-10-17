@@ -17,9 +17,6 @@ const CurrentWeather = () => {
 
   return (
     <div className="">
-      {/* <h2>{locationWeather.location}</h2>
-      <p>Area: {locationWeather.area}</p> */}
-
       <div className="flex flex-col">
         <span className="font-medium text-lg">Current Weather</span>
         <span className="font-medium italic text-5xl">

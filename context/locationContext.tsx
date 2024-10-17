@@ -1,17 +1,18 @@
 "use client";
+
 import {
+  useState,
+  useEffect,
   createContext,
   useContext,
-  useState,
   ReactNode,
-  useEffect,
 } from "react";
 import {
   locationArray,
   dailySuggestionArray,
   dailyActivityArray,
 } from "@/lib/objects/arrays";
-import { LocationContextType, LocationProps } from "@/lib/types";
+import { LocationContextType, LocationProps, WeatherData } from "@/lib/types";
 
 const LocationContext = createContext<LocationContextType | undefined>(
   undefined
@@ -21,6 +22,10 @@ export const LocationProvider = ({ children }: { children: ReactNode }) => {
   const [locationData] = useState(locationArray);
   const [suggestions] = useState(dailySuggestionArray);
   const [activities] = useState(dailyActivityArray);
+
+  const [currentWeather, setCurrentWeather] = useState<WeatherData | null>(
+    null
+  );
 
   const [selectedLocation, setSelectedLocation] = useState<
     LocationContextType["selectedLocation"]
@@ -52,14 +57,33 @@ export const LocationProvider = ({ children }: { children: ReactNode }) => {
     );
   };
 
-  useEffect(() => {
-    if (locationData.length > 0 && !selectedLocation) {
-      setSelectedLocation({
-        location: locationData[0].location,
-        area: locationData[0].area,
-      });
+  const fetchWeatherData = (location: string) => {
+    console.log(`Fetching weather data for: ${location}`);
+
+    const locationData = locationArray.find((loc) => loc.location === location);
+
+    if (locationData) {
+      const weatherData: WeatherData = {
+        temperature: locationData.temperature,
+        feelsLike: locationData.heatIndex,
+        uvIndex: locationData.uvIndex,
+        windSpeed: locationData.windSpeed,
+        visibility: 10,
+        humidity: locationData.humidity,
+        skyCondition: locationData.weather,
+      };
+
+      setCurrentWeather(weatherData);
+    } else {
+      console.error("Location not found in the locationArray.");
     }
-  }, [locationData, selectedLocation]);
+  };
+
+  useEffect(() => {
+    if (selectedLocation) {
+      fetchWeatherData(selectedLocation.location);
+    }
+  }, [selectedLocation]);
 
   return (
     <LocationContext.Provider
@@ -72,6 +96,8 @@ export const LocationProvider = ({ children }: { children: ReactNode }) => {
         favoriteLocations,
         addFavoriteLocation,
         removeFavoriteLocation,
+        currentWeather,
+        setCurrentWeather,
       }}
     >
       {children}

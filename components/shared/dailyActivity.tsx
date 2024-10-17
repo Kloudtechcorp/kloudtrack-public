@@ -1,50 +1,67 @@
 import React from "react";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import Image from "next/image";
-import { dailyActivityArray } from "@/lib/objects/arrays";
+import { useLocationContext } from "@/context/locationContext";
+import { getActivityRecommendation } from "@/context/getActivity";
 
 const DailyActivity = () => {
-  if (!dailyActivityArray || dailyActivityArray.length === 0) {
+  const { activities, currentWeather } = useLocationContext();
+
+  if (!activities || activities.length === 0) {
     return <div>No activities available.</div>;
   }
 
   return (
-    <div className="flex gap-2 px-1 flex-col w-[22rem] ">
-      {dailyActivityArray.map((card, index) => (
-        <Card
-          key={index}
-          className="p-3 px-4 flex gap-3 bg-[#FBFBFB] bg-opacity-50 border-transparent rounded-md w-full"
-        >
-          <div className="flex items-start">
-            <Image
-              src={card.imageSrc}
-              alt={card.altText}
-              width={40}
-              height={40}
-            />
-          </div>
-          <div className="flex flex-col justify-center pr-3">
-            <CardTitle>{card.title}</CardTitle>
+    <div className="flex gap-2 px-1 flex-col w-[22rem]">
+      {activities.map((card, index) => {
+        const recommendation = getActivityRecommendation(
+          card.title,
+          currentWeather
+        );
 
-            <div className="flex justify-start items-center gap-1">
-              <span
-                className={`border-4 rounded h-2 flex ${
-                  card.color === "green-500"
-                    ? "border-green-500"
-                    : card.color === "yellow-500"
-                    ? "border-yellow-500"
-                    : card.color === "red-500"
-                    ? "border-red-500"
-                    : "border-gray-500"
-                }`}
-              ></span>
-              <CardDescription className="text-black">
-                {card.description}
-              </CardDescription>
+        return (
+          <Card
+            key={index}
+            className="p-3 px-4 flex gap-3 bg-[#FBFBFB] bg-opacity-50 border-transparent rounded-md w-full"
+          >
+            <div className="flex items-start">
+              <div className="w-10 h-10 rounded-full overflow-hidden">
+                <Image
+                  src={card.imageSrc}
+                  alt={card.altText}
+                  width={40}
+                  height={40}
+                  className="object-cover w-full h-full"
+                />
+              </div>
             </div>
-          </div>
-        </Card>
-      ))}
+            <div className="flex flex-col">
+              <CardTitle>{card.title}</CardTitle>
+
+              <div className="flex flex-row items-center gap-1">
+                <span
+                  className={`border-4 rounded h-2 flex ${
+                    recommendation.color === "green-500"
+                      ? "border-green-500"
+                      : recommendation.color === "yellow-500"
+                      ? "border-yellow-500"
+                      : recommendation.color === "red-500"
+                      ? "border-red-500"
+                      : recommendation.color === "orange-500"
+                      ? "border-orange-500"
+                      : recommendation.color === "purple-500"
+                      ? "border-purple-500"
+                      : "border-transparent"
+                  }`}
+                />
+                <CardDescription className="text-xs font-normal text-[#333]">
+                  {recommendation.description}
+                </CardDescription>
+              </div>
+            </div>
+          </Card>
+        );
+      })}
     </div>
   );
 };
