@@ -50,7 +50,7 @@ const infoCardData: InfoCardProps[] = [
     tooltip: "This is a tooltip for temperature",
   },
   {
-    title: "UV",
+    title: "UV Index",
     description: "Low (2)",
     explanation: "This is an explanation of UV",
     tooltip: "This is a tooltip for temperature",
