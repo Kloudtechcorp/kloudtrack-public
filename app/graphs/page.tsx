@@ -55,7 +55,7 @@ const GraphPage = () => {
   const barChartParameters = ["UV Index", "Precipitation"];
 
   return (
-    <div className="flex flex-col items-center justify-center">
+    <main className="flex flex-col items-center justify-center min-h-screen">
       <div className="mx-auto container ">
         <div className="bg-[#545454] bg-opacity-5 rounded-md flex flex-col p-4 my-2 gap-3 ">
           <OptionSelector />
@@ -119,7 +119,7 @@ const GraphPage = () => {
           </div>
         </div>
       </div>
-    </div>
+    </main>
   );
 };
 

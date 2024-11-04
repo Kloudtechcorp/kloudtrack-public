@@ -13,8 +13,8 @@ export type LocationContextType = {
   favoriteLocations: LocationProps[];
   addFavoriteLocation: (location: LocationProps) => void;
   removeFavoriteLocation: (location: LocationProps) => void;
-  currentWeather: WeatherData | null; // Add currentWeather here
-  setCurrentWeather: (weather: WeatherData) => void; // Add setCurrentWeather here
+  currentWeather: WeatherData | null;
+  setCurrentWeather: (weather: WeatherData) => void;
 };
 
 export type WeatherData = {
@@ -62,49 +62,11 @@ export type DailyCardProps = {
   color: string;
 };
 
-// export type WeatherDataProps = {
-//   stationId: number;
-//   location: string;
-//   area: string;
-//   temperature: number;
-//   heatIndex: number;
-//   humidity: number;
-//   precipitation: number;
-//   gust: number;
-//   airPressure: number;
-//   windSpeed: number;
-//   windDirection: number;
-//   uvIndex: number;
-//   irradiance: number;
-//   lux: number;
-//   weather: string;
-// };
+export type TerminologyCardProps = {
+  title: string;
+  description: string;
+};
 
-// export type CurrentWeatherProps = {
-//   currentWeather: WeatherDataProps | null;
-// };
-
-// export type ComboBoxProps = {
-//   selectedLocations: string[];
-//   setSelectedLocations: React.Dispatch<React.SetStateAction<string[]>>;
-//   setCurrentWeather: React.Dispatch<
-//     React.SetStateAction<WeatherDataProps | null>
-//   >;
-//   locationData: { location: string; area: string }[];
-//   suggestions: string[];
-//   activities: string[];
-// };
-
-// export type HeaderProps = {
-//   selectedLocations: string[];
-//   setSelectedLocations: React.Dispatch<React.SetStateAction<string[]>>;
-//   setCurrentWeather: React.Dispatch<
-//     React.SetStateAction<WeatherDataProps | null>
-//   >;
-// };
-
-// export type SelectedLocationsProps = {
-//   locations: string[];
-//   setCurrentWeather: Dispatch<SetStateAction<WeatherDataProps | null>>;
-//   currentWeather: WeatherDataProps | null;
-// };
+export type TerminologyCardsProps = {
+  dataArray: { name: string; description: string }[];
+};

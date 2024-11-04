@@ -41,50 +41,58 @@ const infoCardData: InfoCardProps[] = [
     title: "Temperature",
     description: "Increase in Temperature",
     explanation: "This is an explanation of temperature",
-    tooltip: "This is a tooltip for temperature",
+    tooltip:
+      "Ang temperature or temperature ay ang sukatan ng init o lamig sa paligid. Ang temperatura ay nagtatakda kung kailangan natin ng magaan o makapal na damit.",
   },
   {
     title: "Heat Index",
     description: "Increase in Temperature",
     explanation: "This is an explanation of heat index",
-    tooltip: "This is a tooltip for temperature",
+    tooltip:
+      "Ito ang indikasyon ng kung gaano kalakas ang pakiramdam ng init, isinasaalang-alang ang temperatura at halumigmig. Sa mataas na heat index, pakiramdam mo ay parang nasa ilalim ka ng mainit na araw.",
   },
   {
     title: "UV Index",
     description: "Low (2)",
     explanation: "This is an explanation of UV",
-    tooltip: "This is a tooltip for temperature",
+    tooltip:
+      "Ang sukatan ng lakas ng ultraviolet (UV) rays mula sa araw. Kapag mataas ang UV Index, mahalaga ang paggamit ng sunscreen upang protektahan ang iyong balat mula sa sunburn at iba pang pinsala.",
   },
   {
     title: "Precipitation",
     description: "Rising slowly",
     explanation: "This is an explanation of precipitation",
-    tooltip: "This is a tooltip for temperature",
+    tooltip:
+      "Ito ay tumutukoy sa pag-ulan, niyebe, o yelo na bumabagsak mula sa langit. Ang impormasyon tungkol sa precipitasyon ay nagbibigay ng ideya kung kailangan mong magdala ng payong o maghanda para sa mas malamig na kondisyon.",
   },
 
   {
     title: "Wind",
     description: "Force: 5 (Fresh Breeze)",
     explanation: "This is an explanation of wind",
-    tooltip: "This is a tooltip for temperature",
+    tooltip:
+      "Ang paggalaw ng hangin sa kapaligiran. Ang lakas at direksyon ng hangin ay maaaring makaapekto sa pakiramdam ng temperatura at sa mga kondisyon sa labas.",
   },
   {
     title: "Air Pressure",
     description: "Rising slowly",
     explanation: "This is an explanation of pressure",
-    tooltip: "This is a tooltip for temperature",
+    tooltip:
+      "Ang puwersa na inilalapat ng hangin sa ibabaw ng lupa. Ang pagbabago sa presyon ng hangin ay maaaring magdulot ng mga pagbabago sa panahon at kalagayan ng ating pakiramdam.",
   },
   {
     title: "Humidity",
     description: "Relatively Humid (50%)",
     explanation: "This is an explanation of humidity",
-    tooltip: "This is a tooltip for temperature",
+    tooltip:
+      "Ang dami ng moisture sa hangin. Ang mataas na halumigmig ay nagbibigay ng pakiramdam ng init, habang ang mababang halumigmig ay mas tuyo at komportable.",
   },
   {
     title: "Cloud Cover",
     description: "Mostly Clear (32%)",
     explanation: "This is an explanation of cloud cover",
-    tooltip: "This is a tooltip for temperature",
+    tooltip:
+      "Ang antas ng pagkakabara ng mga ulap sa langit. Ang impormasyon tungkol sa takip-ulap ay makakatulong sa iyo na malaman kung kailangan mong magdala ng payong o magplano para sa mga aktibidad sa labas.",
   },
 ];
 
@@ -113,7 +121,7 @@ const InfoCards = React.memo(() => {
                     <TooltipTrigger>
                       <HelpCircle height={20} width={20} fill="#FDB008" />
                     </TooltipTrigger>
-                    <TooltipContent>
+                    <TooltipContent className="min-w-40 max-w-64 text-wrap">
                       <p>{card.tooltip}</p>
                     </TooltipContent>
                   </Tooltip>

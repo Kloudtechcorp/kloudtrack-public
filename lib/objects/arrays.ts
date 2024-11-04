@@ -472,3 +472,139 @@ export const dummyData = [
     cloudCover: 80,
   },
 ];
+
+export const commonArray = [
+  {
+    name: "Temperature",
+    description:
+      "Temperature tells us how hot or cold the air is. It's what you feel when you step outside. Higher temperatures mean warmer days, and lower ones mean cooler days.",
+    tagalog:
+      "Temperature tells us how hot or cold the air is. It's what you feel when you step outside. Higher temperatures mean warmer days, and lower ones mean cooler days.",
+  },
+  {
+    name: "Heat Index",
+    description:
+      "The heat index measures how hot it feels when you add humidity to the actual air temperature. Even if the temperature isn't very high, high humidity can make it feel much hotter",
+  },
+  {
+    name: "UV",
+    description:
+      "The UV index tells you how strong the sun's rays are. The higher the number, the more likely you are to get sunburned if you don't protect your skin.",
+  },
+  {
+    name: "Precipitation",
+    description:
+      "Precipitation is any kind of water that falls from the sky, like rain or snow. In the Philippines, we mostly talk about rainfall, which is measured to tell us how much rain has fallen.",
+  },
+  {
+    name: "Wind",
+    description:
+      "Wind is moving air that we feel as a gentle breeze or strong gusts. It can cool us down on hot days or make things feel colder during storms",
+  },
+  {
+    name: "Pressure",
+    description:
+      " Atmospheric pressure is the weight of the air above us. High pressure usually means good weather, while low pressure often brings clouds and rain.",
+  },
+  {
+    name: "Humidity",
+    description:
+      "Humidity is how much moisture is in the air. When humidity is high, it feels warmer and sticky. When it’s low, the air feels drier.",
+  },
+  {
+    name: "Cloud Cover",
+    description:
+      "Cloud cover shows how much of the sky is covered by clouds. More clouds can mean cooler weather or rain, while fewer clouds mean a sunnier, warmer day",
+  },
+];
+
+export const rainfallWarningArray = [
+  {
+    name: "Very Light Rains",
+    description:
+      "Scattered drops that do not completely wet an exposed surface regardless of duration.",
+  },
+  {
+    name: "Light Rains",
+    description:
+      "The rate of fall is from trace to 2.5 mm per hour. Individual drops are easily identified and puddles(small muddy pools) form slowly. Small streams may flow in gutters.",
+  },
+  {
+    name: "Moderate Rains",
+    description:
+      "The rate of fall is between 2.5 mm to 7.5 mm per hour. Puddles rapidly form and down pipes flowing freely.",
+  },
+  {
+    name: "Heavy Rains",
+    description:
+      "The rate of fall is greater than 7.5 mm per hour. If the sky is overcast, there is a continuous precipitation. May cause roaring noise on roofs.",
+  },
+  {
+    name: "Occasional Rains",
+    description: "Not frequent but is recurrent precipitation.",
+  },
+  {
+    name: "Widespread Rains",
+    description: "Precipitation occuring extensively throughout an area.",
+  },
+  {
+    name: "Frequent Rains",
+    description:
+      "Precipitation occuring regularly and often throughout the time duration.",
+  },
+  {
+    name: "Intermittent  Rains",
+    description: "Precipitation which ceases at times and re-occur again.",
+  },
+];
+
+export const floodWarningArray = [
+  {
+    name: "Flood Warning",
+    description:
+      "Indicates that flooding is occurring or expected in specific areas. People should be prepared to take action.",
+  },
+  {
+    name: "Flood Advisory",
+    description:
+      "A less serious warning that informs the public about the possibility of flooding. It means that heavy rain is happening or expected, which could lead to flooding.",
+  },
+  {
+    name: "Flash Flood Warning",
+    description:
+      "Indicates that flash floods are imminent or occurring. This means very fast and sudden flooding, often in low-lying areas or near rivers.",
+  },
+  {
+    name: "Flood Watch",
+    description:
+      "A notice that flooding is possible but not yet occurring. It serves as a heads-up to be alert and ready for possible evacuation.",
+  },
+];
+
+export const tropicalCycloneArray = [
+  {
+    name: "Tropical Depression (TD)",
+    description:
+      "A storm with winds up to 62 kilometers per hour (kph) or less than 34 knots. It’s the weakest type of tropical storm.",
+  },
+  {
+    name: "Tropical Storm (TS)",
+    description:
+      "A storm with winds between 62 and 88 kph (34 to 47 knots). It’s stronger than a tropical depression but not as strong as a severe tropical storm.",
+  },
+  {
+    name: "Severe Tropical Storm (STS)",
+    description:
+      "A storm with winds from 87 to 117 kph (48 to 63 knots). This is a stronger type of tropical storm.",
+  },
+  {
+    name: "Typhoon (TY)",
+    description:
+      "A storm with winds between 118 and 184 kph (64 to 99 knots). It’s considered a major storm.",
+  },
+  {
+    name: "Super Typhoon (STY)",
+    description:
+      "A very powerful storm with winds over 185 kph (more than 100 knots). This is the strongest type of tropical storm.",
+  },
+];

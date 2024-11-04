@@ -4,6 +4,12 @@ import Image from "next/image";
 import { ComboBox } from "./comboBox";
 import { Switch } from "@/components/ui/switch";
 import { useRouter } from "next/navigation";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const Header = () => {
   const router = useRouter();
@@ -24,9 +30,29 @@ const Header = () => {
             <ComboBox />
           </span>
 
-          <span>
-            <Switch />
-          </span>
+          <div className="flex gap-3">
+            <span>
+              <Switch />
+            </span>
+
+            <span onClick={() => router.push("/terminologies")}>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <Image
+                      src="/assets/icons/terminologies.svg"
+                      alt="Logo"
+                      width={52}
+                      height={52}
+                    />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Weather Terminologies</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </span>
+          </div>
         </div>
       </div>
     </div>

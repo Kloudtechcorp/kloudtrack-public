@@ -14,7 +14,7 @@ const DailyCards = () => {
         <div
           className={`px-4 py-2 font-bold rounded-l-lg cursor-pointer transition-all duration-300 ease-in-out transform ${
             activeTab === "suggestions"
-              ? "bg-[#FBD008] scale-105 shadow-lg"
+              ? "bg-[#FBD008] scale-105"
               : "bg-white hover:bg-yellow-100 scale-100"
           }`}
           onClick={() => setActiveTab("suggestions")}
@@ -25,7 +25,7 @@ const DailyCards = () => {
         <div
           className={`px-4 py-2 font-bold rounded-r-lg cursor-pointer transition-all duration-300 ease-in-out transform ${
             activeTab === "activities"
-              ? "bg-[#FBD008] scale-105 shadow-lg"
+              ? "bg-[#FBD008] scale-105 "
               : "bg-white hover:bg-yellow-100 scale-100"
           }`}
           onClick={() => setActiveTab("activities")}
