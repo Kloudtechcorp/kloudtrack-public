@@ -35,6 +35,7 @@ interface InfoCardProps {
   description: string;
   explanation: string;
   tooltip: string;
+  unit: string;
 }
 const infoCardData: InfoCardProps[] = [
   {
@@ -43,6 +44,7 @@ const infoCardData: InfoCardProps[] = [
     explanation: "This is an explanation of temperature",
     tooltip:
       "Ang temperature or temperature ay ang sukatan ng init o lamig sa paligid. Ang temperatura ay nagtatakda kung kailangan natin ng magaan o makapal na damit.",
+    unit: "°C",
   },
   {
     title: "Heat Index",
@@ -50,6 +52,7 @@ const infoCardData: InfoCardProps[] = [
     explanation: "This is an explanation of heat index",
     tooltip:
       "Ito ang indikasyon ng kung gaano kalakas ang pakiramdam ng init, isinasaalang-alang ang temperatura at halumigmig. Sa mataas na heat index, pakiramdam mo ay parang nasa ilalim ka ng mainit na araw.",
+    unit: "°C",
   },
   {
     title: "UV Index",
@@ -57,6 +60,7 @@ const infoCardData: InfoCardProps[] = [
     explanation: "This is an explanation of UV",
     tooltip:
       "Ang sukatan ng lakas ng ultraviolet (UV) rays mula sa araw. Kapag mataas ang UV Index, mahalaga ang paggamit ng sunscreen upang protektahan ang iyong balat mula sa sunburn at iba pang pinsala.",
+    unit: "°C",
   },
   {
     title: "Precipitation",
@@ -64,6 +68,7 @@ const infoCardData: InfoCardProps[] = [
     explanation: "This is an explanation of precipitation",
     tooltip:
       "Ito ay tumutukoy sa pag-ulan, niyebe, o yelo na bumabagsak mula sa langit. Ang impormasyon tungkol sa precipitasyon ay nagbibigay ng ideya kung kailangan mong magdala ng payong o maghanda para sa mas malamig na kondisyon.",
+    unit: "°C",
   },
 
   {
@@ -72,6 +77,7 @@ const infoCardData: InfoCardProps[] = [
     explanation: "This is an explanation of wind",
     tooltip:
       "Ang paggalaw ng hangin sa kapaligiran. Ang lakas at direksyon ng hangin ay maaaring makaapekto sa pakiramdam ng temperatura at sa mga kondisyon sa labas.",
+    unit: "°C",
   },
   {
     title: "Air Pressure",
@@ -79,6 +85,7 @@ const infoCardData: InfoCardProps[] = [
     explanation: "This is an explanation of pressure",
     tooltip:
       "Ang puwersa na inilalapat ng hangin sa ibabaw ng lupa. Ang pagbabago sa presyon ng hangin ay maaaring magdulot ng mga pagbabago sa panahon at kalagayan ng ating pakiramdam.",
+    unit: "°C",
   },
   {
     title: "Humidity",
@@ -86,6 +93,7 @@ const infoCardData: InfoCardProps[] = [
     explanation: "This is an explanation of humidity",
     tooltip:
       "Ang dami ng moisture sa hangin. Ang mataas na halumigmig ay nagbibigay ng pakiramdam ng init, habang ang mababang halumigmig ay mas tuyo at komportable.",
+    unit: "°C",
   },
   {
     title: "Cloud Cover",
@@ -93,6 +101,7 @@ const infoCardData: InfoCardProps[] = [
     explanation: "This is an explanation of cloud cover",
     tooltip:
       "Ang antas ng pagkakabara ng mga ulap sa langit. Ang impormasyon tungkol sa takip-ulap ay makakatulong sa iyo na malaman kung kailangan mong magdala ng payong o magplano para sa mga aktibidad sa labas.",
+    unit: "°C",
   },
 ];
 
@@ -136,35 +145,41 @@ const InfoCards = React.memo(() => {
                   <LineChart
                     accessibilityLayer
                     data={chartData}
-                    margin={{ top: 30, right: 10, bottom: 30, left: 10 }}
+                    margin={{ top: 30, right: 30, bottom: 30, left: 30 }}
                   >
                     <Line
                       dataKey="value"
                       type="monotone"
+                      stroke="#545454"
                       strokeWidth={4}
                       dot={(dotProps) => {
-                        const { index, cx, cy } = dotProps;
+                        const { index, cx, cy, payload } = dotProps;
+                        const isLastDot = index === chartData.length - 1;
 
-                        if (index > 0 && index < chartData.length - 1) {
-                          return (
+                        return (
+                          <g key={`dot-${index}`}>
                             <circle
-                              r={16}
-                              fill="var(--color-desktop)"
+                              r={isLastDot ? 12 : 8}
+                              fill={isLastDot ? "#fbd008" : "#545454"}
                               cx={cx}
                               cy={cy}
                             />
-                          );
-                        }
-                        return <></>;
+                            <text
+                              x={cx}
+                              y={isLastDot ? cy + 35 : cy + 25}
+                              textAnchor="middle"
+                              fontSize={isLastDot ? 26 : 12}
+                              fontWeight={isLastDot ? 600 : 500}
+                            >
+                              {payload.value}
+                              {card.unit}
+                            </text>
+                          </g>
+                        );
                       }}
                     />
                   </LineChart>
                 </ChartContainer>
-
-                <div className="flex justify-end font-medium text-5xl items-end px-4">
-                  30
-                  <span className="text-4xl">°C</span>
-                </div>
               </Card>
 
               <CardTitle>{card.description}</CardTitle>
