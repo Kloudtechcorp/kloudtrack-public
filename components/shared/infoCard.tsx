@@ -11,6 +11,9 @@ import {
 import { HelpCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 
+
+import Compass from "../graphs/compass";
+
 import { useParameterContext } from "@/context/parametersContext";
 
 const chartConfig = {
@@ -138,7 +141,7 @@ const InfoCards = React.memo(() => {
               </div>
 
               <Card className="p-6 shadow-none bg-[#545454] bg-opacity-10 border-none">
-                <ChartContainer
+                {/* <ChartContainer
                   config={chartConfig}
                   className="min-h-[150px] w-full flex justify-center items-center"
                 >
@@ -179,7 +182,9 @@ const InfoCards = React.memo(() => {
                       }}
                     />
                   </LineChart>
-                </ChartContainer>
+                </ChartContainer> */}
+
+              <Compass rotation={90} />
               </Card>
 
               <CardTitle>{card.description}</CardTitle>
