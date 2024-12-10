@@ -8,20 +8,28 @@ import Sun from "@/components/sun/sun";
 
 export default function Home() {
   return (
-    <div className="flex flex-col bg-gradient-to-b from-[#66CCFF] from-0% via-[#CCFFFF] via-75% to-[#FFFFFF] to-100% min-h-screen">
+    <div className="flex flex-col bg-gradient-to-tr from-[#f7f7f7] via-[#f7f7f7] via-10% to-[#35ade8] min-h-screen overflow-hidden relative">
       <div className="flex flex-col container mx-auto">
-        <div className="flex flex-row ">
-          <div className="w-[50%] ">
+        <div className="flex flex-row relative overflow-hidden">
+          <div className="w-full z-50">
             <SelectedLocation />
             <CurrentWeather />
             <DailyCard />
           </div>
-          <div className="w-[50%] flex justify-end p-12">
-            <Sun />
-          </div>
         </div>
 
         <InfoCard />
+        <div className="absolute top-0 right-0">
+          <div className="ball-1">
+            <div className="ball-2">
+              <div className="ball-3">
+                <div className="ball-4">
+                  <div className="ball-5"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
