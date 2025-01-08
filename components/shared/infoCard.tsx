@@ -25,9 +25,9 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 const chartData = [
-  { time: "3PM", value: 0 },
-  { time: "4PM", value: 50 },
-  { time: "5PM", value: 65 },
+  { time: "3PM", value: 26 },
+  { time: "4PM", value: 36 },
+  { time: "5PM", value: 28 },
 ];
 
 interface InfoCardProps {

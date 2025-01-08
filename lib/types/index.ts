@@ -5,9 +5,7 @@ import {
 } from "@/lib/objects/arrays";
 
 export type LocationContextType = {
-  locationData: typeof locationArray;
-  suggestions: typeof dailySuggestionArray;
-  activities: typeof dailyActivityArray;
+  locationData: StationData[];
   selectedLocation: LocationProps | null;
   setSelectedLocation: (location: LocationProps) => void;
   favoriteLocations: LocationProps[];
@@ -31,7 +29,7 @@ export type ParameterContextType = {
   parameters: string[];
   selectedParameter: string;
   setSelectedParameter: (parameter: string) => void;
-};
+}; 
 
 export type PayloadProps = {
   name: string;
@@ -69,4 +67,32 @@ export type TerminologyCardProps = {
 
 export type TerminologyCardsProps = {
   dataArray: { name: string; description: string }[];
+};
+
+export type StationData = {
+  id: string;
+  name: string;
+  type: string;
+  latitude: number;
+  longitude: number;
+  barangay: string;
+  municipality: string;
+  province: string;
+  region: string;
+  image: string;
+  data: {
+    recordedAt: string; // ISO timestamp
+    temperature: number;
+    humidity: number;
+    pressure: number;
+    heatIndex: number;
+    light: number;
+    uvIntensity: number | null;
+    windDirection: number;
+    windSpeed: number;
+    precipitation: number;
+    gust: number;
+    batteryVoltage: number | null;
+    uvIndex: number;
+  };
 };
