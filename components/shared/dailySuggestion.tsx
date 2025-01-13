@@ -4,10 +4,13 @@ import Image from "next/image";
 import { useLocationContext } from "@/context/locationContext";
 import { dailySuggestionArray } from "@/lib/objects/arrays";
 import { getSuggestion } from "@/context/getSuggestion";
+import { StationData } from "@/lib/types";
 
-const DailySuggestion = () => {
-  const { currentWeather } = useLocationContext();
-
+const DailySuggestion = ({
+  currentWeather,
+}: {
+  currentWeather: StationData;
+}) => {
   if (!dailySuggestionArray || dailySuggestionArray.length === 0) {
     return <div>No activities available.</div>;
   }

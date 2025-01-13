@@ -2,8 +2,9 @@
 import React, { useState } from "react";
 import DailyActivities from "./dailyActivity";
 import DailySuggestions from "./dailySuggestion";
+import { StationData } from "@/lib/types";
 
-const DailyCards = () => {
+const DailyCards = ({ currentWeather }: { currentWeather: StationData }) => {
   const [activeTab, setActiveTab] = useState<"suggestions" | "activities">(
     "suggestions"
   );
@@ -33,9 +34,12 @@ const DailyCards = () => {
           Daily Activities
         </div>
       </div>
-
-      {activeTab === "suggestions" && <DailySuggestions />}
-      {activeTab === "activities" && <DailyActivities />}
+      {activeTab === "suggestions" && (
+        <DailySuggestions currentWeather={currentWeather} />
+      )}
+      {activeTab === "activities" && (
+        <DailyActivities currentWeather={currentWeather} />
+      )}
     </div>
   );
 };

@@ -3,17 +3,17 @@ import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import Image from "next/image";
 import { useLocationContext } from "@/context/locationContext";
 import { getActivityRecommendation } from "@/context/getActivity";
+import { StationData } from "@/lib/types";
+import { dailyActivityArray } from "@/lib/objects/arrays";
 
-const DailyActivity = () => {
-  const { activities, currentWeather } = useLocationContext();
-
-  if (!activities || activities.length === 0) {
+const DailyActivity = ({ currentWeather }: { currentWeather: StationData }) => {
+  if (!dailyActivityArray || dailyActivityArray.length === 0) {
     return <div>No activities available.</div>;
   }
 
   return (
     <div className="flex gap-2 px-1 flex-col w-[22rem]">
-      {activities.map((card, index) => {
+      {dailyActivityArray.map((card, index) => {
         const recommendation = getActivityRecommendation(
           card.title,
           currentWeather

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { MapPin, Navigation } from "lucide-react";
+import { MapPin, Navigation, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,17 +15,38 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useLocationContext } from "@/context/locationContext";
 import { useAWSStations } from "@/context/station";
 
 export function ComboBox() {
-  const { stations, loading, error } = useAWSStations();
-
+  const {
+    stations,
+    loading,
+    error,
+    selectedStation,
+    setSelectedStation,
+    favoriteLocations,
+    addFavoriteLocation,
+    removeFavoriteLocation,
+  } = useAWSStations();
   const [open, setOpen] = React.useState(false);
-  const [value, setValue] = React.useState("");
+
+  const handleSelect = (currentValue: string) => {
+    setSelectedStation(currentValue);
+    setOpen(false);
+  };
+
+  const onFavoriteClick = (location: { id: string }) => {
+    const isAlreadyFavorite = favoriteLocations.includes(location.id);
+    if (isAlreadyFavorite) {
+      removeFavoriteLocation(location.id);
+    } else {
+      addFavoriteLocation(location.id);
+    }
+  };
 
   if (loading || !stations) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -37,9 +58,10 @@ export function ComboBox() {
         >
           <MapPin className="mr-2 size-5 shrink-0 " />
           <span className="font-bold text-xl">
-            {value
+            {selectedStation
               ? `${
-                  stations.find((location) => location.id === value)?.name
+                  stations.find((location) => location.id === selectedStation)
+                    ?.name
                 } station`
               : "Select Station..."}
           </span>
@@ -55,39 +77,42 @@ export function ComboBox() {
                 <CommandItem
                   key={location.id}
                   value={location.id}
-                  onSelect={(currentValue) => {
-                    setValue(currentValue === value ? "" : currentValue);
-                    setOpen(false);
-                  }}
-                  className="flex items-center justify-between"
+                  onSelect={handleSelect}
+                  className="flex items-center justify-between px-4"
                 >
                   <div className="flex items-center">
-                    {/* <MapPin
+                    <Star
+                      fill={
+                        favoriteLocations.includes(location.id)
+                          ? "yellow"
+                          : "none"
+                      }
                       className={cn(
                         "mr-2 h-4 w-4 cursor-pointer",
-                        favoriteLocations.some(
-                          (favLocation) => favLocation.location === location.id
-                        )
-                          ? "text-black"
+                        favoriteLocations.includes(location.id)
+                          ? "text-yellow-500"
                           : "text-gray-500"
                       )}
                       onClick={(e) => {
                         e.stopPropagation();
                         onFavoriteClick(location);
                       }}
-                    /> */}
-                    <div className="flex flex-col px-2">
-                      <span className="font-bold">{location.name}</span>
-                      <span>
-                        {location.barangay}, {location.municipality}
-                      </span>
+                    />
+                    <div className="flex items-center">
+                      <div className="flex flex-col px-2">
+                        <span className="font-bold">{location.name}</span>
+                        <span>
+                          {location.barangay}, {location.municipality}
+                        </span>
+                      </div>
                     </div>
                   </div>
-
                   <Navigation
                     className={cn(
                       "h-4 w-4",
-                      location?.id === location.id ? "opacity-100" : "opacity-0"
+                      location.id === selectedStation
+                        ? "opacity-100"
+                        : "opacity-0"
                     )}
                   />
                 </CommandItem>

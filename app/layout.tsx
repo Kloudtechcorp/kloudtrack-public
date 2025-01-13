@@ -6,6 +6,7 @@ import "./globals.css";
 import { Montserrat } from "next/font/google";
 import Header from "@/components/shared/header";
 import { AWSStationsProvider } from "@/context/station";
+import { Toaster } from "@/components/ui/toaster";
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 
@@ -27,6 +28,7 @@ export default function RootLayout({
           <ParameterProvider>
             <Header />
             {children}
+            <Toaster />
           </ParameterProvider>
         </AWSStationsProvider>
       </body>
