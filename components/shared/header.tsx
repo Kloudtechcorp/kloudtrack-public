@@ -15,7 +15,7 @@ const Header = () => {
   const router = useRouter();
 
   return (
-    <div className="w-full bg-gray-100 bg-opacity-85 h-16 flex text-center">
+    <div className="w-full bg-inherit backdrop-brightness-110 backdrop-blur-sm z-50 h-16 flex text-center sticky top-0">
       <div className="items-center flex w-full flex-row justify-start container mx-auto">
         <div className="flex w-full items-center">
           <span className="cursor-pointer" onClick={() => router.push("/")}>

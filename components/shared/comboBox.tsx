@@ -16,6 +16,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useAWSStations } from "@/context/station";
+import { motion } from "motion/react";
 
 export function ComboBox() {
   const {
@@ -78,26 +79,44 @@ export function ComboBox() {
                   key={location.id}
                   value={location.id}
                   onSelect={handleSelect}
-                  className="flex items-center justify-between px-4"
+                  className="flex items-center justify-between px-2"
                 >
                   <div className="flex items-center">
-                    <Star
-                      fill={
-                        favoriteLocations.includes(location.id)
-                          ? "yellow"
-                          : "none"
-                      }
-                      className={cn(
-                        "mr-2 h-4 w-4 cursor-pointer",
-                        favoriteLocations.includes(location.id)
-                          ? "text-yellow-500"
-                          : "text-gray-500"
-                      )}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onFavoriteClick(location);
+                    <motion.div
+                      whileTap={{ scale: 0.8 }}
+                      animate={{
+                        scale: favoriteLocations.includes(location.id)
+                          ? 1.2
+                          : 1,
+                        color: favoriteLocations.includes(location.id)
+                          ? "#FFD700"
+                          : "#6B7280",
                       }}
-                    />
+                      transition={{
+                        type: "spring",
+                        stiffness: 500,
+                        damping: 20,
+                      }}
+                      className="flex items-center justify-center px-2"
+                    >
+                      <Star
+                        fill={
+                          favoriteLocations.includes(location.id)
+                            ? "yellow"
+                            : "none"
+                        }
+                        className={cn(
+                          "h-4 w-4 cursor-pointer",
+                          favoriteLocations.includes(location.id)
+                            ? "text-yellow-500"
+                            : "text-gray-500"
+                        )}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onFavoriteClick(location);
+                        }}
+                      />
+                    </motion.div>
                     <div className="flex items-center">
                       <div className="flex flex-col px-2">
                         <span className="font-bold">{location.name}</span>
