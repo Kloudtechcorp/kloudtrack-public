@@ -128,7 +128,7 @@ const InfoCards = React.memo(() => {
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger>
-                      <HelpCircle height={20} width={20} fill="#FDB008" />
+                      <HelpCircle height={20} width={20} />
                     </TooltipTrigger>
                     <TooltipContent className="min-w-40 max-w-64 text-wrap">
                       <p>{card.tooltip}</p>

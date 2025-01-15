@@ -25,8 +25,7 @@ const SelectedLocation = () => {
   if (error) return <div>Error: {error}</div>;
 
   const handleSelect = (currentValue: string) => {
-    const newValue = currentValue === selectedStation ? "" : currentValue;
-    setSelectedStation(newValue);
+    setSelectedStation(currentValue);
   };
 
   return (

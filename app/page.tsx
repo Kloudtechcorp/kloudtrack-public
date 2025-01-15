@@ -1,5 +1,6 @@
 "use client";
 
+import Thermometer from "@/components/graphic/thermometer";
 import CurrentWeather from "@/components/shared/currentWeather";
 import InfoCards from "@/components/shared/infoCard";
 import SelectedLocation from "@/components/shared/selectedLocation";
