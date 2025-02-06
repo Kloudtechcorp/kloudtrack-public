@@ -16,7 +16,6 @@ export default function Home() {
           <CurrentWeather onWeatherUpdate={setWeatherParams} />
         </div>
       </div>
-      <InfoCards />
     </div>
   );
 }

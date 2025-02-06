@@ -32,66 +32,68 @@ export function formatDateString(
 
 export const getGradientStyles = ({
   heatIndex,
-  temperature,
-  humidity,
-  pressure,
+  recordedAt = "2025-01-16T08:53:52.000Z",
 }: {
   heatIndex: number;
-  temperature: number;
-  humidity: number;
-  pressure: number;
+  recordedAt?: string;
 }): { background: string } => {
-  if (heatIndex > 40) {
+  const isNight = (() => {
+    const date = new Date(recordedAt);
+    const hour = date.getUTCHours();
+    return hour >= 18 || hour < 6;
+  })();
+
+  if (heatIndex >= 52) {
     return {
-      background: "linear-gradient(to top right, #dc2626, #f97316, #facc15)",
+      background: isNight
+        ? "linear-gradient(0deg, rgba(255,158,158,1) 0%, rgba(45,45,45,1) 100%)"
+        : "linear-gradient(45deg, rgba(255,255,255,1) 0%, rgba(255,158,158,1) 50%, rgba(255,93,63,1) 100%)",
     };
-  } else if (temperature > 30 && humidity > 80 && pressure < 1015) {
+  } else if (heatIndex >= 42 && heatIndex < 52) {
     return {
-      background: "linear-gradient(to top right, #f94144, #f7f7f7, #90be6d)",
+      background: isNight
+        ? "linear-gradient(0deg, rgba(255,206,158,1) 0%, rgba(45,45,45,1) 100%)"
+        : "linear-gradient(45deg, rgba(255,255,255,1) 0%, rgba(255,206,158,1) 50%, rgba(255,158,63,1) 100%)",
     };
-  } else if (temperature > 30 && humidity <= 80 && pressure > 1015) {
+  } else if (heatIndex > 32 && heatIndex < 42) {
     return {
-      background: "linear-gradient(to top right, #f4a261, #f7f7f7, #d62828)",
+      background: isNight
+        ? "linear-gradient(0deg, rgba(255,236,167,1) 0%, rgba(45,45,45,1) 100%)"
+        : "linear-gradient(45deg, rgba(255,255,255,1) 0%, rgba(255,236,167,1) 50%, rgba(255,214,63,1) 100%)",
     };
-  } else if (temperature > 30 && humidity <= 80 && pressure <= 1015) {
+  } else if (heatIndex >= 27 && heatIndex <= 32) {
     return {
-      background: "linear-gradient(to top right, #f4a261, #f7f7f7, #2b2d42)",
-    };
-  } else if (temperature <= 30 && humidity > 80 && pressure > 1015) {
-    return {
-      background: "linear-gradient(to top right, #90be6d, #f7f7f7, #264653)",
-    };
-  } else if (temperature <= 30 && humidity > 80 && pressure <= 1015) {
-    return {
-      background: "linear-gradient(to top right, #8ecae6, #f7f7f7, #023047)",
-    };
-  } else if (temperature <= 30 && humidity <= 80 && pressure > 1015) {
-    return {
-      background: "linear-gradient(to top right, #a7c5bd, #f7f7f7, #d2b48c)",
-    };
-  } else if (temperature <= 30 && humidity <= 80 && pressure <= 1015) {
-    return {
-      background: "linear-gradient(to top right, #f7f7f7, #a2c2e6, #1e2a47)",
-    };
-  } else if (humidity > 80 && pressure > 1015) {
-    return {
-      background: "linear-gradient(to top right, #f7f7f7, #f1faee, #a8dadc)",
-    };
-  } else if (humidity > 80 && pressure <= 1015) {
-    return {
-      background: "linear-gradient(to top right, #f7f7f7, #a8dadc, #264653)",
-    };
-  } else if (temperature > 40) {
-    return {
-      background: "linear-gradient(to top right, #ffbe0b, #f7f7f7, #d9ed92)",
-    };
-  } else if (pressure > 1020) {
-    return {
-      background: "linear-gradient(to top right, #f7f7f7, #d9ed92, #264653)",
+      background: isNight
+        ? "linear-gradient(0deg, rgba(255,253,167,1) 0%, rgba(45,45,45,1) 100%)"
+        : "linear-gradient(45deg, rgba(255,255,255,1) 0%, rgba(255,253,167,1) 50%, rgba(255,252,112,1) 100%)",
     };
   } else {
     return {
-      background: "linear-gradient(to top right, #f7f7f7, #f7f7f7, #454545)",
+      background: isNight
+        ? "linear-gradient(0deg, rgba(144,203,255,1) 0%, rgba(45,45,45,1) 100%)"
+        : "linear-gradient(45deg, rgba(255,255,255,1) 0%, rgba(158,232,255,1) 50%, rgba(63,126,255,1) 100%)",
     };
+  }
+};
+
+export const getWindDirectionLabel = (value: number) => {
+  if (value >= 337.6 || value <= 22.5) {
+    return `°N (${Math.round(value * 100) / 100}°)`;
+  } else if (value >= 22.6 && value <= 67.5) {
+    return `NE (${Math.round(value * 100) / 100}°)`;
+  } else if (value >= 67.6 && value <= 112.5) {
+    return `E (${Math.round(value * 100) / 100}°)`;
+  } else if (value >= 112.6 && value <= 157.5) {
+    return `SE (${Math.round(value * 100) / 100}°)`;
+  } else if (value >= 157.6 && value <= 202.5) {
+    return `S (${Math.round(value * 100) / 100}°)`;
+  } else if (value >= 202.6 && value <= 247.5) {
+    return `SW (${Math.round(value * 100) / 100}°)`;
+  } else if (value >= 247.6 && value <= 292.5) {
+    return `W (${Math.round(value * 100) / 100}°)`;
+  } else if (value >= 292.6 && value <= 337.5) {
+    return `NW (${Math.round(value * 100) / 100}°)`;
+  } else {
+    return `--`;
   }
 };

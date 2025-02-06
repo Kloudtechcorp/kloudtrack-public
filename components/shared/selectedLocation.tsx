@@ -51,7 +51,7 @@ const SelectedLocation = () => {
             >
               <Card
                 key={favLocationId}
-                className={`rounded-lg pl-3 pr-1 py-1 mr-2 mb-2 cursor-pointer flex ${
+                className={`rounded-lg pl-3 pr-1 py-1 mr-2 mb-2 cursor-pointer border-none flex ${
                   favLocationId === selectedStation && "bg-yellow-300"
                 }`}
                 onClick={() => handleSelect(favLocationId)}

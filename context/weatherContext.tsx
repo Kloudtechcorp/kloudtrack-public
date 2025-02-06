@@ -4,9 +4,7 @@ import React, { createContext, useContext, useState } from "react";
 
 interface WeatherParams {
   heatIndex: number;
-  temperature: number;
-  humidity: number;
-  pressure: number;
+  recordedAt: string;
 }
 
 interface WeatherContextProps {
@@ -23,9 +21,7 @@ export const WeatherProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [weatherParams, setWeatherParams] = useState<WeatherParams>({
     heatIndex: 0,
-    temperature: 0,
-    humidity: 0,
-    pressure: 0,
+    recordedAt: "",
   });
   return (
     <WeatherContext.Provider value={{ weatherParams, setWeatherParams }}>

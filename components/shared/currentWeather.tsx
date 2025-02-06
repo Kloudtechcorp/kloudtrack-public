@@ -3,16 +3,12 @@ import { useAWSStations } from "@/context/station";
 import { StationData } from "@/lib/types";
 import DailyCards from "./dailyCard";
 import { formatDateString } from "@/lib/utils";
+import InfoCards from "./infoCard";
 
 const CurrentWeather = ({
   onWeatherUpdate,
 }: {
-  onWeatherUpdate: (data: {
-    heatIndex: number;
-    temperature: number;
-    humidity: number;
-    pressure: number;
-  }) => void;
+  onWeatherUpdate: (data: { heatIndex: number; recordedAt: string }) => void;
 }) => {
   const { selectedStation } = useAWSStations();
   const [weatherData, setWeatherData] = useState<StationData | null>(null);
@@ -41,9 +37,7 @@ const CurrentWeather = ({
         if (stationData.data) {
           onWeatherUpdate({
             heatIndex: stationData.data.heatIndex || 0,
-            temperature: stationData.data.temperature || 0,
-            humidity: stationData.data.humidity || 0,
-            pressure: stationData.data.pressure || 0,
+            recordedAt: stationData.data.recordedAt || "",
           });
         }
       } catch (error) {
@@ -64,7 +58,6 @@ const CurrentWeather = ({
   if (!weatherData || !weatherData.data) {
     return <p>Weather data not available for the selected location.</p>;
   }
-
   return (
     <div>
       <div className="flex flex-col mb-2">
@@ -82,6 +75,7 @@ const CurrentWeather = ({
         </span>
       </div>
       <DailyCards currentWeather={weatherData} />
+      <InfoCards />
     </div>
   );
 };
