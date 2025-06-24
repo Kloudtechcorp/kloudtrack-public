@@ -1,4 +1,4 @@
-import { StationData, WeatherData } from "@/lib/types";
+import { StationData } from "@/lib/types";
 
 export const getSuggestion = (title: string, currentWeather: StationData | null) => {
   if (!currentWeather) {

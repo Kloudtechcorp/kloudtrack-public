@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import { ChartContainer, type ChartConfig } from "@/components/ui/chart";
 import { Line, LineChart } from "recharts";
@@ -6,7 +6,6 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { HelpCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useParameterContext } from "@/hooks/context/parameters-context";
-import { useAWSStations } from "@/hooks/context/station-context";
 import {
   InfoCardChartDataPoint,
   infoCardData,
@@ -25,66 +24,15 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-const InfoCards = React.memo(() => {
+interface InfoCardsProps {
+  error: string | null;
+  loading: boolean;
+  weatherData: InfoCardStationData | null;
+}
+
+const InfoCards = ({ error, loading, weatherData }: InfoCardsProps) => {
   const router = useRouter();
   const { setSelectedParameter } = useParameterContext();
-  const [weatherData, setWeatherData] = useState<InfoCardStationData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const { selectedStation } = useAWSStations();
-
-  const fetchWeatherData = async (selectedStation: string) => {
-    try {
-      setLoading(true);
-      const response = await fetch(`https://app.kloudtechsea.com/api/v1/get/station/${selectedStation}/tree`, {
-        headers: {
-          "x-kloudtrack-key": process.env.NEXT_PUBLIC_API_KEY || "6LHB-G2R6-XJQI-4JN4",
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`Error: ${response.status} - ${response.statusText}`);
-      }
-      const data: InfoCardStationData = await response.json();
-      console.log(data);
-      setWeatherData(data);
-      setError(null);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to fetch data");
-      console.error("Error fetching weather data:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
-  useEffect(() => {
-    if (!selectedStation) {
-      setError("Station ID not configured");
-      return;
-    }
-
-    fetchWeatherData(selectedStation);
-
-    const interval = setInterval(() => {
-      fetchWeatherData(selectedStation);
-    }, 5 * 60 * 1000);
-
-    return () => clearInterval(interval);
-  }, [selectedStation]);
-
-  const formatChartData = (
-    data: InfoCardWeatherData[],
-    getValue: (data: InfoCardWeatherData) => number | undefined
-  ): InfoCardChartDataPoint[] => {
-    return data
-      .map((reading) => ({
-        time: new Date(reading.recordedAt).toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit",
-        }),
-        value: getValue(reading) ?? 0,
-      }))
-      .reverse();
-  };
 
   if (loading && !weatherData) {
     return (
@@ -101,6 +49,21 @@ const InfoCards = React.memo(() => {
   if (!weatherData) {
     return <div>No weather data available</div>;
   }
+
+  const formatChartData = (
+    data: InfoCardWeatherData[],
+    getValue: (data: InfoCardWeatherData) => number | undefined
+  ): InfoCardChartDataPoint[] => {
+    return data
+      .map((reading) => ({
+        time: new Date(reading.recordedAt).toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+        value: getValue(reading) ?? 0,
+      }))
+      .reverse();
+  };
 
   const relevantCards = infoCardData.filter((card) => card.applicableTypes.includes(weatherData.type));
 
@@ -186,6 +149,6 @@ const InfoCards = React.memo(() => {
       })}
     </div>
   );
-});
+};
 
 export default InfoCards;

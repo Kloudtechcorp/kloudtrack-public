@@ -5,14 +5,16 @@ import InfoCards from "@/components/custom/cards/info-card";
 import SelectedLocation from "@/components/shared/selected-location";
 import { useAWSStations } from "@/hooks/context/station-context";
 import { useWeather } from "@/hooks/context/weather-context";
+import { useGetInfoData } from "@/hooks/use-get-info-data";
 import { StationData } from "@/lib/types";
 import { formatDateString } from "@/lib/utils";
 import { useEffect, useState } from "react";
 
 export default function Home() {
   const { setWeatherParams } = useWeather();
-  const { selectedStation } = useAWSStations();
+  const { selectedStation, loading: stationsLoading } = useAWSStations();
   const [weatherData, setWeatherData] = useState<StationData | null>(null);
+  const { error, loading, stationWeatherData } = useGetInfoData(selectedStation || "");
 
   useEffect(() => {
     if (!selectedStation) return;
@@ -21,7 +23,7 @@ export default function Home() {
       try {
         const response = await fetch(`https://app.kloudtechsea.com/api/v1/get/station/${selectedStation}`, {
           headers: {
-            "x-kloudtrack-key": "6LHB-G2R6-XJQI-4JN4",
+            "x-kloudtrack-key": process.env.NEXT_PUBLIC_API_KEY || "",
           },
         });
 
@@ -45,17 +47,17 @@ export default function Home() {
 
     fetchWeatherData();
     const intervalId = setInterval(fetchWeatherData, 5000);
-
     return () => clearInterval(intervalId);
-  }, [selectedStation, setWeatherParams]);
+  }, [selectedStation, setWeatherParams, stationsLoading]);
 
-  if (!selectedStation) {
+  if (!selectedStation || stationsLoading) {
     return <div>Loading...</div>;
   }
 
   if (!weatherData || !weatherData.data) {
     return <p>Weather data not available for the selected location.</p>;
   }
+
   return (
     <div className="flex flex-col container mx-auto">
       <div className="flex flex-row relative">
@@ -75,7 +77,7 @@ export default function Home() {
               </span>
             </div>
             <DailyCards currentWeather={weatherData} />
-            <InfoCards />
+            <InfoCards error={error} loading={loading} weatherData={stationWeatherData} />
           </div>{" "}
         </div>
       </div>
