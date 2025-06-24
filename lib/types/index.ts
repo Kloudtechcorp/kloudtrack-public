@@ -1,3 +1,5 @@
+import { InfoCardWeatherData } from "../objects/info-card-data";
+
 export type LocationContextType = {
   locationData: StationData[];
   selectedLocation: LocationProps | null;
@@ -46,7 +48,7 @@ export type InfoCardProps = {
   explanation: string;
   tooltip?: string;
   unit?: string;
-  getValue: (data: any) => number | null | undefined;
+  getValue: (data: InfoCardWeatherData) => number | null | undefined;
   formatDescription?: (value: number | null | undefined) => string;
   applicableTypes?: string[];
 };

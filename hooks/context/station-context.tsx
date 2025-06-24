@@ -2,7 +2,7 @@
 
 import { StationData } from "@/lib/types";
 import { useToast } from "@/hooks/use-toast";
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
 
 interface AWSStationsContextProps {
   stations: StationData[] | null;
@@ -13,66 +13,147 @@ interface AWSStationsContextProps {
   setSelectedStation: (stationId: string | null) => void;
   addFavoriteLocation: (stationId: string) => void;
   removeFavoriteLocation: (stationId: string) => void;
+  refreshStations: () => Promise<void>;
 }
 
-const AWSStationsContext = createContext<AWSStationsContextProps | undefined>(
-  undefined
-);
+const AWSStationsContext = createContext<AWSStationsContextProps | undefined>(undefined);
 
-export const AWSStationsProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
+export const AWSStationsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { toast } = useToast();
   const [stations, setStations] = useState<StationData[] | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedStation, setSelectedStation] = useState<string | null>(
-    stations ? stations[0].id : null
-  );
+  const [selectedStation, setSelectedStation] = useState<string | null>(null);
   const [favoriteLocations, setFavoriteLocations] = useState<string[]>([]);
 
-  useEffect(() => {
-    const fetchStations = async () => {
+  const testAPIConnection = async () => {
+    try {
+      const response = await fetch("https://app.kloudtechsea.com/api/v1/get/stations/aws", {
+        method: "HEAD",
+        headers: {
+          "x-kloudtrack-key": process.env.NEXT_PUBLIC_API_KEY || "",
+        },
+      });
+      return response.ok;
+    } catch (err) {
+      console.error("API connection failed:", err);
+      return false;
+    }
+  };
+
+  const fetchStations = useCallback(
+    async (showToastOnError = true) => {
       try {
-        const response = await fetch(
-          "https://app.kloudtechsea.com/api/v1/get/stations/aws",
-          {
-            headers: {
-              "x-kloudtrack-key": "6LHB-G2R6-XJQI-4JN4",
-            },
-          }
-        );
+        const response = await fetch("https://app.kloudtechsea.com/api/v1/get/stations/aws", {
+          headers: {
+            "x-kloudtrack-key": process.env.NEXT_PUBLIC_API_KEY || "",
+          },
+        });
 
         if (!response.ok) {
-          throw new Error(`Failed to fetch data: ${response.statusText}`);
+          if (response.status === 0) {
+            throw new Error("Network error - check if API is accessible and CORS is configured");
+          }
+          throw new Error(`Failed to fetch data: ${response.status} ${response.statusText}`);
         }
 
         const data: StationData[] = await response.json();
+
+        if (!Array.isArray(data)) {
+          throw new Error("Invalid data format received - expected array");
+        }
+
+        if (data.length === 0) {
+          console.warn("No stations returned from API");
+        }
+
         setStations(data);
         setError(null);
+
+        return data;
       } catch (err) {
-        setError((err as Error).message);
+        const errorMessage = (err as Error).message;
+        console.error("Error fetching stations:", err);
+        setError(errorMessage);
+
+        if (showToastOnError) {
+          toast({
+            variant: "destructive",
+            title: "Failed to fetch stations",
+            description: errorMessage,
+          });
+        }
+
+        return null;
       } finally {
         setLoading(false);
       }
+    },
+    [toast]
+  );
+
+  const refreshStations = useCallback(async () => {
+    setLoading(true);
+    await fetchStations(true);
+  }, [fetchStations]);
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+
+    const initializeFetch = async () => {
+      const isConnected = await testAPIConnection();
+      if (!isConnected) {
+        setError("Unable to connect to API server");
+        setLoading(false);
+        toast({
+          variant: "destructive",
+          title: "Connection Error",
+          description: "Unable to connect to weather stations API",
+        });
+        return;
+      }
+
+      await fetchStations(false);
+
+      interval = setInterval(() => {
+        fetchStations(false);
+      }, 5000);
     };
 
-    fetchStations();
-    const interval = setInterval(fetchStations, 5000);
-    return () => clearInterval(interval);
-  }, []);
+    initializeFetch();
+
+    return () => {
+      if (interval) {
+        clearInterval(interval);
+      }
+    };
+  }, [fetchStations, toast]);
 
   useEffect(() => {
     const savedStation = localStorage.getItem("selectedStation");
-    if (savedStation) {
-      setSelectedStation(savedStation);
-    }
 
     const storedFavorites = localStorage.getItem("favoriteLocations");
     if (storedFavorites) {
-      setFavoriteLocations(JSON.parse(storedFavorites));
+      try {
+        const favorites = JSON.parse(storedFavorites);
+        if (Array.isArray(favorites)) {
+          setFavoriteLocations(favorites);
+        }
+      } catch (err) {
+        console.error("Error parsing stored favorites:", err);
+        localStorage.removeItem("favoriteLocations");
+      }
     }
-  }, []);
+
+    if (stations && stations.length > 0) {
+      if (savedStation && stations.find((s) => s.id === savedStation)) {
+        setSelectedStation(savedStation);
+      } else if (!selectedStation) {
+        setSelectedStation(stations[0].id);
+        localStorage.setItem("selectedStation", stations[0].id);
+      }
+    }
+  }, [stations, selectedStation]);
 
   const handleSetSelectedStation = (stationId: string | null) => {
     setSelectedStation(stationId);
@@ -84,49 +165,78 @@ export const AWSStationsProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const handleAddFavoriteLocation = (stationId: string) => {
+    if (!stations?.find((s) => s.id === stationId)) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Station not found.",
+      });
+      return;
+    }
+
     setFavoriteLocations((prevFavorites) => {
       if (prevFavorites.includes(stationId)) {
+        toast({
+          title: "Already in Favorites",
+          description: "This station is already in your favorites.",
+        });
         return prevFavorites;
       }
 
-      if (prevFavorites.length < 3) {
-        const updatedFavorites = [...prevFavorites, stationId];
-        localStorage.setItem(
-          "favoriteLocations",
-          JSON.stringify(updatedFavorites)
-        );
+      if (prevFavorites.length >= 3) {
+        toast({
+          variant: "destructive",
+          title: "Limit Reached",
+          description: "You can only add up to 3 stations to your favorites.",
+        });
+        return prevFavorites;
+      }
+
+      const updatedFavorites = [...prevFavorites, stationId];
+
+      try {
+        localStorage.setItem("favoriteLocations", JSON.stringify(updatedFavorites));
 
         toast({
-          variant: "creative",
+          variant: "default",
           title: "Added to Favorites",
           description: "This station has been added to your favorites.",
         });
-
-        return updatedFavorites;
+      } catch (err) {
+        console.error("Error saving favorites to localStorage:", err);
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Failed to save favorites.",
+        });
+        return prevFavorites;
       }
 
-      toast({
-        variant: "destructive",
-        title: "Limit Reached",
-        description: "You can only add up to 3 stations to your favorites.",
-      });
-
-      return prevFavorites;
+      return updatedFavorites;
     });
   };
 
   const handleRemoveFavoriteLocation = (stationId: string) => {
     setFavoriteLocations((prevFavorites) => {
       const updatedFavorites = prevFavorites.filter((id) => id !== stationId);
-      localStorage.setItem(
-        "favoriteLocations",
-        JSON.stringify(updatedFavorites)
-      );
 
-      toast({
-        title: "Station removed",
-        description: "This station has been removed to your favorites.",
-      });
+      try {
+        localStorage.setItem("favoriteLocations", JSON.stringify(updatedFavorites));
+
+        toast({
+          title: "Station Removed",
+          description: "This station has been removed from your favorites.",
+        });
+      } catch (err) {
+        console.error("Error saving favorites to localStorage:", err);
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Failed to update favorites.",
+        });
+        return prevFavorites;
+      }
+
       return updatedFavorites;
     });
   };
@@ -142,6 +252,7 @@ export const AWSStationsProvider: React.FC<{ children: React.ReactNode }> = ({
         setSelectedStation: handleSetSelectedStation,
         addFavoriteLocation: handleAddFavoriteLocation,
         removeFavoriteLocation: handleRemoveFavoriteLocation,
+        refreshStations,
       }}
     >
       {children}
@@ -152,9 +263,7 @@ export const AWSStationsProvider: React.FC<{ children: React.ReactNode }> = ({
 export const useAWSStations = (): AWSStationsContextProps => {
   const context = useContext(AWSStationsContext);
   if (!context) {
-    throw new Error(
-      "useAWSStations must be used within an AWSStationsProvider"
-    );
+    throw new Error("useAWSStations must be used within an AWSStationsProvider");
   }
   return context;
 };
