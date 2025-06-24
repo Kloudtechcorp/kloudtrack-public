@@ -1,27 +1,20 @@
 "use client";
 
+import Thermometer from "@/components/graphic/thermometer";
 import CurrentWeather from "@/components/shared/currentWeather";
-import DailyCard from "@/components/shared/dailyCard";
+import InfoCards from "@/components/shared/infoCard";
 import SelectedLocation from "@/components/shared/selectedLocation";
-import InfoCard from "@/components/shared/infoCard";
-import Sun from "@/components/sun/sun";
+import { useWeather } from "@/context/weatherContext";
 
 export default function Home() {
+  const { setWeatherParams } = useWeather();
   return (
-    <div className="flex flex-col bg-gradient-to-b from-[#66CCFF] from-0% via-[#CCFFFF] via-75% to-[#FFFFFF] to-100% min-h-screen">
-      <div className="flex flex-col container mx-auto">
-        <div className="flex flex-row ">
-          <div className="w-[50%] ">
-            <SelectedLocation />
-            <CurrentWeather />
-            <DailyCard />
-          </div>
-          <div className="w-[50%] flex justify-end p-12">
-            <Sun />
-          </div>
+    <div className="flex flex-col container mx-auto">
+      <div className="flex flex-row relative">
+        <div className="w-full z-20 my-2">
+          <SelectedLocation />
+          <CurrentWeather onWeatherUpdate={setWeatherParams} />
         </div>
-
-        <InfoCard />
       </div>
     </div>
   );
