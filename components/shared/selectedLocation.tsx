@@ -1,25 +1,14 @@
 import { EllipsisVertical } from "lucide-react";
 import { Card } from "../ui/card";
-import {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-} from "@/components/ui/popover";
+import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import React, { useRef } from "react";
-import { useAWSStations } from "@/context/station";
+import { useAWSStations } from "@/hooks/context/station";
 import { AnimatePresence, motion } from "motion/react";
 
 const SelectedLocation = () => {
-  const {
-    stations,
-    loading,
-    error,
-    selectedStation,
-    setSelectedStation,
-    favoriteLocations,
-    removeFavoriteLocation,
-  } = useAWSStations();
+  const { stations, loading, error, selectedStation, setSelectedStation, favoriteLocations, removeFavoriteLocation } =
+    useAWSStations();
 
   if (loading || !stations) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
@@ -32,9 +21,7 @@ const SelectedLocation = () => {
     <div className="flex flex-wrap py-2 w-full">
       <AnimatePresence>
         {favoriteLocations.map((favLocationId) => {
-          const favStation = stations.find(
-            (station) => station.id === favLocationId
-          );
+          const favStation = stations.find((station) => station.id === favLocationId);
 
           return favStation ? (
             <motion.div
@@ -63,10 +50,7 @@ const SelectedLocation = () => {
                       <EllipsisVertical className="size-5 cursor-pointer" />
                     </PopoverTrigger>
                     <PopoverContent className="p-0 w-full">
-                      <Button
-                        variant="ghost"
-                        onClick={() => removeFavoriteLocation(favLocationId)}
-                      >
+                      <Button variant="ghost" onClick={() => removeFavoriteLocation(favLocationId)}>
                         Remove favorite
                       </Button>
                     </PopoverContent>

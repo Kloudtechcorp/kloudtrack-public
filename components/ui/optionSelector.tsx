@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Card } from "./card";
-import { useParameterContext } from "@/context/parametersContext";
+import { useParameterContext } from "@/hooks/context/parametersContext";
 import { parametersArray } from "@/lib/objects/arrays";
 
 const OptionSelector = () => {

@@ -4,7 +4,7 @@ import Thermometer from "@/components/graphic/thermometer";
 import CurrentWeather from "@/components/shared/currentWeather";
 import InfoCards from "@/components/shared/infoCard";
 import SelectedLocation from "@/components/shared/selectedLocation";
-import { useWeather } from "@/context/weatherContext";
+import { useWeather } from "@/hooks/context/weatherContext";
 
 export default function Home() {
   const { setWeatherParams } = useWeather();

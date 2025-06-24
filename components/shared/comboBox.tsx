@@ -2,20 +2,9 @@ import * as React from "react";
 import { MapPin, Navigation, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { useAWSStations } from "@/context/station";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { useAWSStations } from "@/hooks/context/station";
 import { motion } from "motion/react";
 
 export function ComboBox() {
@@ -51,19 +40,11 @@ export function ComboBox() {
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button
-          variant="temp"
-          role="combobox"
-          aria-expanded={open}
-          className="flex justify-start p-3"
-        >
+        <Button variant="temp" role="combobox" aria-expanded={open} className="flex justify-start p-3">
           <MapPin className="mr-2 size-5 shrink-0 " />
           <span className="font-bold text-xl">
             {selectedStation
-              ? `${
-                  stations.find((location) => location.id === selectedStation)
-                    ?.name
-                } station`
+              ? `${stations.find((location) => location.id === selectedStation)?.name} station`
               : "Select Station..."}
           </span>
         </Button>
@@ -85,12 +66,8 @@ export function ComboBox() {
                     <motion.div
                       whileTap={{ scale: 0.8 }}
                       animate={{
-                        scale: favoriteLocations.includes(location.id)
-                          ? 1.2
-                          : 1,
-                        color: favoriteLocations.includes(location.id)
-                          ? "#FFD700"
-                          : "#6B7280",
+                        scale: favoriteLocations.includes(location.id) ? 1.2 : 1,
+                        color: favoriteLocations.includes(location.id) ? "#FFD700" : "#6B7280",
                       }}
                       transition={{
                         type: "spring",
@@ -100,16 +77,10 @@ export function ComboBox() {
                       className="flex items-center justify-center px-2"
                     >
                       <Star
-                        fill={
-                          favoriteLocations.includes(location.id)
-                            ? "yellow"
-                            : "none"
-                        }
+                        fill={favoriteLocations.includes(location.id) ? "yellow" : "none"}
                         className={cn(
                           "h-4 w-4 cursor-pointer",
-                          favoriteLocations.includes(location.id)
-                            ? "text-yellow-500"
-                            : "text-gray-500"
+                          favoriteLocations.includes(location.id) ? "text-yellow-500" : "text-gray-500"
                         )}
                         onClick={(e) => {
                           e.stopPropagation();
@@ -127,12 +98,7 @@ export function ComboBox() {
                     </div>
                   </div>
                   <Navigation
-                    className={cn(
-                      "h-4 w-4",
-                      location.id === selectedStation
-                        ? "opacity-100"
-                        : "opacity-0"
-                    )}
+                    className={cn("h-4 w-4", location.id === selectedStation ? "opacity-100" : "opacity-0")}
                   />
                 </CommandItem>
               ))}

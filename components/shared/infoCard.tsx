@@ -5,8 +5,8 @@ import { Line, LineChart } from "recharts";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { HelpCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useParameterContext } from "@/context/parametersContext";
-import { useAWSStations } from "@/context/station";
+import { useParameterContext } from "@/hooks/context/parametersContext";
+import { useAWSStations } from "@/hooks/context/station";
 
 // Types for our API responses
 interface WeatherData {

@@ -7,7 +7,7 @@ import { AreaChart, BarChart } from "recharts";
 import { Card } from "@/components/ui/card";
 import { TooltipProps } from "@/lib/types";
 import { dummyData } from "@/lib/objects/arrays";
-import { useParameterContext } from "@/context/parametersContext";
+import { useParameterContext } from "@/hooks/context/parametersContext";
 
 const sliceDetails = (repeat: number, value: string) => {
   return value;
@@ -18,9 +18,7 @@ const CustomTooltip = ({ payload, label }: TooltipProps) => {
     return (
       <Card className="custom-tooltip p-2 rounded-md">
         <p className="font-bold">{`Time: ${label}`}</p>
-        {payload[0] && (
-          <p className="font-bold">{`${payload[0].name}: ${payload[0].value}`}</p>
-        )}
+        {payload[0] && <p className="font-bold">{`${payload[0].name}: ${payload[0].value}`}</p>}
       </Card>
     );
   }
@@ -60,44 +58,21 @@ const GraphPage = () => {
         <div className="bg-[#545454] bg-opacity-5 rounded-md flex flex-col p-4 my-2 gap-3 ">
           <OptionSelector />
           <div className="bg-[#FFFFFF] rounded-md ">
-            <ChartContainer
-              config={chartConfig}
-              className="min-h-[150px] justify-center items-center "
-            >
+            <ChartContainer config={chartConfig} className="min-h-[150px] justify-center items-center ">
               {barChartParameters.includes(selectedParameter) ? (
-                <BarChart
-                  data={dummyData}
-                  margin={{ top: 30, right: 30, bottom: 15 }}
-                >
+                <BarChart data={dummyData} margin={{ top: 30, right: 30, bottom: 15 }}>
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis
-                    dataKey="hour"
-                    tickFormatter={(value) => sliceDetails(0, value)}
-                  />
+                  <XAxis dataKey="hour" tickFormatter={(value) => sliceDetails(0, value)} />
                   <YAxis />
-                  <Tooltip
-                    content={<CustomTooltip payload={[]} label={""} />}
-                  />
-                  <Bar
-                    dataKey={dataKeyMap[selectedParameter]}
-                    fill="#FBD008"
-                    name={selectedParameter}
-                  />
+                  <Tooltip content={<CustomTooltip payload={[]} label={""} />} />
+                  <Bar dataKey={dataKeyMap[selectedParameter]} fill="#FBD008" name={selectedParameter} />
                 </BarChart>
               ) : (
-                <AreaChart
-                  data={dummyData}
-                  margin={{ top: 30, right: 30, bottom: 15 }}
-                >
+                <AreaChart data={dummyData} margin={{ top: 30, right: 30, bottom: 15 }}>
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis
-                    dataKey="hour"
-                    tickFormatter={(value) => sliceDetails(0, value)}
-                  />
+                  <XAxis dataKey="hour" tickFormatter={(value) => sliceDetails(0, value)} />
                   <YAxis />
-                  <Tooltip
-                    content={<CustomTooltip payload={[]} label={""} />}
-                  />
+                  <Tooltip content={<CustomTooltip payload={[]} label={""} />} />
                   <defs>
                     <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="50%" stopColor="#FBD008" />
