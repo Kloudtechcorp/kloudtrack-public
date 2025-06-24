@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
+
 type Unit = "Celcius" | "Fahrenheit";
 
 interface ThermometerProps {
@@ -7,31 +8,33 @@ interface ThermometerProps {
 }
 
 const Thermometer: React.FC<ThermometerProps> = ({ unit, currentTemp }) => {
-  const [temperatureUnit, setTemperatureUnit] = useState<Unit>(unit);
+  const [temperatureUnit] = useState<Unit>(unit);
+  const temperatureRef = useRef<HTMLDivElement>(null);
 
   const minTemperature = 0;
   const maxTemperature = 75;
 
-  const units: { [key in Unit]: string } = {
-    Celcius: "°C",
-    Fahrenheit: "°F",
-  };
+  const units = useMemo(
+    () => ({
+      Celcius: "°C",
+      Fahrenheit: "°F",
+    }),
+    []
+  );
 
   useEffect(() => {
-    const temperatureElement = document.getElementById("temperature");
-    if (temperatureElement) {
-      const height =
-        ((currentTemp - minTemperature) / (maxTemperature - minTemperature)) *
-        100;
-      temperatureElement.style.height = `${height}%`;
-      temperatureElement.dataset.value = `${currentTemp}${units[temperatureUnit]}`;
+    if (temperatureRef.current) {
+      const height = ((currentTemp - minTemperature) / (maxTemperature - minTemperature)) * 100;
+      temperatureRef.current.style.height = `${height}%`;
+      temperatureRef.current.dataset.value = `${currentTemp}${units[temperatureUnit]}`;
     }
-  }, [currentTemp, temperatureUnit]);
+  }, [currentTemp, temperatureUnit, units]);
 
   return (
     <div id="wrapper">
       <div id="termometer">
         <div
+          ref={temperatureRef}
           id="temperature"
           style={{ height: "0" }}
           data-value={`${currentTemp}${units[temperatureUnit]}`}

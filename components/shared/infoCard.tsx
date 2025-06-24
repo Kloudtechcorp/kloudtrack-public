@@ -23,6 +23,7 @@ interface WeatherData {
   gust?: number;
   batteryVoltage?: number;
   uvIndex?: number;
+  calculatedDistance?: number;
 }
 
 interface CoastalData {
@@ -100,7 +101,7 @@ interface InfoCardProps {
   explanation: string;
   tooltip: string;
   unit: string;
-  getValue: (data: any) => number | undefined;
+  getValue: (data: WeatherData) => number | undefined;
   formatDescription: (value: number | undefined) => string;
   applicableTypes: string[];
 }
@@ -182,7 +183,7 @@ const infoCardData: InfoCardProps[] = [
     explanation: "Current water level reading",
     tooltip: "Ang kasalukuyang taas ng tubig.",
     unit: "m",
-    getValue: (data) => data.distance || data.calculatedDistance,
+    getValue: (data) => data.calculatedDistance,
     formatDescription: (value) => (value ? `${value.toFixed(2)} m` : "No data available"),
     applicableTypes: ["CLMS", "RLMS"],
   },
@@ -232,9 +233,12 @@ const InfoCards = React.memo(() => {
     }, 5 * 60 * 1000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [selectedStation]);
 
-  const formatChartData = (data: any[], getValue: (data: any) => number | undefined): ChartDataPoint[] => {
+  const formatChartData = (
+    data: WeatherData[],
+    getValue: (data: WeatherData) => number | undefined
+  ): ChartDataPoint[] => {
     return data
       .map((reading) => ({
         time: new Date(reading.recordedAt).toLocaleTimeString([], {

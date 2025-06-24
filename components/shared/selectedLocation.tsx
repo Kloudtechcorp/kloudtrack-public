@@ -2,7 +2,7 @@ import { EllipsisVertical } from "lucide-react";
 import { Card } from "../ui/card";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
-import React, { useRef } from "react";
+import React from "react";
 import { useAWSStations } from "@/hooks/context/station";
 import { AnimatePresence, motion } from "motion/react";
 
@@ -16,6 +16,8 @@ const SelectedLocation = () => {
   const handleSelect = (currentValue: string) => {
     setSelectedStation(currentValue);
   };
+
+  console.log(stations);
 
   return (
     <div className="flex flex-wrap py-2 w-full">

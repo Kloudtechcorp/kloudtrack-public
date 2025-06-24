@@ -1,7 +1,6 @@
 import React from "react";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import Image from "next/image";
-import { useLocationContext } from "@/hooks/context/locationContext";
 import { dailySuggestionArray } from "@/lib/objects/arrays";
 import { getSuggestion } from "@/hooks/context/getSuggestion";
 import { StationData } from "@/lib/types";

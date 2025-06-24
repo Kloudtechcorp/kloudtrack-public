@@ -134,9 +134,7 @@ const CustomTooltip = ({ payload, label }: TooltipProps) => {
     return (
       <Card className="custom-tooltip p-2 rounded-md">
         <p className="font-bold">{`Time: ${label}`}</p>
-        {payload[0] && (
-          <p className="font-bold">{`${payload[0].name}: ${payload[0].value}`}</p>
-        )}
+        {payload[0] && <p className="font-bold">{`${payload[0].name}: ${payload[0].value}`}</p>}
       </Card>
     );
   }
@@ -157,11 +155,9 @@ const chartConfig = {
 const GraphPage = () => {
   const { parameters } = useParams();
 
-  const initialParameter = Array.isArray(parameters)
-    ? parameters[0]
-    : parameters || "temperature";
+  const initialParameter = Array.isArray(parameters) ? parameters[0] : parameters || "temperature";
 
-  const [selectedParameter, setSelectedParameter] = useState(initialParameter);
+  const [selectedParameter] = useState(initialParameter);
 
   const dataKeyMap: Record<string, string> = {
     temperature: "temperature",
@@ -178,41 +174,21 @@ const GraphPage = () => {
         <div className="bg-[#545454] bg-opacity-5 rounded-md flex flex-col p-4 my-2 gap-3 ">
           <OptionSelector />
           <div className="bg-[#FFFFFF] rounded-md ">
-            <ChartContainer
-              config={chartConfig}
-              className="min-h-[150px] justify-center items-center "
-            >
-              {selectedParameter === "uvIndex" ||
-              selectedParameter === "humidity" ? (
-                <BarChart
-                  data={dummyData}
-                  margin={{ top: 30, right: 30, bottom: 15 }}
-                >
+            <ChartContainer config={chartConfig} className="min-h-[150px] justify-center items-center ">
+              {selectedParameter === "uvIndex" || selectedParameter === "humidity" ? (
+                <BarChart data={dummyData} margin={{ top: 30, right: 30, bottom: 15 }}>
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis
-                    dataKey="hour"
-                    tickFormatter={(value) => sliceDetails(0, value)}
-                  />
+                  <XAxis dataKey="hour" tickFormatter={(value) => sliceDetails(0, value)} />
                   <YAxis />
-                  <Tooltip
-                    content={<CustomTooltip payload={[]} label={""} />}
-                  />
+                  <Tooltip content={<CustomTooltip payload={[]} label={""} />} />
                   <Bar dataKey="uvIndex" fill="#FBD008" name="UV Index" />
                 </BarChart>
               ) : (
-                <AreaChart
-                  data={dummyData}
-                  margin={{ top: 30, right: 30, bottom: 15 }}
-                >
+                <AreaChart data={dummyData} margin={{ top: 30, right: 30, bottom: 15 }}>
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis
-                    dataKey="hour"
-                    tickFormatter={(value) => sliceDetails(0, value)}
-                  />
+                  <XAxis dataKey="hour" tickFormatter={(value) => sliceDetails(0, value)} />
                   <YAxis />
-                  <Tooltip
-                    content={<CustomTooltip payload={[]} label={""} />}
-                  />
+                  <Tooltip content={<CustomTooltip payload={[]} label={""} />} />
                   <defs>
                     <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="50%" stopColor="#FBD008" />
@@ -226,10 +202,7 @@ const GraphPage = () => {
                     fill="url(#colorUv)"
                     strokeWidth={2}
                     dot={{ r: 4 }}
-                    name={
-                      selectedParameter.charAt(0).toUpperCase() +
-                      selectedParameter.slice(1)
-                    }
+                    name={selectedParameter.charAt(0).toUpperCase() + selectedParameter.slice(1)}
                   />
                 </AreaChart>
               )}

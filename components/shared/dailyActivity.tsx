@@ -1,8 +1,7 @@
 import React from "react";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import Image from "next/image";
-import { useLocationContext } from "@/hooks/context/locationContext";
-import { getActivityRecommendation } from "@/hooks/context/getActivity";
+import { getActivityRecommendation } from "@/context/getActivity";
 import { StationData } from "@/lib/types";
 import { dailyActivityArray } from "@/lib/objects/arrays";
 

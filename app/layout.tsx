@@ -5,7 +5,7 @@ import { Montserrat } from "next/font/google";
 import Header from "@/components/shared/header";
 import { AWSStationsProvider } from "@/hooks/context/station";
 import { Toaster } from "@/components/ui/toaster";
-import { WeatherProvider, useWeather } from "@/hooks/context/weatherContext";
+import { WeatherProvider } from "@/hooks/context/weatherContext";
 import GradientWrapper from "@/components/wrapper/gradient";
 
 const montserrat = Montserrat({ subsets: ["latin"] });
