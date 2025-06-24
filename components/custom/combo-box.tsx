@@ -4,10 +4,10 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { useAWSStations } from "@/hooks/context/station";
+import { useAWSStations } from "@/hooks/context/station-context";
 import { motion } from "motion/react";
 
-export function ComboBox() {
+export function CustomComboBox() {
   const {
     stations,
     loading,

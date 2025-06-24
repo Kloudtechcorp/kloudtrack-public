@@ -116,42 +116,42 @@ export const dailySuggestionArray = [
   {
     title: "Umbrellas",
     description: "Highly suggested",
-    imageSrc: "/assets/dailyIcons/umbrella.svg",
+    imageSrc: "/dailyIcons/umbrella.svg",
     altText: "Umbrella",
     color: "green-500",
   },
   {
     title: "Refreshments",
     description: "Highly suggested",
-    imageSrc: "/assets/dailyIcons/bottle.svg",
+    imageSrc: "/dailyIcons/bottle.svg",
     altText: "Refreshment",
     color: "green-500",
   },
   {
     title: "Sunscreen",
     description: "Highly suggested",
-    imageSrc: "/assets/dailyIcons/sunscreen.svg",
+    imageSrc: "/dailyIcons/sunscreen.svg",
     altText: "Sunscreen",
     color: "green-500",
   },
   {
     title: "Clothing",
     description: "Highly suggested",
-    imageSrc: "/assets/dailyIcons/clothing.svg",
+    imageSrc: "/dailyIcons/clothing.svg",
     altText: "Clothing",
     color: "yellow-500",
   },
   {
     title: "Driving Conditions",
     description: "Safe",
-    imageSrc: "/assets/dailyIcons/car.svg",
+    imageSrc: "/dailyIcons/car.svg",
     altText: "Car",
     color: "green-500",
   },
   {
     title: "Heat Stroke",
     description: "Danger",
-    imageSrc: "/assets/dailyIcons/temp.svg",
+    imageSrc: "/dailyIcons/temp.svg",
     altText: "Temp",
     color: "red-500",
   },
@@ -161,35 +161,35 @@ export const dailyActivityArray = [
   {
     title: "Jogging",
     description: "Highly suggested",
-    imageSrc: "/assets/dailyIcons/jog.svg",
+    imageSrc: "/dailyIcons/jog.svg",
     altText: "Jog",
     color: "green-500",
   },
   {
     title: "Cycling",
     description: "Highly suggested",
-    imageSrc: "/assets/dailyIcons/cycle.svg",
+    imageSrc: "/dailyIcons/cycle.svg",
     altText: "Cycle",
     color: "green-500",
   },
   {
     title: "Swimming",
     description: "Highly suggested",
-    imageSrc: "/assets/dailyIcons/swim.svg",
+    imageSrc: "/dailyIcons/swim.svg",
     altText: "Swim",
     color: "green-500",
   },
   {
     title: "Camping",
     description: "Highly suggested",
-    imageSrc: "/assets/dailyIcons/camp.svg",
+    imageSrc: "/dailyIcons/camp.svg",
     altText: "Camp",
     color: "yellow-500",
   },
   {
     title: "Sports",
     description: "Safe",
-    imageSrc: "/assets/dailyIcons/ball.svg",
+    imageSrc: "/dailyIcons/ball.svg",
     altText: "Sports",
     color: "green-500",
   },
@@ -521,8 +521,7 @@ export const commonArray = [
 export const rainfallWarningArray = [
   {
     name: "Very Light Rains",
-    description:
-      "Scattered drops that do not completely wet an exposed surface regardless of duration.",
+    description: "Scattered drops that do not completely wet an exposed surface regardless of duration.",
   },
   {
     name: "Light Rains",
@@ -549,8 +548,7 @@ export const rainfallWarningArray = [
   },
   {
     name: "Frequent Rains",
-    description:
-      "Precipitation occuring regularly and often throughout the time duration.",
+    description: "Precipitation occuring regularly and often throughout the time duration.",
   },
   {
     name: "Intermittent  Rains",
@@ -594,13 +592,11 @@ export const tropicalCycloneArray = [
   },
   {
     name: "Severe Tropical Storm (STS)",
-    description:
-      "A storm with winds from 87 to 117 kph (48 to 63 knots). This is a stronger type of tropical storm.",
+    description: "A storm with winds from 87 to 117 kph (48 to 63 knots). This is a stronger type of tropical storm.",
   },
   {
     name: "Typhoon (TY)",
-    description:
-      "A storm with winds between 118 and 184 kph (64 to 99 knots). It’s considered a major storm.",
+    description: "A storm with winds between 118 and 184 kph (64 to 99 knots). It’s considered a major storm.",
   },
   {
     name: "Super Typhoon (STY)",

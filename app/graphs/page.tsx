@@ -7,7 +7,7 @@ import { AreaChart, BarChart } from "recharts";
 import { Card } from "@/components/ui/card";
 import { TooltipProps } from "@/lib/types";
 import { dummyData } from "@/lib/objects/arrays";
-import { useParameterContext } from "@/hooks/context/parametersContext";
+import { useParameterContext } from "@/hooks/context/parameters-context";
 
 const sliceDetails = (repeat: number, value: string) => {
   return value;

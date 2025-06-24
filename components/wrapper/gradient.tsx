@@ -1,6 +1,6 @@
 "use client";
 
-import { useWeather } from "@/hooks/context/weatherContext";
+import { useWeather } from "@/hooks/context/weather-context";
 import { getGradientStyles } from "@/lib/utils";
 import { ReactNode } from "react";
 import { motion } from "motion/react";

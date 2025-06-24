@@ -1,9 +1,6 @@
-import { StationData, WeatherData } from "@/lib/types";
+import { StationData } from "@/lib/types";
 
-export const getActivityRecommendation = (
-  activity: string,
-  currentWeather: StationData | null
-) => {
+export const getActivityRecommendation = (activity: string, currentWeather: StationData | null) => {
   if (!currentWeather) {
     return { description: "No data", color: "gray-500" };
   }
@@ -109,10 +106,7 @@ export const getActivityRecommendation = (
       ) {
         return { description: "Caution", color: "orange-500" };
       }
-      if (
-        currentWeather.data.temperature > 40 &&
-        currentWeather.data.uvIndex > 8
-      ) {
+      if (currentWeather.data.temperature > 40 && currentWeather.data.uvIndex > 8) {
         return { description: "Avoid", color: "red-500" };
       }
       return { description: "Not Ideal", color: "purple-500" };

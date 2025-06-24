@@ -1,15 +1,10 @@
 "use client";
 import React from "react";
 import Image from "next/image";
-import { ComboBox } from "./comboBox";
+import { CustomComboBox } from "../custom/combo-box";
 import { Switch } from "@/components/ui/switch";
 import { useRouter } from "next/navigation";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 const Header = () => {
   const router = useRouter();
@@ -19,15 +14,10 @@ const Header = () => {
       <div className="items-center flex w-full flex-row justify-start container mx-auto">
         <div className="flex w-full items-center">
           <span className="cursor-pointer" onClick={() => router.push("/")}>
-            <Image
-              src="/assets/icons/logo.png"
-              alt="Logo"
-              width={200}
-              height={200}
-            />
+            <Image src="/icons/logo.png" alt="Logo" width={200} height={200} />
           </span>
           <span className="flex w-full justify-center">
-            <ComboBox />
+            <CustomComboBox />
           </span>
 
           <div className="flex gap-3">
@@ -39,12 +29,7 @@ const Header = () => {
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger>
-                    <Image
-                      src="/assets/icons/terminologies.svg"
-                      alt="Logo"
-                      width={52}
-                      height={52}
-                    />
+                    <Image src="/icons/terminologies.svg" alt="Logo" width={52} height={52} />
                   </TooltipTrigger>
                   <TooltipContent>
                     <p>Weather Terminologies</p>

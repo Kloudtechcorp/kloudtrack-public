@@ -5,58 +5,14 @@ import { Line, LineChart } from "recharts";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { HelpCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useParameterContext } from "@/hooks/context/parametersContext";
-import { useAWSStations } from "@/hooks/context/station";
-
-// Types for our API responses
-interface WeatherData {
-  recordedAt: string;
-  temperature?: number;
-  humidity?: number;
-  pressure?: number;
-  heatIndex?: number;
-  light?: number;
-  uvIntensity?: number;
-  windDirection?: number;
-  windSpeed?: number;
-  precipitation?: number;
-  gust?: number;
-  batteryVoltage?: number;
-  uvIndex?: number;
-  calculatedDistance?: number;
-}
-
-interface CoastalData {
-  recordedAt: string;
-  temperature?: number;
-  humidity?: number;
-  pressure?: number;
-  calculatedDistance: number;
-}
-
-interface RainData {
-  recordedAt: string;
-  precipitation?: number;
-}
-
-interface RiverData {
-  recordedAt: string;
-  distance?: number;
-}
-
-interface StationData {
-  name: string;
-  type: "AWS" | "CLMS" | "ARG" | "RLMS";
-  data: {
-    current: WeatherData | CoastalData | RainData | RiverData;
-    previous: (WeatherData | CoastalData | RainData | RiverData)[];
-  };
-}
-
-interface ChartDataPoint {
-  time: string;
-  value: number;
-}
+import { useParameterContext } from "@/hooks/context/parameters-context";
+import { useAWSStations } from "@/hooks/context/station-context";
+import {
+  InfoCardChartDataPoint,
+  infoCardData,
+  InfoCardStationData,
+  InfoCardWeatherData,
+} from "@/lib/objects/info-card-data";
 
 const chartConfig = {
   desktop: {
@@ -69,130 +25,10 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-const getWindForce = (speed: number): string => {
-  if (speed < 1) return "Calm";
-  if (speed < 4) return "Light Air";
-  if (speed < 7) return "Light Breeze";
-  if (speed < 11) return "Gentle Breeze";
-  if (speed < 16) return "Moderate Breeze";
-  if (speed < 22) return "Fresh Breeze";
-  if (speed < 28) return "Strong Breeze";
-  if (speed < 34) return "Near Gale";
-  return "Gale";
-};
-
-const getUVLevel = (index: number): string => {
-  if (index < 3) return "Low";
-  if (index < 6) return "Moderate";
-  if (index < 8) return "High";
-  if (index < 11) return "Very High";
-  return "Extreme";
-};
-
-const getHumidityLevel = (humidity: number): string => {
-  if (humidity < 30) return "Low";
-  if (humidity < 60) return "Moderate";
-  return "High";
-};
-
-interface InfoCardProps {
-  title: string;
-  description: string;
-  explanation: string;
-  tooltip: string;
-  unit: string;
-  getValue: (data: WeatherData) => number | undefined;
-  formatDescription: (value: number | undefined) => string;
-  applicableTypes: string[];
-}
-
-const infoCardData: InfoCardProps[] = [
-  {
-    title: "Temperature",
-    description: "Current Temperature",
-    explanation: "Real-time temperature measurement from the station",
-    tooltip: "Ang temperature o temperatura ay ang sukatan ng init o lamig sa paligid.",
-    unit: "°C",
-    getValue: (data) => data.temperature,
-    formatDescription: (value) => (value ? `${value.toFixed(1)}°C` : "No data available"),
-    applicableTypes: ["AWS", "CLMS"],
-  },
-  {
-    title: "Heat Index",
-    description: "Feels Like Temperature",
-    explanation: "How hot it actually feels considering humidity",
-    tooltip: "Ito ang indikasyon ng kung gaano kalakas ang pakiramdam ng init.",
-    unit: "°C",
-    getValue: (data) => data.heatIndex,
-    formatDescription: (value) => (value ? `Feels like ${value.toFixed(1)}°C` : "No data available"),
-    applicableTypes: ["AWS"],
-  },
-  {
-    title: "UV Index",
-    description: "UV Radiation Level",
-    explanation: "Current ultraviolet radiation intensity",
-    tooltip: "Ang sukatan ng lakas ng ultraviolet (UV) rays mula sa araw.",
-    unit: "",
-    getValue: (data) => data.uvIndex,
-    formatDescription: (value) => (value ? `${getUVLevel(value)} (${value.toFixed(1)})` : "No data available"),
-    applicableTypes: ["AWS"],
-  },
-  {
-    title: "Precipitation",
-    description: "Rainfall Amount",
-    explanation: "Current precipitation measurement",
-    tooltip: "Ito ay tumutukoy sa pag-ulan na bumabagsak mula sa langit.",
-    unit: "mm",
-    getValue: (data) => data.precipitation,
-    formatDescription: (value) => (value ? `${value.toFixed(1)} mm` : "No rainfall"),
-    applicableTypes: ["AWS", "ARG"],
-  },
-  {
-    title: "Wind",
-    description: "Wind Conditions",
-    explanation: "Current wind speed and classification",
-    tooltip: "Ang paggalaw ng hangin sa kapaligiran.",
-    unit: "m/s",
-    getValue: (data) => data.windSpeed,
-    formatDescription: (value) => (value ? `${value.toFixed(1)} m/s - ${getWindForce(value)}` : "No data available"),
-    applicableTypes: ["AWS"],
-  },
-  {
-    title: "Air Pressure",
-    description: "Atmospheric Pressure",
-    explanation: "Current atmospheric pressure reading",
-    tooltip: "Ang puwersa na inilalapat ng hangin sa ibabaw ng lupa.",
-    unit: "hPa",
-    getValue: (data) => data.pressure,
-    formatDescription: (value) => (value ? `${value.toFixed(1)} hPa` : "No data available"),
-    applicableTypes: ["AWS", "CLMS"],
-  },
-  {
-    title: "Humidity",
-    description: "Relative Humidity",
-    explanation: "Current relative humidity level",
-    tooltip: "Ang dami ng moisture sa hangin.",
-    unit: "%",
-    getValue: (data) => data.humidity,
-    formatDescription: (value) => (value ? `${value.toFixed(1)}% - ${getHumidityLevel(value)}` : "No data available"),
-    applicableTypes: ["AWS", "CLMS"],
-  },
-  {
-    title: "Water Level",
-    description: "Current Level",
-    explanation: "Current water level reading",
-    tooltip: "Ang kasalukuyang taas ng tubig.",
-    unit: "m",
-    getValue: (data) => data.calculatedDistance,
-    formatDescription: (value) => (value ? `${value.toFixed(2)} m` : "No data available"),
-    applicableTypes: ["CLMS", "RLMS"],
-  },
-];
-
 const InfoCards = React.memo(() => {
   const router = useRouter();
   const { setSelectedParameter } = useParameterContext();
-  const [weatherData, setWeatherData] = useState<StationData | null>(null);
+  const [weatherData, setWeatherData] = useState<InfoCardStationData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { selectedStation } = useAWSStations();
@@ -209,7 +45,7 @@ const InfoCards = React.memo(() => {
       if (!response.ok) {
         throw new Error(`Error: ${response.status} - ${response.statusText}`);
       }
-      const data: StationData = await response.json();
+      const data: InfoCardStationData = await response.json();
       console.log(data);
       setWeatherData(data);
       setError(null);
@@ -236,9 +72,9 @@ const InfoCards = React.memo(() => {
   }, [selectedStation]);
 
   const formatChartData = (
-    data: WeatherData[],
-    getValue: (data: WeatherData) => number | undefined
-  ): ChartDataPoint[] => {
+    data: InfoCardWeatherData[],
+    getValue: (data: InfoCardWeatherData) => number | undefined
+  ): InfoCardChartDataPoint[] => {
     return data
       .map((reading) => ({
         time: new Date(reading.recordedAt).toLocaleTimeString([], {
@@ -351,7 +187,5 @@ const InfoCards = React.memo(() => {
     </div>
   );
 });
-
-InfoCards.displayName = "InfoCards";
 
 export default InfoCards;

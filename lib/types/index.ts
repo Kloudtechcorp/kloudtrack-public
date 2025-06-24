@@ -44,6 +44,11 @@ export type InfoCardProps = {
   title: string;
   description: string;
   explanation: string;
+  tooltip?: string;
+  unit?: string;
+  getValue: (data: any) => number | null | undefined;
+  formatDescription?: (value: number | null | undefined) => string;
+  applicableTypes?: string[];
 };
 
 export type DailyCardProps = {

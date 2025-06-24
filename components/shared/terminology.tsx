@@ -1,11 +1,6 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import TerminologyCard from "./terminologyCard";
-import {
-  commonArray,
-  rainfallWarningArray,
-  floodWarningArray,
-  tropicalCycloneArray,
-} from "@/lib/objects/arrays";
+import TerminologyCard from "../custom/cards/terminology-card";
+import { commonArray, rainfallWarningArray, floodWarningArray, tropicalCycloneArray } from "@/lib/objects/arrays";
 // import { SwitchLanguage } from "../ui/switchLanguage";
 
 export default function Terminology() {
@@ -17,9 +12,7 @@ export default function Terminology() {
             <TabsTrigger value="common">Common</TabsTrigger>
             <TabsTrigger value="rainfall">Rainfall</TabsTrigger>
             <TabsTrigger value="flood">Flood Warning</TabsTrigger>
-            <TabsTrigger value="tropicalCyclone">
-              Tropical Cyclone Warning
-            </TabsTrigger>
+            <TabsTrigger value="tropicalCyclone">Tropical Cyclone Warning</TabsTrigger>
           </TabsList>
           {/* <span className="flex w-full justify-end">
             <SwitchLanguage />

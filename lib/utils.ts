@@ -97,3 +97,29 @@ export const getWindDirectionLabel = (value: number) => {
     return `--`;
   }
 };
+
+export const getWindForce = (speed: number): string => {
+  if (speed < 1) return "Calm";
+  if (speed < 4) return "Light Air";
+  if (speed < 7) return "Light Breeze";
+  if (speed < 11) return "Gentle Breeze";
+  if (speed < 16) return "Moderate Breeze";
+  if (speed < 22) return "Fresh Breeze";
+  if (speed < 28) return "Strong Breeze";
+  if (speed < 34) return "Near Gale";
+  return "Gale";
+};
+
+export const getUVLevel = (index: number): string => {
+  if (index < 3) return "Low";
+  if (index < 6) return "Moderate";
+  if (index < 8) return "High";
+  if (index < 11) return "Very High";
+  return "Extreme";
+};
+
+export const getHumidityLevel = (humidity: number): string => {
+  if (humidity < 30) return "Low";
+  if (humidity < 60) return "Moderate";
+  return "High";
+};
