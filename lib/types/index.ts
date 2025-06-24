@@ -1,9 +1,3 @@
-import {
-  locationArray,
-  dailySuggestionArray,
-  dailyActivityArray,
-} from "@/lib/objects/arrays";
-
 export type LocationContextType = {
   locationData: StationData[];
   selectedLocation: LocationProps | null;
@@ -29,7 +23,7 @@ export type ParameterContextType = {
   parameters: string[];
   selectedParameter: string;
   setSelectedParameter: (parameter: string) => void;
-}; 
+};
 
 export type PayloadProps = {
   name: string;

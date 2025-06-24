@@ -1,16 +1,11 @@
 import React from "react";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import Image from "next/image";
-import { useLocationContext } from "@/context/locationContext";
 import { dailySuggestionArray } from "@/lib/objects/arrays";
 import { getSuggestion } from "@/context/getSuggestion";
 import { StationData } from "@/lib/types";
 
-const DailySuggestion = ({
-  currentWeather,
-}: {
-  currentWeather: StationData;
-}) => {
+const DailySuggestion = ({ currentWeather }: { currentWeather: StationData }) => {
   if (!dailySuggestionArray || dailySuggestionArray.length === 0) {
     return <div>No activities available.</div>;
   }
@@ -55,9 +50,7 @@ const DailySuggestion = ({
                       : "border-transparent"
                   }`}
                 />
-                <CardDescription className="text-xs font-normal text-[#333]">
-                  {suggestion.description}
-                </CardDescription>
+                <CardDescription className="text-xs font-normal text-[#333]">{suggestion.description}</CardDescription>
               </div>
             </div>
           </Card>

@@ -1,7 +1,6 @@
 import React from "react";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import Image from "next/image";
-import { useLocationContext } from "@/context/locationContext";
 import { getActivityRecommendation } from "@/context/getActivity";
 import { StationData } from "@/lib/types";
 import { dailyActivityArray } from "@/lib/objects/arrays";
@@ -14,10 +13,7 @@ const DailyActivity = ({ currentWeather }: { currentWeather: StationData }) => {
   return (
     <div className="flex gap-2 px-1 flex-col w-[22rem]">
       {dailyActivityArray.map((card, index) => {
-        const recommendation = getActivityRecommendation(
-          card.title,
-          currentWeather
-        );
+        const recommendation = getActivityRecommendation(card.title, currentWeather);
 
         return (
           <Card

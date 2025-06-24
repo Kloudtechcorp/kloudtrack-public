@@ -19,9 +19,7 @@ const CustomTooltip = ({ payload, label }: TooltipProps) => {
     return (
       <Card className="custom-tooltip p-2 rounded-md">
         <p className="font-bold">{`Time: ${label}`}</p>
-        {payload[0] && (
-          <p className="font-bold">{`${payload[0].name}: ${payload[0].value}`}</p>
-        )}
+        {payload[0] && <p className="font-bold">{`${payload[0].name}: ${payload[0].value}`}</p>}
       </Card>
     );
   }
@@ -42,12 +40,10 @@ const chartConfig = {
 const GraphPage = () => {
   const { parameters } = useParams();
 
-  const initialParameter = Array.isArray(parameters)
-    ? parameters[0]
-    : parameters || "temperature";
+  const initialParameter = Array.isArray(parameters) ? parameters[0] : parameters || "temperature";
 
   // Keeping the original capitalization, then mapping to camelCase using dataKeyMap
-  const [selectedParameter, setSelectedParameter] = useState(initialParameter);
+  const [selectedParameter] = useState(initialParameter);
 
   // Match human-readable strings to the camelCase keys
   const dataKeyMap: Record<string, string> = {
@@ -65,46 +61,23 @@ const GraphPage = () => {
     <div className="flex flex-col items-center justify-center">
       <div className="mx-auto container ">
         <div className="bg-[#545454] bg-opacity-5 rounded-md flex flex-col p-4 my-2 gap-3 ">
-          <OptionSelector
-            selectedParameter={selectedParameter}
-            onParameterChange={setSelectedParameter} // No need to convert to lowercase
-          />
+          <OptionSelector />
           <div className="bg-[#FFFFFF] rounded-md ">
-            <ChartContainer
-              config={chartConfig}
-              className="min-h-[150px] justify-center items-center "
-            >
-              {selectedParameter === "UV Index" ||
-              selectedParameter === "Humidity" ? (
-                <BarChart
-                  data={dummyData}
-                  margin={{ top: 30, right: 30, bottom: 15 }}
-                >
+            <ChartContainer config={chartConfig} className="min-h-[150px] justify-center items-center ">
+              {selectedParameter === "UV Index" || selectedParameter === "Humidity" ? (
+                <BarChart data={dummyData} margin={{ top: 30, right: 30, bottom: 15 }}>
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis
-                    dataKey="hour"
-                    tickFormatter={(value) => sliceDetails(0, value)}
-                  />
+                  <XAxis dataKey="hour" tickFormatter={(value) => sliceDetails(0, value)} />
                   <YAxis />
-                  <Tooltip
-                    content={<CustomTooltip payload={[]} label={""} />}
-                  />
+                  <Tooltip content={<CustomTooltip payload={[]} label={""} />} />
                   <Bar dataKey="uvIndex" fill="#FBD008" name="UV Index" />
                 </BarChart>
               ) : (
-                <AreaChart
-                  data={dummyData}
-                  margin={{ top: 30, right: 30, bottom: 15 }}
-                >
+                <AreaChart data={dummyData} margin={{ top: 30, right: 30, bottom: 15 }}>
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis
-                    dataKey="hour"
-                    tickFormatter={(value) => sliceDetails(0, value)}
-                  />
+                  <XAxis dataKey="hour" tickFormatter={(value) => sliceDetails(0, value)} />
                   <YAxis />
-                  <Tooltip
-                    content={<CustomTooltip payload={[]} label={""} />}
-                  />
+                  <Tooltip content={<CustomTooltip payload={[]} label={""} />} />
                   <defs>
                     <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="50%" stopColor="#FBD008" />
