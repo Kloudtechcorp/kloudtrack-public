@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import { ChartContainer, type ChartConfig } from "@/components/ui/chart";
-import { Line, LineChart } from "recharts";
+import { Line, LineChart, XAxis, YAxis, Text } from "recharts";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { HelpCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -56,6 +56,7 @@ const InfoCards = React.memo(() => {
       setLoading(false);
     }
   };
+
   useEffect(() => {
     if (!selectedStation) {
       setError("Station ID not configured");
@@ -105,7 +106,7 @@ const InfoCards = React.memo(() => {
   const relevantCards = infoCardData.filter((card) => card.applicableTypes.includes(weatherData.type));
 
   return (
-    <div className="flex gap-3 px-1 py-32 flex-wrap w-full">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4">
       {relevantCards.map((card, index) => {
         const allReadings = [weatherData.data.current, ...weatherData.data.previous];
         const chartData = formatChartData(allReadings, card.getValue);
@@ -114,72 +115,69 @@ const InfoCards = React.memo(() => {
         return (
           <Card
             key={index}
-            className="p-3 flex bg-[#545454] bg-opacity-5 border-transparent rounded-md w-[23%] hover:bg-opacity-10 transition-all cursor-pointer"
+            className="p-4 bg-gray-800/20 rounded-lg hover:bg-gray-700/30 transition-all cursor-pointer border-none"
+            onClick={() => {
+              setSelectedParameter(card.title);
+              router.push("graphs");
+            }}
           >
-            <div
-              onClick={() => {
-                setSelectedParameter(card.title);
-                router.push("graphs");
-              }}
-            >
-              <div className="flex flex-col justify-center gap-2 w-full">
-                <div className="flex items-center gap-2">
-                  <CardTitle>{card.title}</CardTitle>
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger>
-                        <HelpCircle height={20} width={20} fill="#FDB008" />
-                      </TooltipTrigger>
-                      <TooltipContent className="min-w-40 max-w-64 text-wrap">
-                        <p>{card.tooltip}</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                </div>
-
-                <Card className="p-6 shadow-none bg-[#545454] bg-opacity-10 border-none">
-                  <ChartContainer
-                    config={chartConfig}
-                    className="min-h-[150px] w-full flex justify-center items-center"
-                  >
-                    <LineChart
-                      accessibilityLayer
-                      data={chartData}
-                      margin={{ top: 30, right: 30, bottom: 30, left: 30 }}
-                    >
-                      <Line
-                        dataKey="value"
-                        type="monotone"
-                        stroke="#545454"
-                        strokeWidth={4}
-                        dot={(dotProps) => {
-                          const { index, cx, cy, payload } = dotProps;
-                          const isLastDot = index === chartData.length - 1;
-
-                          return (
-                            <g key={`dot-${index}`}>
-                              <circle r={isLastDot ? 12 : 8} fill={isLastDot ? "#fbd008" : "#545454"} cx={cx} cy={cy} />
-                              <text
-                                x={cx}
-                                y={isLastDot ? cy + 35 : cy + 25}
-                                textAnchor="middle"
-                                fontSize={isLastDot ? 26 : 12}
-                                fontWeight={isLastDot ? 600 : 500}
-                              >
-                                {payload.value}
-                                {card.unit}
-                              </text>
-                            </g>
-                          );
-                        }}
-                      />
-                    </LineChart>
-                  </ChartContainer>
-                </Card>
-
-                <CardTitle>{card.formatDescription(currentValue)}</CardTitle>
-                <CardDescription className="text-black">{card.explanation}</CardDescription>
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center gap-2">
+                <CardTitle className="text-lg font-semibold">{card.title}</CardTitle>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <HelpCircle height={18} width={18} fill="#FDB008" />
+                    </TooltipTrigger>
+                    <TooltipContent className="max-w-64 text-wrap">
+                      <p>{card.tooltip}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </div>
+              <Card className="p-3 bg-gray-800/10 border-none shadow-none">
+                <ChartContainer
+                  config={chartConfig}
+                  className="min-h-[150px] w-full max-w-[250px] flex justify-center items-center"
+                >
+                  <LineChart
+                    accessibilityLayer
+                    data={chartData}
+                    margin={{ top: 10, right: 10, bottom: 20, left: 10 }}
+                  >
+                    <Line
+                      dataKey="value"
+                      type="monotone"
+                      stroke="#FDB008"
+                      strokeWidth={3}
+                      dot={(dotProps) => {
+                        const { index, cx, cy, payload } = dotProps;
+                        const isLastDot = index === chartData.length - 1;
+
+                        return (
+                          <g key={`dot-${index}`}>
+                            <circle r={isLastDot ? 10 : 5} fill={isLastDot ? "#FDB008" : "#888"} cx={cx} cy={cy} />
+                            <Text
+                              x={cx}
+                              y={isLastDot ? cy + 25 : cy + 15}
+                              textAnchor="middle"
+                              fontSize={isLastDot ? 18 : 12}
+                              fontWeight={isLastDot ? 600 : 400}
+                              fill="#FDB008"
+                            >
+                              {`${payload.value}${card.unit}`}
+                            </Text>
+                          </g>
+                        );
+                      }}
+                    />
+                    <XAxis dataKey="time" hide={true} />
+                    <YAxis hide={true} />
+                  </LineChart>
+                </ChartContainer>
+              </Card>
+              <CardTitle className="text-md">{card.formatDescription(currentValue)}</CardTitle>
+              <CardDescription className="text-sm text-gray-300">{card.explanation}</CardDescription>
             </div>
           </Card>
         );

@@ -57,28 +57,36 @@ export default function Home() {
     return <p>Weather data not available for the selected location.</p>;
   }
   return (
-    <div className="flex flex-col container mx-auto">
-      <div className="flex flex-row relative">
-        <div className="w-full z-20 my-2">
-          <SelectedLocation />
-          <div>
-            <div className="flex flex-col mb-2">
-              <span className="font-medium text-2xl">
-                {formatDateString(weatherData.data.recordedAt, "long") || "--"}
-              </span>
-            </div>
-            <div className="flex flex-col">
-              <span className="font-medium text-xl">Feels Like</span>
-              <span className="flex items-start">
-                <span className="font-bold text-9xl">{weatherData.data?.heatIndex || "--"}</span>
-                <span className="font-bold text-7xl text-start">°C</span>
-              </span>
-            </div>
-            <DailyCards currentWeather={weatherData} />
-            <InfoCards />
-          </div>{" "}
+  
+  <div className="flex flex-col container mx-auto p-4 min-h-screen">
+     {/*Header */}
+  <div className="top-0 z-10 bg-black/40 backdrop-blur-sm p-2 rounded-md mb-4">
+    <SelectedLocation />
+    <span className="font-medium text-xl text-white ml-2">
+      {formatDateString(weatherData.data.recordedAt, "long") || "--"}
+    </span>
+    <div className="flex justify-center mb-6">
+        <div className="text-center">
+          <span className="font-medium text-lg text-gray-300">Feels Like</span>
+          <div className="flex items-baseline justify-center">
+            <span className="font-bold text-7xl text-white">{weatherData.data?.heatIndex || "--"}</span>
+            <span className="font-bold text-4xl ml-1 text-white">°C</span>
+          </div>
         </div>
       </div>
+  </div>
+  <div className="flex flex-row gap-8">
+    {/* Main Weather Info (Left Column) */}
+    <div className="w-full flex flex-col p-2 bg-black/30 rounded-lg shadow-lg">
+      <InfoCards />
     </div>
+
+    {/* Daily Forecast (Right Column) */}
+    <div className="w-1/3 bg-black/20 p-4 rounded-lg shadow-md overflow-y-auto h-[60vh]">
+      <h3 className="font-semibold text-lg text-white mb-2">Daily Forecast</h3>
+      <DailyCards currentWeather={weatherData} />
+    </div>
+  </div>
+</div>
   );
 }

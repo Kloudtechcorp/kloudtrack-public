@@ -11,7 +11,7 @@ const DailyActivity = ({ currentWeather }: { currentWeather: StationData }) => {
   }
 
   return (
-    <div className="flex gap-2 px-1 flex-col w-[22rem]">
+    <div className="flex gap-3 px-4 flex-col w-[22rem]">
       {dailyActivityArray.map((card, index) => {
         const recommendation = getActivityRecommendation(card.title, currentWeather);
 
