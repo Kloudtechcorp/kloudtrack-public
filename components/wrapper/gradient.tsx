@@ -11,7 +11,7 @@ export default function GradientWrapper({ children }: { children: ReactNode }) {
 
   return (
     <motion.div
-      className="flex flex-col min-h-screen relative"
+      className="flex flex-col w-screen h-screen fixed top-0 left-0 overflow-auto"
       style={gradientStyles}
       initial={false}
       animate={gradientStyles}

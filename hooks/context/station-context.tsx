@@ -1,8 +1,8 @@
 "use client";
 
 import { StationData } from "@/lib/types";
-import { useToast } from "@/hooks/use-toast";
 import React, { createContext, useContext, useEffect, useState } from "react";
+import { toast } from "sonner";
 
 interface AWSStationsContextProps {
   stations: StationData[] | null;
@@ -22,7 +22,6 @@ const AWSStationsContext = createContext<AWSStationsContextProps | undefined>(
 export const AWSStationsProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const { toast } = useToast();
   const [stations, setStations] = useState<StationData[] | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -96,20 +95,12 @@ export const AWSStationsProvider: React.FC<{ children: React.ReactNode }> = ({
           JSON.stringify(updatedFavorites)
         );
 
-        toast({
-          variant: "creative",
-          title: "Added to Favorites",
-          description: "This station has been added to your favorites.",
-        });
+        toast.success("This station has been added to your favorites.");
 
         return updatedFavorites;
       }
 
-      toast({
-        variant: "destructive",
-        title: "Limit Reached",
-        description: "You can only add up to 3 stations to your favorites.",
-      });
+      toast.error("You can only add up to 3 stations to your favorites.");
 
       return prevFavorites;
     });
@@ -123,10 +114,7 @@ export const AWSStationsProvider: React.FC<{ children: React.ReactNode }> = ({
         JSON.stringify(updatedFavorites)
       );
 
-      toast({
-        title: "Station removed",
-        description: "This station has been removed to your favorites.",
-      });
+      toast.success("This station has been removed to your favorites.");
       return updatedFavorites;
     });
   };

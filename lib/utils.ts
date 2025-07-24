@@ -36,42 +36,49 @@ export const getGradientStyles = ({
 }: {
   heatIndex: number;
   recordedAt?: string;
-}): { background: string } => {
+}): { background: string; color: string } => {
   const isNight = (() => {
     const date = new Date(recordedAt);
     const hour = date.getUTCHours();
     return hour >= 18 || hour < 6;
   })();
 
+  const textColor = isNight ? "white" : "black";
+
   if (heatIndex >= 52) {
     return {
       background: isNight
         ? "linear-gradient(0deg, rgba(255,158,158,1) 0%, rgba(45,45,45,1) 100%)"
         : "linear-gradient(45deg, rgba(255,255,255,1) 0%, rgba(255,158,158,1) 50%, rgba(255,93,63,1) 100%)",
+      color: textColor,
     };
   } else if (heatIndex >= 42 && heatIndex < 52) {
     return {
       background: isNight
         ? "linear-gradient(0deg, rgba(255,206,158,1) 0%, rgba(45,45,45,1) 100%)"
         : "linear-gradient(45deg, rgba(255,255,255,1) 0%, rgba(255,206,158,1) 50%, rgba(255,158,63,1) 100%)",
+      color: textColor,
     };
   } else if (heatIndex > 32 && heatIndex < 42) {
     return {
       background: isNight
         ? "linear-gradient(0deg, rgba(255,236,167,1) 0%, rgba(45,45,45,1) 100%)"
         : "linear-gradient(45deg, rgba(255,255,255,1) 0%, rgba(255,236,167,1) 50%, rgba(255,214,63,1) 100%)",
+      color: textColor,
     };
   } else if (heatIndex >= 27 && heatIndex <= 32) {
     return {
       background: isNight
         ? "linear-gradient(0deg, rgba(255,253,167,1) 0%, rgba(45,45,45,1) 100%)"
         : "linear-gradient(45deg, rgba(255,255,255,1) 0%, rgba(255,253,167,1) 50%, rgba(255,252,112,1) 100%)",
+      color: textColor,
     };
   } else {
     return {
       background: isNight
         ? "linear-gradient(0deg, rgba(144,203,255,1) 0%, rgba(45,45,45,1) 100%)"
         : "linear-gradient(45deg, rgba(255,255,255,1) 0%, rgba(158,232,255,1) 50%, rgba(63,126,255,1) 100%)",
+      color: textColor,
     };
   }
 };
@@ -123,3 +130,28 @@ export const getHumidityLevel = (humidity: number): string => {
   if (humidity < 60) return "Moderate";
   return "High";
 };
+
+export const truncateText = (
+  description: string,
+  maxLength: number,
+  addEllipsis: boolean = true
+): string => {
+  if (!description) return "";
+  if (description.length <= maxLength) return description;
+
+  let truncated = description.substring(0, maxLength);
+  const lastSpaceIndex = truncated.lastIndexOf(" ");
+
+  if (lastSpaceIndex !== -1 && lastSpaceIndex < maxLength - 1) {
+    truncated = truncated.substring(0, lastSpaceIndex);
+  }
+
+  return addEllipsis ? `${truncated}...` : truncated;
+};
+
+export function convertTemperature(value: number, toUnit: "C" | "F"): number {
+  if (toUnit === "F") {
+    return (value * 9) / 5 + 32;
+  }
+  return value;
+}

@@ -9,6 +9,10 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        poppins: ["Poppins", "sans-serif"],
+        montserrat: ["Montserrat", "sans-serif"],
+      },
       container: {
         center: true,
         padding: "2rem",
@@ -76,6 +80,8 @@ const config: Config = {
       },
       animation: {
         "custom-grow-spin": "grow-spin 1.5s ease-in-out forwards",
+        "color-change": "color-change 2s ease-in-out infinite",
+        rotate: "rotate 10s linear infinite",
       },
       keyframes: {
         "grow-spin": {
@@ -88,6 +94,15 @@ const config: Config = {
           "100%": {
             transform: "scale(1)  rotate(90deg)",
           },
+        },
+        "color-change": {
+          "0%": { color: "#ff0000" },
+          "50%": { color: "#00ff00" },
+          "100%": { color: "#0000ff" },
+        },
+        rotate: {
+          "0%": { transform: "rotate(0deg) scale(10)" },
+          "100%": { transform: "rotate(-360deg) scale(10)" },
         },
       },
     },
