@@ -1,6 +1,9 @@
-import { StationData, WeatherData } from "@/lib/types";
+import { StationData } from "@/lib/types";
 
-export const getSuggestion = (title: string, currentWeather: StationData | null) => {
+export const getSuggestion = (
+  title: string,
+  currentWeather: StationData | null
+) => {
   if (!currentWeather) {
     return { description: "No data", color: "gray-500" };
   }
@@ -61,7 +64,10 @@ export const getSuggestion = (title: string, currentWeather: StationData | null)
       return { description: "Suggested", color: "orange-500" };
 
     case "Sunscreen":
-      if (currentWeather.data.uvIndex === 0 && currentWeather.data.heatIndex < 25)
+      if (
+        currentWeather.data.uvIndex === 0 &&
+        currentWeather.data.heatIndex < 25
+      )
         return { description: "Not Required", color: "green-500" };
       if (
         currentWeather.data.uvIndex <= 2 &&
@@ -81,7 +87,10 @@ export const getSuggestion = (title: string, currentWeather: StationData | null)
         currentWeather.data.heatIndex <= 40
       )
         return { description: "Highly Recommended", color: "red-500" };
-      if (currentWeather.data.uvIndex >= 8 && currentWeather.data.heatIndex > 40)
+      if (
+        currentWeather.data.uvIndex >= 8 &&
+        currentWeather.data.heatIndex > 40
+      )
         return { description: "Mandatory", color: "purple-500" };
       return { description: "Optional", color: "yellow-500" };
 
@@ -170,7 +179,10 @@ export const getSuggestion = (title: string, currentWeather: StationData | null)
       return { description: "Manageable", color: "yellow-500" };
 
     case "Heat Stroke":
-      if (currentWeather.data.temperature < 25 && currentWeather.data.humidity < 50)
+      if (
+        currentWeather.data.temperature < 25 &&
+        currentWeather.data.humidity < 50
+      )
         return { description: "Unlikely", color: "green-500" };
       if (
         currentWeather.data.temperature >= 25 &&
@@ -193,7 +205,10 @@ export const getSuggestion = (title: string, currentWeather: StationData | null)
         currentWeather.data.humidity <= 80
       )
         return { description: "High Risk", color: "red-500" };
-      if (currentWeather.data.temperature > 40 && currentWeather.data.humidity > 80)
+      if (
+        currentWeather.data.temperature > 40 &&
+        currentWeather.data.humidity > 80
+      )
         return { description: "Severe Risk", color: "purple-500" };
       return { description: "Low Risk", color: "yellow-500" };
 
