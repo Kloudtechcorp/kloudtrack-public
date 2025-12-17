@@ -8,6 +8,7 @@ import { useWeather } from "@/hooks/context/weather-context";
 import { StationData } from "@/lib/types";
 import { formatDateString } from "@/lib/utils";
 import { useEffect, useState } from "react";
+import { fetchStationData } from "@/lib/services/stationService";
 
 export default function Home() {
   const { setWeatherParams } = useWeather();
@@ -19,17 +20,7 @@ export default function Home() {
 
     const fetchWeatherData = async () => {
       try {
-        const response = await fetch(`https://app.kloudtechsea.com/api/v1/get/station/${selectedStation}`, {
-          headers: {
-            "x-kloudtrack-key": "6LHB-G2R6-XJQI-4JN4",
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch weather data");
-        }
-
-        const stationData = await response.json();
+        const stationData = await fetchStationData(selectedStation);
         setWeatherData(stationData);
 
         if (stationData.data) {
