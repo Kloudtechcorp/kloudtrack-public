@@ -1,5 +1,5 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import TerminologyCard from "../custom/cards/terminology-card";
+import TerminologyCard from "./terminology-card";
 import { commonArray, rainfallWarningArray, floodWarningArray, tropicalCycloneArray } from "@/lib/objects/arrays";
 // import { SwitchLanguage } from "../ui/switchLanguage";
 

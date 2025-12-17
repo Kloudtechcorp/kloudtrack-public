@@ -1,6 +1,6 @@
 "use client";
 
-import Terminology from "@/components/shared/terminology";
+import Terminology from "@/components/custom/terminology/terminology";
 
 export default function Home() {
   return (

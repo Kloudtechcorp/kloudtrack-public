@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Card } from "./card";
+import { Card } from "../../ui/card";
 import { useParameterContext } from "@/hooks/context/parameters-context";
 import { parametersArray } from "@/lib/objects/arrays";
 

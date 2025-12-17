@@ -1,8 +1,8 @@
 "use client";
 
-import DailyCards from "@/components/custom/cards/daily-card";
-import InfoCards from "@/components/custom/cards/info-card";
-import SelectedLocation from "@/components/shared/selected-location";
+import DailyCards from "@/components/custom/dashboard/daily-card";
+import InfoCards from "@/components/custom/dashboard/info-card";
+import SelectedLocation from "@/components/custom/dashboard/selected-location";
 import { useAWSStations } from "@/hooks/context/station-context";
 import { useWeather } from "@/hooks/context/weather-context";
 import { StationData } from "@/lib/types";

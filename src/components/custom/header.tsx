@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import Image from "next/image";
-import { CustomComboBox } from "../custom/combo-box";
+import { CustomComboBox } from "./combo-box";
 import { Switch } from "@/components/ui/switch";
 import { useRouter } from "next/navigation";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";

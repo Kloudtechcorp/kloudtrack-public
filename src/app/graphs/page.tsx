@@ -1,7 +1,7 @@
 "use client";
 
 import { XAxis, YAxis, CartesianGrid, Tooltip, Area, Bar } from "recharts";
-import OptionSelector from "@/components/ui/optionSelector";
+import OptionSelector from "@/components/custom/graph/optionSelector";
 import { ChartConfig, ChartContainer } from "@/components/ui/chart";
 import { AreaChart, BarChart } from "recharts";
 import { Card } from "@/components/ui/card";

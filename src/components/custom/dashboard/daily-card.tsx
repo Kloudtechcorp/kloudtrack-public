@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
-import DailyActivities from "../../shared/daily-activity";
-import DailySuggestions from "../../shared/daily-suggestion";
+import DailyActivities from "./daily-activity";
+import DailySuggestions from "./daily-suggestion";
 import { StationData } from "@/lib/types";
 
 const DailyCards = ({ currentWeather }: { currentWeather: StationData }) => {
