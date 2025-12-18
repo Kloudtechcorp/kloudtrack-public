@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { fetchStationLatestTelemetry } from "@/lib/services/stationService";
 import type { TelemetryPublicDTO } from "@/lib/types/telemetry";
-import { Sun, Cloud, Wind, Droplet, Thermometer, Gauge } from "lucide-react";
+import { Cloud, CloudSun, Navigation } from "lucide-react";
+import { formatDate } from "@/lib/utils/date-formatter";
 
 interface CurrentWeatherCardProps {
   stationPublicId: string;
@@ -70,35 +71,101 @@ const StationCurrentWeatherCard: React.FC<CurrentWeatherCardProps> = ({ stationP
 
   // MSN Weather-inspired card layout
   return (
-    <div className="w-full h-full rounded-2xl shadow-lg bg-white/10 backdrop-blur-md backdrop-brightness-110 border border-white/20 text-white p-6 flex flex-col items-center min-h-[340px] min-w-[300px]">
-      <div className="flex flex-col items-center mb-4">
-        <div className="flex items-center gap-2">
-          <Sun size={40} color={iconColor} />
-          <span className="text-3xl font-bold">{telemetry.temperature ?? '--'}°C</span>
+    <>
+      <div className="flex flex-col h-full justify-between mb-4 text-white gap-2 py-8 px-6">
+        
+        <div className="flex-1 flex flex-col gap-6">
+          <div>
+            <p>Current Weather</p>
+            <p className="text-xs opacity-70">{formatDate(telemetry.recordedAt).formatted} ({formatDate(telemetry.recordedAt).relative})</p>
+          </div>
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between mt-4">
+            <div className="flex items-center">
+              <CloudSun size={64} color={iconColor} />
+              <div className="ml-4 flex">
+                <div className="flex">
+                  {telemetry.temperature != null ? (
+                    <>
+                      <span className="text-6xl font-bold">{Math.round(telemetry.temperature)}</span>
+                      <span className="text-3xl font-bold">°C</span>
+                    </>
+                  ) : (
+                    <span className="text-6xl font-bold">N/A</span>
+                  )}
+                </div>
+                <div className="ml-6 flex flex-col items-end justify-end text-md ">
+                  <p>
+                    <span className="opacity-70">
+                      Feels Like 
+                    </span>
+                    <span className="opacity-100 ml-1">
+                      {telemetry.heatIndex != null ? `${Math.round(telemetry.heatIndex)}°C` : "N/A"}
+                    </span>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div className="text-lg font-semibold mt-2">{station.stationName}</div>
-        <div className="text-xs opacity-80">{station.city}, {station.state}, {station.country}</div>
-        <div className="text-xs opacity-70 mt-1">{new Date(telemetry.recordedAt).toLocaleString()}</div>
+
+        <div className="flex flex-row justify-between mt-6 flex-wrap gap-4">
+
+          {/* Humidity */}
+          <div className="flex flex-col">
+            <span className="opacity-70 text-xs">Humidity</span>
+            <span className="text-md">{telemetry.humidity != null ? `${Math.round(telemetry.humidity)}%` : "N/A"}</span>
+          </div>
+
+          {/* Pressure */}
+          <div className="flex flex-col">
+            <span className="opacity-70 text-xs">Pressure</span>
+            <span className="text-md">{telemetry.pressure != null ? `${Math.round(telemetry.pressure)} hPa` : "N/A"}</span>
+          </div>
+
+          {/* Wind Speed and Direction */}
+          <div className="flex flex-col">
+            <span className="opacity-70 text-xs">Wind</span>
+            <span className="flex items-center gap-1 text-sm">
+              {/* Wind Speed */}
+
+              {telemetry.windSpeed != null ? `${Math.round(telemetry.windSpeed)} m/s` : "N/A"}
+              {/* Wind Direction Icon */}
+              {typeof telemetry.windDirection === 'number' && (
+                <Navigation
+                  size={14}
+                  style={{ transform: `rotate(${telemetry.windDirection - 45}deg)` }}
+                  className="ml-1 transition-transform duration-300"
+                  aria-label={`Wind direction: ${Math.round(telemetry.windDirection)}°`}
+                />
+              )}
+              {/* Wind Direction Value */}
+              {/* {typeof telemetry.windDirection === 'number' && (
+                <span className="ml-1">{`${Math.round(telemetry.windDirection)}°`}</span>
+              )} */}
+            </span>
+        </div>
+
+          {/* Precipitation */}
+          <div className="flex flex-col">
+            <span className="opacity-70 text-xs">Precipitation</span>
+            <span className="text-md">{telemetry.precipitation != null ? `${Math.round(telemetry.precipitation)} mm` : "N/A"}</span>
+          </div>
+
+          {/* UV Index */}
+          <div className="flex flex-col">
+            <span className="opacity-70 text-xs">UV Index</span>
+            <span className="text-md">{telemetry.uvIndex != null ? `${Math.round(telemetry.uvIndex)}` : "N/A"}</span>
+          </div>
+
+          {/* Light Intensity */}
+          <div className="flex flex-col">
+            <span className="opacity-70 text-xs">Light Intensity</span>
+            <span className="text-md">{telemetry.lightIntensity != null ? `${Math.round(telemetry.lightIntensity)} lx` : "N/A"}</span>
+          </div>
+
+        </div>
       </div>
-      <div className="grid grid-cols-2 gap-4 w-full mt-2">
-        <div className="flex items-center gap-2">
-          <Droplet size={20} color={iconColor} />
-          <span className="text-sm">{telemetry.humidity ?? '--'}%</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <Wind size={20} color={iconColor} />
-          <span className="text-sm">{telemetry.windSpeed ?? '--'} km/h</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <Thermometer size={20} color={iconColor} />
-          <span className="text-sm">{telemetry.heatIndex ?? '--'}°C</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <Gauge size={20} color={iconColor} />
-          <span className="text-sm">{telemetry.pressure ?? '--'} hPa</span>
-        </div>
-      </div>
-    </div>
+    </>
   );
 };
 
