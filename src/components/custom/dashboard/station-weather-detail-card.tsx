@@ -133,9 +133,15 @@ const StationWeatherDetailCard: React.FC<StationWeatherDetailCardProps> = ({ gro
     return true;
   });
 
+  // Reverse the readings to show old to new
+  const reversedGrouped = filteredGrouped.map(([key, readings]) => [
+    key,
+    [...readings].reverse()
+  ] as [string, Reading[]]);
+
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-      {filteredGrouped.map(([key, readings]) => {
+      {reversedGrouped.map(([key, readings]) => {
         if (!readings.length) return null;
         const latest = readings[readings.length - 1];
         const color = readingColors[key] || "#38bdf8";
