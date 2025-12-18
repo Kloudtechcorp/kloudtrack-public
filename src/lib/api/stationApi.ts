@@ -6,6 +6,8 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://app.kloudt
 async function fetchJson<T>(path: string): Promise<T> {
   const url = `${API_BASE_URL}${path}`;
   const response = await fetch(url);
+
+  console.log(`JSON Response:`, await response.clone().json());
   
   if (!response.ok) {
     throw new Error(`API request failed: ${response.status} ${response.statusText}`);
@@ -23,7 +25,9 @@ async function fetchJson<T>(path: string): Promise<T> {
 }
 
 export async function getStationList(): Promise<StationPublicInfo[]> {
-  return fetchJson<StationPublicInfo[]>(`/telemetry/stations`);
+  const result = await fetchJson<StationPublicInfo[]>(`/telemetry/stations`);
+  console.log("getStationList raw result:", result);
+  return result;
 }
 
 export async function getStationLatestTelemetry(stationPublicId: string) {

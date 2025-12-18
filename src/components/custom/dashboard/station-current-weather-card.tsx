@@ -26,12 +26,9 @@ const StationCurrentWeatherCard: React.FC<CurrentWeatherCardProps> = ({ stationP
         setError(null);
         const data = await fetchStationLatestTelemetry(stationPublicId);
         const typedData = data as TelemetryPublicDTO;
-        console.log("Fetched telemetry:", typedData);
-        console.log("Telemetry data type:", typedData.telemetry );
         setData(typedData);  
         setLoading(false);
       } catch (err) {
-        console.error("Error fetching telemetry:", err);
         setError("Failed to load telemetry data.");
       }
     }
@@ -73,7 +70,7 @@ const StationCurrentWeatherCard: React.FC<CurrentWeatherCardProps> = ({ stationP
 
   // MSN Weather-inspired card layout
   return (
-    <div className="w-full rounded-2xl shadow-lg bg-white/10 backdrop-blur-md backdrop-brightness-110 border border-white/20 text-white p-6 flex flex-col items-center min-h-[300px] min-w-[250px]">
+    <div className="w-full h-full rounded-2xl shadow-lg bg-white/10 backdrop-blur-md backdrop-brightness-110 border border-white/20 text-white p-6 flex flex-col items-center min-h-[340px] min-w-[300px]">
       <div className="flex flex-col items-center mb-4">
         <div className="flex items-center gap-2">
           <Sun size={40} color={iconColor} />
