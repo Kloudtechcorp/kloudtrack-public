@@ -2,11 +2,11 @@ import { ParameterProvider } from "../hooks/context/parameters-context";
 import type { Metadata } from "next";
 import "./globals.css";
 import { Montserrat } from "next/font/google";
-import Header from "@/components/custom/header";
+import Header from "@/components/custom/shared/header";
 import { AWSStationsProvider } from "@/hooks/context/station-context";
 import { Toaster } from "@/components/ui/toaster";
 import { WeatherProvider } from "@/hooks/context/weather-context";
-import GradientWrapper from "@/components/custom/gradient";
+import GradientWrapper from "@/components/custom/shared/gradient";
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 

@@ -1,75 +1,63 @@
 "use client";
+import { useState, useEffect } from "react";
+import { fetchStationList } from "@/lib/services/stationService"; 
+import { StationPublicInfo } from "@/lib/types/telemetry";
+import SubHeader from "@/components/custom/shared/sub-header";
+import StationCurrentWeatherCard from "@/components/custom/dashboard/station-current-weather-card";
+import StationMapboxLocation from "@/components/custom/dashboard/station-mapbox-location";
 
-import DailyCards from "@/components/custom/dashboard/daily-card";
-import InfoCards from "@/components/custom/dashboard/info-card";
-import SelectedLocation from "@/components/custom/dashboard/selected-location";
-import { useAWSStations } from "@/hooks/context/station-context";
-import { useWeather } from "@/hooks/context/weather-context";
-import { StationData } from "@/lib/types";
-import { formatDateString } from "@/lib/utils";
-import { useEffect, useState } from "react";
-import { fetchStationData } from "@/lib/services/stationService";
+
 
 export default function Home() {
-  const { setWeatherParams } = useWeather();
-  const { selectedStation } = useAWSStations();
-  const [weatherData, setWeatherData] = useState<StationData | null>(null);
+  const [stations, setStations] = useState<StationPublicInfo[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedStation, setSelectedStation] = useState<StationPublicInfo | null>(null);
 
   useEffect(() => {
-    if (!selectedStation) return;
-
-    const fetchWeatherData = async () => {
+    async function loadStations() {
       try {
-        const stationData = await fetchStationData(selectedStation);
-        setWeatherData(stationData);
-
-        if (stationData.data) {
-          setWeatherParams({
-            heatIndex: stationData.data.heatIndex || 0,
-            recordedAt: stationData.data.recordedAt || "",
-          });
+        const data = await fetchStationList();
+        console.log("Fetched stations:", data);
+        setStations(data);
+        if (data && data.length > 0) {
+          setSelectedStation(data[0]);
         }
+
       } catch (error) {
-        console.error(error);
+        console.error("Error fetching stations:", error);
+      } finally {
+        setLoading(false);
       }
-    };
+    }
 
-    fetchWeatherData();
-    const intervalId = setInterval(fetchWeatherData, 5000);
+    loadStations();
+  }, []);
 
-    return () => clearInterval(intervalId);
-  }, [selectedStation, setWeatherParams]);
+    console.log("Selected", selectedStation)
 
-  if (!selectedStation) {
-    return <div>Loading...</div>;
-  }
+  const handleStationChange = (stationId: string) => {
+    setSelectedStation(stations.find(s => s.stationPublicId === stationId) || null);
+  };
 
-  if (!weatherData || !weatherData.data) {
-    return <p>Weather data not available for the selected location.</p>;
-  }
+  if (loading) return <div>Loading...</div>;
+
   return (
-    <div className="flex flex-col container mx-auto">
-      <div className="flex flex-row relative">
-        <div className="w-full z-20 my-2">
-          <SelectedLocation />
-          <div>
-            <div className="flex flex-col mb-2">
-              <span className="font-medium text-2xl">
-                {formatDateString(weatherData.data.recordedAt, "long") || "--"}
-              </span>
-            </div>
-            <div className="flex flex-col">
-              <span className="font-medium text-xl">Feels Like</span>
-              <span className="flex items-start">
-                <span className="font-bold text-9xl">{weatherData.data?.heatIndex || "--"}</span>
-                <span className="font-bold text-7xl text-start">°C</span>
-              </span>
-            </div>
-            <DailyCards currentWeather={weatherData} />
-            <InfoCards />
-          </div>{" "}
+    <>
+      <SubHeader
+        stations={stations}
+        selectedStation={selectedStation ? selectedStation.stationPublicId : ""}
+        onStationChange={handleStationChange}
+      />
+      <div className="max-w-7xl mx-auto w-full">
+        <div className="flex w-full my-12">
+          <div className="w-1/2 min-h-0">
+            <StationCurrentWeatherCard stationPublicId={selectedStation ? selectedStation.stationPublicId : ""} />
+          </div>
+          <div className="w-1/2">
+            <StationMapboxLocation location={selectedStation ? selectedStation.location as [number, number] : null} />
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
