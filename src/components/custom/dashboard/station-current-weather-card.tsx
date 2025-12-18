@@ -26,8 +26,7 @@ const StationCurrentWeatherCard: React.FC<CurrentWeatherCardProps> = ({ stationP
         setLoading(true);
         setError(null);
         const data = await fetchStationLatestTelemetry(stationPublicId);
-        const typedData = data as TelemetryPublicDTO;
-        setData(typedData);  
+        setData(data);  
         setLoading(false);
       } catch (err) {
         setError("Failed to load telemetry data.");

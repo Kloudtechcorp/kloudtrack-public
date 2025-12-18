@@ -5,6 +5,7 @@ import { StationPublicInfo } from "@/lib/types/telemetry";
 import SubHeader from "@/components/custom/shared/sub-header";
 import StationCurrentWeatherCard from "@/components/custom/dashboard/station-current-weather-card";
 import StationMapboxLocation from "@/components/custom/dashboard/station-mapbox-location";
+import StationWeatherDetail from "@/components/custom/dashboard/station-weather-detail";
 
 export default function Home() {
   const [stations, setStations] = useState<StationPublicInfo[]>([]);
@@ -41,9 +42,18 @@ export default function Home() {
         selectedStation={selectedStation ? selectedStation.stationPublicId : ""}
         onStationChange={handleStationChange}
       />
-      <div className="max-w-7xl mx-auto w-full">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 my-12">
+      <div className="max-w-7xl mx-auto w-full flex flex-col gap-4 mt-8">
+        <div className="text-white text-xl">
+          <p>
+            {selectedStation
+              ? [selectedStation.city, selectedStation.state, selectedStation.country]
+                  .filter(v => typeof v === "string" && v.trim() !== "")
+                  .join(", ")
+              : "Select a station"}
+          </p>
+        </div>
 
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           <div className="h-[300px] w-full rounded-xl overflow-hidden shadow-lg bg-white/10 backdrop-blur-md backdrop-brightness-110 border border-white/20 ">
             <StationCurrentWeatherCard 
               stationPublicId={selectedStation ? selectedStation.stationPublicId : ""} 
@@ -55,9 +65,13 @@ export default function Home() {
                 location={selectedStation ? selectedStation.location as [number, number] : null} 
               />
             </div>
-            
           </div>
         </div>
+
+        <StationWeatherDetail 
+          stationPublicId={selectedStation ? selectedStation.stationPublicId : ""} 
+          stationType={selectedStation ? selectedStation.stationType : undefined} 
+        />
       </div>
     </>
   );
