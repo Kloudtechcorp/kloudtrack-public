@@ -1,5 +1,13 @@
+
 import React from "react";
 import { StationPublicInfo } from "@/lib/types/telemetry";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem
+} from "@/components/ui/select";
 
 interface SubHeaderProps {
   stations: StationPublicInfo[];
@@ -20,19 +28,20 @@ const SubHeader: React.FC<SubHeaderProps> = ({ stations, selectedStation, onStat
         px-4
       "
     >
-      <span className="font-semibold mr-4">Station:</span>
-      <select
-        className="border p-2 mr-4 bg-slate-800 text-white rounded"
-        value={selectedStation}
-        onChange={e => onStationChange(e.target.value)}
-      >
-        <option value="">Select Station</option>
-        {stations.map((station) => (
-          <option key={station.stationPublicId} value={station.stationPublicId}>
-            {station.stationName}
-          </option>
-        ))}
-      </select>
+      <div className="max-w-7xl mx-auto w-full flex items-center">
+        <Select value={selectedStation} onValueChange={onStationChange}>
+          <SelectTrigger className="w-[300px] rounded-xl mr-4 bg-white/10 backdrop-blur-md backdrop-brightness-110 border border-white/40 text-white">
+            <SelectValue placeholder="Select Station" />
+          </SelectTrigger>
+          <SelectContent>
+            {stations.map((station) => (
+              <SelectItem key={station.stationPublicId} value={station.stationPublicId}>
+                {station.stationName}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
     </div>
   );
 };
