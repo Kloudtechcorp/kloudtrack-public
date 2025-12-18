@@ -26,9 +26,9 @@ const StationWeatherDetail: React.FC<StationWeatherDetailProps> = ({ stationPubl
         if (data && data.telemetry) {
           const categories = [
             "temperature",
+            "heatIndex",
             "humidity",
             "pressure",
-            "heatIndex",
             "windDirection",
             "windSpeed",
             "precipitation",

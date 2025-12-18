@@ -127,14 +127,14 @@ const WindCompass: React.FC<{ value: number | null }> = ({ value }) => {
 const StationWeatherDetailCard: React.FC<StationWeatherDetailCardProps> = ({ grouped, stationType }) => {
   // Filter out distance and lightIntensity for WEATHERSTATION type
   const filteredGrouped = Object.entries(grouped).filter(([key]) => {
-    if (stationType === "WEATHERSTATION" && (key === "distance" || key === "lightIntensity")) {
+    if (stationType === "WEATHERSTATION" && (key === "distance")) {
       return false;
     }
     return true;
   });
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+    <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
       {filteredGrouped.map(([key, readings]) => {
         if (!readings.length) return null;
         const latest = readings[readings.length - 1];
