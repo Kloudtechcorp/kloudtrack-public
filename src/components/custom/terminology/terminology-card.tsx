@@ -5,7 +5,7 @@ const TerminologyCard: React.FC<WeatherItem & { color?: string; category?: strin
     <div
       className="flex flex-col p-5 gap-3 bg-white/10 backdrop-blur-md backdrop-brightness-110 border border-white/20 rounded-xl shadow-sm h-60 transition-all duration-300 hover:shadow-md"
       onMouseEnter={(e) => { if (color) e.currentTarget.style.borderColor = color; }}
-      onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'var(--border)'; }}
+      onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)'; }}
     >
       <div className="flex items-start justify-between gap-2">
         <h4 className="font-semibold text-lg leading-tight">{term}</h4>
