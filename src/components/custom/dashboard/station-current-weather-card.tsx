@@ -127,7 +127,7 @@ const StationCurrentWeatherCard: React.FC<CurrentWeatherCardProps> = ({ stationP
             <span className="flex items-center gap-1 text-sm">
               {/* Wind Speed */}
 
-              {telemetry.windSpeed != null ? `${Math.round(telemetry.windSpeed)} m/s` : "N/A"}
+              {telemetry.windSpeed != null ? `${Math.round(telemetry.windSpeed)} km/h` : "N/A"}
               {/* Wind Direction Icon */}
               {typeof telemetry.windDirection === 'number' && (
                 <Navigation

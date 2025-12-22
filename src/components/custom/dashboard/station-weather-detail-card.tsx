@@ -28,7 +28,7 @@ const readingLabels: Record<string, string> = {
   pressure: "Pressure (hPa)",
   heatIndex: "Heat Index (°C)",
   windDirection: "Wind Direction (°)",
-  windSpeed: "Wind Speed (m/s)",
+  windSpeed: "Wind Speed (km/h)",
   precipitation: "Precipitation (mm)",
   uvIndex: "UV Index",
   distance: "Distance (cm)",
