@@ -3,6 +3,7 @@
 import { StationData } from "@/lib/types";
 import { useToast } from "@/hooks/use-toast";
 import React, { createContext, useContext, useEffect, useState } from "react";
+import { fetchAWSStations } from "@/lib/services/stationService";
 
 interface AWSStationsContextProps {
   stations: StationData[] | null;
@@ -34,20 +35,8 @@ export const AWSStationsProvider: React.FC<{ children: React.ReactNode }> = ({
   useEffect(() => {
     const fetchStations = async () => {
       try {
-        const response = await fetch(
-          "https://app.kloudtechsea.com/api/v1/get/stations/aws",
-          {
-            headers: {
-              "x-kloudtrack-key": "6LHB-G2R6-XJQI-4JN4",
-            },
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error(`Failed to fetch data: ${response.statusText}`);
-        }
-
-        const data: StationData[] = await response.json();
+        setLoading(true);
+        const data: StationData[] = await fetchAWSStations();
         setStations(data);
         setError(null);
       } catch (err) {

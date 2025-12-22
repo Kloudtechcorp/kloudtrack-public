@@ -1,5 +1,5 @@
 import { EllipsisVertical } from "lucide-react";
-import { Card } from "../ui/card";
+import { Card } from "@/components/ui/card";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import React from "react";

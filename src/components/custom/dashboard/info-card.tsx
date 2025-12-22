@@ -7,12 +7,8 @@ import { HelpCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useParameterContext } from "@/hooks/context/parameters-context";
 import { useAWSStations } from "@/hooks/context/station-context";
-import {
-  InfoCardChartDataPoint,
-  infoCardData,
-  InfoCardStationData,
-  InfoCardWeatherData,
-} from "@/lib/objects/info-card-data";
+import { InfoCardChartDataPoint, infoCardData, InfoCardStationData, InfoCardWeatherData } from "@/lib/objects/info-card-data";
+import { fetchStationTree } from "@/lib/services/stationService";
 
 const chartConfig = {
   desktop: {
@@ -36,17 +32,7 @@ const InfoCards = React.memo(() => {
   const fetchWeatherData = async (selectedStation: string) => {
     try {
       setLoading(true);
-      const response = await fetch(`https://app.kloudtechsea.com/api/v1/get/station/${selectedStation}/tree`, {
-        headers: {
-          "x-kloudtrack-key": process.env.NEXT_PUBLIC_API_KEY || "6LHB-G2R6-XJQI-4JN4",
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`Error: ${response.status} - ${response.statusText}`);
-      }
-      const data: InfoCardStationData = await response.json();
-      console.log(data);
+      const data: InfoCardStationData = await fetchStationTree(selectedStation);
       setWeatherData(data);
       setError(null);
     } catch (err) {
