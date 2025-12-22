@@ -20,6 +20,7 @@ export default function Home() {
         if (data && data.length > 0) {
           setSelectedStation(data[0]);
         }
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching stations:", error);
       } finally {
