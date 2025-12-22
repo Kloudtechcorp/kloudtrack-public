@@ -57,14 +57,14 @@ const WindCompass: React.FC<{ value: number | null }> = ({ value }) => {
 
   if (value === null) {
     return (
-      <div className="flex items-center justify-center h-[180px] text-gray-500">
+      <div className="flex items-center justify-center h-45 text-gray-500">
         No data available
       </div>
     );
   }
 
   return (
-    <div className="flex items-center justify-center h-[180px]">
+    <div className="flex items-center justify-center h-45">
       <div className="relative w-40 h-40">
         {/* Compass circle */}
         <svg className="w-full h-full" viewBox="0 0 100 100">

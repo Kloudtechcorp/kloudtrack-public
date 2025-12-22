@@ -25,7 +25,7 @@ const TerminologyTabs: React.FC = () => {
       </TabsList>
       {/* All Tab */}
       <TabsContent value="All">
-        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
+        <div className="grid gap-4 grid-cols-2 lg:grid-cols-3">
           {allItems.map((item, idx) => (
             <TerminologyCard key={`all-${idx}`} {...item} />
           ))}
@@ -34,7 +34,7 @@ const TerminologyTabs: React.FC = () => {
       {/* Group Tabs */}
       {groupKeys.map((key) => (
         <TabsContent key={key} value={key}>
-          <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
+          <div className="grid gap-4 grid-cols-2 lg:grid-cols-3">
             {WEATHER_REFERENCES[key].map((item, idx) => (
               <TerminologyCard key={`${key}-${idx}`} {...item} category={key} />
             ))}
