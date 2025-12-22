@@ -10,6 +10,7 @@ import {
   CartesianGrid,
   LabelList
 } from "recharts";
+import { getWeatherMetricInfo, getWindDirection } from "@/lib/weather-utils";
 
 interface Reading {
   recordedAt: string;
@@ -19,41 +20,11 @@ interface Reading {
 
 interface StationWeatherDetailCardProps {
   grouped: Record<string, Reading[]>;
-  stationType?: string; // Add this prop
+  stationType?: string;
 }
 
-const readingLabels: Record<string, string> = {
-  temperature: "Temperature (°C)",
-  humidity: "Humidity (%)",
-  pressure: "Pressure (hPa)",
-  heatIndex: "Heat Index (°C)",
-  windDirection: "Wind Direction (°)",
-  windSpeed: "Wind Speed (km/h)",
-  precipitation: "Precipitation (mm)",
-  uvIndex: "UV Index",
-  distance: "Distance (cm)",
-  lightIntensity: "Light Intensity (lx)"
-};
-
-const readingColors: Record<string, string> = {
-  temperature: "#ef4444",      // Red
-  humidity: "#3b82f6",          // Blue
-  pressure: "#a855f7",          // Purple
-  heatIndex: "#f97316",         // Orange
-  windDirection: "#06b6d4",     // Cyan
-  windSpeed: "#06b6d4",         // Cyan
-  precipitation: "#3b82f6",     // Blue
-  uvIndex: "#eab308",           // Yellow
-  distance: "#10b981",          // Green
-  lightIntensity: "#f59e0b"     // Amber
-};
-
 const WindCompass: React.FC<{ value: number | null }> = ({ value }) => {
-  const directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
-  const getDirection = (deg: number) => {
-    const index = Math.round(deg / 45) % 8;
-    return directions[index];
-  };
+  const windDirectionColor = getWeatherMetricInfo('windDirection').color;
 
   if (value === null) {
     return (
@@ -110,15 +81,15 @@ const WindCompass: React.FC<{ value: number | null }> = ({ value }) => {
           className="absolute inset-0 flex items-center justify-center"
           style={{ transform: `rotate(${value - 45}deg)` }}
         >
-          <Navigation style={{ color: readingColors.windDirection }} size={32} />
+          <Navigation style={{ color: windDirectionColor }} size={32} />
         </div>
         
         {/* Center display */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none mt-16">
+        {/* <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none mt-16">
           <div className="text-sm text-gray-400">
-            {getDirection(value)}
+            {getWindDirection(value)}
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );
@@ -144,14 +115,19 @@ const StationWeatherDetailCard: React.FC<StationWeatherDetailCardProps> = ({ gro
       {reversedGrouped.map(([key, readings]) => {
         if (!readings.length) return null;
         const latest = readings[readings.length - 1];
-        const color = readingColors[key] || "#38bdf8";
+        const { label, color, unit } = getWeatherMetricInfo(key);
         
         return (
           <div key={key} className="bg-white/10 backdrop-blur-md backdrop-brightness-110 border border-white/20 rounded-lg p-4 shadow">
             <div className="flex justify-between items-center mb-2">
-              <span className="font-semibold text-white">{readingLabels[key] || key}</span>
+              <span className="font-semibold text-white">{label}</span>
               <span className="text-lg font-bold" style={{ color }}>
-                {latest.value !== null ? latest.value : "N/A"}
+                {key === "windDirection"
+                  ? latest.value !== null
+                    ? `${latest.value}° ${getWindDirection(latest.value)}`
+                    : "N/A"
+                  : (latest.value !== null ? `${latest.value} ${unit}` : "N/A")
+                }
               </span>
             </div>
             
