@@ -1,12 +1,12 @@
 import { ParameterProvider } from "../hooks/context/parameters-context";
 import type { Metadata } from "next";
-import "./globals.css";
 import { Montserrat } from "next/font/google";
 import Header from "@/components/custom/shared/header";
 import { AWSStationsProvider } from "@/hooks/context/station-context";
 import { Toaster } from "@/components/ui/toaster";
 import { WeatherProvider } from "@/hooks/context/weather-context";
 import GradientWrapper from "@/components/custom/shared/gradient";
+import "./globals.css";
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="dark">
       <body className={montserrat.className}>
         <AWSStationsProvider>
           <ParameterProvider>

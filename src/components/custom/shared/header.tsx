@@ -5,6 +5,7 @@ import { CustomComboBox } from "./combo-box";
 import { Switch } from "@/components/ui/switch";
 import { useRouter } from "next/navigation";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { BookOpen } from "lucide-react";
 
 const Header = () => {
   const router = useRouter();
@@ -16,6 +17,7 @@ const Header = () => {
           <span className="cursor-pointer" onClick={() => router.push("/")}>
             <p style={{ color: "#ffffff"}} className="font-bold text-2xl">Kloud<span style={{ color: "#fbd008" }}>Track</span></p>
           </span>
+          <BookOpen className="cursor-pointer" size={24} color="#ffffff" onClick={() => router.push("/terminologies")} />
         </div>
       </div>
     </div>
