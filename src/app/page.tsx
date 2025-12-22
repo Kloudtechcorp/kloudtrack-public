@@ -1,75 +1,79 @@
 "use client";
-
-import DailyCards from "@/components/custom/dashboard/daily-card";
-import InfoCards from "@/components/custom/dashboard/info-card";
-import SelectedLocation from "@/components/custom/dashboard/selected-location";
-import { useAWSStations } from "@/hooks/context/station-context";
-import { useWeather } from "@/hooks/context/weather-context";
-import { StationData } from "@/lib/types";
-import { formatDateString } from "@/lib/utils";
-import { useEffect, useState } from "react";
-import { fetchStationData } from "@/lib/services/stationService";
+import { useState, useEffect } from "react";
+import { fetchStationList } from "@/lib/services/stationService"; 
+import { StationPublicInfo } from "@/lib/types/telemetry";
+import SubHeader from "@/components/custom/shared/sub-header";
+import StationCurrentWeatherCard from "@/components/custom/dashboard/station-current-weather-card";
+import StationMapboxLocation from "@/components/custom/dashboard/station-mapbox-location";
+import StationWeatherDetail from "@/components/custom/dashboard/station-weather-detail";
 
 export default function Home() {
-  const { setWeatherParams } = useWeather();
-  const { selectedStation } = useAWSStations();
-  const [weatherData, setWeatherData] = useState<StationData | null>(null);
+  const [stations, setStations] = useState<StationPublicInfo[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedStation, setSelectedStation] = useState<StationPublicInfo | null>(null);
 
   useEffect(() => {
-    if (!selectedStation) return;
-
-    const fetchWeatherData = async () => {
+    async function loadStations() {
       try {
-        const stationData = await fetchStationData(selectedStation);
-        setWeatherData(stationData);
-
-        if (stationData.data) {
-          setWeatherParams({
-            heatIndex: stationData.data.heatIndex || 0,
-            recordedAt: stationData.data.recordedAt || "",
-          });
+        const data = await fetchStationList();
+        setStations(data);
+        if (data && data.length > 0) {
+          setSelectedStation(data[0]);
         }
+        setLoading(false);
       } catch (error) {
-        console.error(error);
+        console.error("Error fetching stations:", error);
+      } finally {
+        setLoading(false);
       }
-    };
+    }
+    loadStations();
+  }, []);
 
-    fetchWeatherData();
-    const intervalId = setInterval(fetchWeatherData, 5000);
+  const handleStationChange = (stationId: string) => {
+    setSelectedStation(stations.find(s => s.stationPublicId === stationId) || null);
+  };
 
-    return () => clearInterval(intervalId);
-  }, [selectedStation, setWeatherParams]);
+  if (loading) return <div>Loading...</div>;
 
-  if (!selectedStation) {
-    return <div>Loading...</div>;
-  }
-
-  if (!weatherData || !weatherData.data) {
-    return <p>Weather data not available for the selected location.</p>;
-  }
   return (
-    <div className="flex flex-col container mx-auto">
-      <div className="flex flex-row relative">
-        <div className="w-full z-20 my-2">
-          <SelectedLocation />
-          <div>
-            <div className="flex flex-col mb-2">
-              <span className="font-medium text-2xl">
-                {formatDateString(weatherData.data.recordedAt, "long") || "--"}
-              </span>
-            </div>
-            <div className="flex flex-col">
-              <span className="font-medium text-xl">Feels Like</span>
-              <span className="flex items-start">
-                <span className="font-bold text-9xl">{weatherData.data?.heatIndex || "--"}</span>
-                <span className="font-bold text-7xl text-start">°C</span>
-              </span>
-            </div>
-            <DailyCards currentWeather={weatherData} />
-            <InfoCards />
-          </div>{" "}
+    <>
+      <SubHeader
+        stations={stations}
+        selectedStation={selectedStation ? selectedStation.stationPublicId : ""}
+        onStationChange={handleStationChange}
+      />
+      <div className="max-w-7xl mx-auto w-full flex flex-col gap-4 mt-8">
+        <div className="text-white text-xl">
+          <p>
+            {selectedStation
+              ? [selectedStation.city, selectedStation.state, selectedStation.country]
+                  .filter(v => typeof v === "string" && v.trim() !== "")
+                  .join(", ")
+              : "Select a station"}
+          </p>
         </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <div className="h-[300px] w-full rounded-xl overflow-hidden shadow-lg bg-white/10 backdrop-blur-md backdrop-brightness-110 border border-white/20 ">
+            <StationCurrentWeatherCard 
+              stationPublicId={selectedStation ? selectedStation.stationPublicId : ""} 
+            />
+          </div>
+          <div className="h-[300px] w-full rounded-xl overflow-hidden">
+            <div className="h-full w-full">
+              <StationMapboxLocation 
+                location={selectedStation ? selectedStation.location as [number, number] : null} 
+              />
+            </div>
+          </div>
+        </div>
+
+        <StationWeatherDetail 
+          stationPublicId={selectedStation ? selectedStation.stationPublicId : ""} 
+          stationType={selectedStation ? selectedStation.stationType : undefined} 
+        />
       </div>
-    </div>
+    </>
   );
 }
