@@ -55,12 +55,12 @@ export default function Home() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          <div className="h-[300px] w-full rounded-xl overflow-hidden shadow-lg bg-white/10 backdrop-blur-md backdrop-brightness-110 border border-white/20 ">
+          <div className="h-75 w-full rounded-xl overflow-hidden shadow-lg bg-white/10 backdrop-blur-md backdrop-brightness-110 border border-white/20 ">
             <StationCurrentWeatherCard 
               stationPublicId={selectedStation ? selectedStation.stationPublicId : ""} 
             />
           </div>
-          <div className="h-[300px] w-full rounded-xl overflow-hidden">
+          <div className="h-75 w-full rounded-xl overflow-hidden">
             <div className="h-full w-full">
               <StationMapboxLocation 
                 location={selectedStation ? selectedStation.location as [number, number] : null} 
