@@ -55,11 +55,6 @@ export function getWeatherMetricInfo(key: string) {
   };
 }
 
-
-
-
-
-
 export function getWindDirection(deg: number): string {
   const directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
   const index = Math.round(deg / 45) % 8;

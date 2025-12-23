@@ -1,33 +1,28 @@
 "use client";
 import { useState } from "react";
-import type { TelemetryPublicDTO } from "@/lib/types/telemetry";
+import type { StationDashboardData } from "@/lib/types/telemetry";
 import SubHeader from "@/components/custom/shared/sub-header";
 import StationCurrentWeatherCard from "./station-current-weather-card";
 import StationMapboxLocation from "./station-mapbox-location";
 import StationWeatherDetail from "./station-weather-detail";
-import { StationPublicInfo } from "@/lib/types/telemetry";
-
-
-
-
-import type { TelemetryHistoryDTO } from "@/lib/types/telemetry";
 
 interface Props {
-  stations: StationPublicInfo[];
-  telemetryRecord: Record<string, TelemetryPublicDTO | null>;
-  historyRecord: Record<string, TelemetryHistoryDTO | null>;
+  dashboardData: StationDashboardData[];
 }
 
 
 
 
-export default function StationDashboardClient({ stations, telemetryRecord, historyRecord }: Props) {
+
+export default function StationDashboardClient({ dashboardData }: Props) {
   const [selectedStationId, setSelectedStationId] = useState(
-    stations.length > 0 ? stations[0].stationPublicId : ""
+    dashboardData.length > 0 ? dashboardData[0].station.stationPublicId : ""
   );
-  const selectedStation = stations.find(s => s.stationPublicId === selectedStationId) || null;
-  const telemetryData = selectedStation ? telemetryRecord[selectedStation.stationPublicId] : null;
-  const historyData = selectedStation ? historyRecord[selectedStation.stationPublicId] : null;
+  const selected = dashboardData.find(d => d.station.stationPublicId === selectedStationId) || null;
+  const stations = dashboardData.map(d => d.station);
+  const selectedStation = selected ? selected.station : null;
+  const telemetryData = selected ? (selected.latestTelemetry ? { station: selected.station, telemetry: selected.latestTelemetry } : null) : null;
+  const historyData = selected ? (selected.recentHistory ? { station: selected.station, telemetry: selected.recentHistory } : null) : null;
 
   return (
     <>

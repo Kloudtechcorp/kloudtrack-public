@@ -1,8 +1,7 @@
-import { StationPublicInfo, TelemetryHistoryDTO, TelemetryPublicDTO } from "../types/telemetry";
-import { ApiResponse } from "../types/apiResponse";
+import { StationDashboardData, StationPublicInfo, TelemetryHistoryDTO, TelemetryPublicDTO } from "../types/telemetry";
+import { ApiResponse } from "../types/api-response";
 
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://app.kloudtechsea.com/api/v1";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 const API_KEY = process.env.KLOUDTRACK_API_KEY;
 
 
@@ -33,13 +32,16 @@ export async function getStationList(): Promise<StationPublicInfo[]> {
 }
 
 export async function getStationLatestTelemetry(stationPublicId: string): Promise<TelemetryPublicDTO> {
-  console.log("Fetching latest telemetry for station:", stationPublicId);
-	// return fetchJson(`/telemetry/latest/${stationPublicId}`);
-  const data = await fetchJson<TelemetryPublicDTO>(`/telemetry/latest/${stationPublicId}`);
-  console.log("Received telemetry data:", data);
-  return data;
+	return fetchJson(`/telemetry/latest/${stationPublicId}`);
 }
 
 export async function getStationRecentHistory(stationPublicId: string): Promise<TelemetryHistoryDTO> {
   return fetchJson(`/telemetry/recent/${stationPublicId}`);
+}
+
+export async function getAllStationsDashboardData(): Promise<StationDashboardData[]> {
+  // return fetchJson<StationDashboardData[]>(`/telemetry/stations/dashboard`);
+  const dashboardData = await fetchJson<StationDashboardData[]>(`/telemetry/dashboard`);
+  console.log("Fetched dashboard data:", dashboardData);
+  return dashboardData;
 }

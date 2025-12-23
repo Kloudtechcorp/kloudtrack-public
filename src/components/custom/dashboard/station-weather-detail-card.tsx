@@ -10,7 +10,7 @@ import {
   CartesianGrid,
   LabelList
 } from "recharts";
-import { getWeatherMetricInfo, getWindDirection } from "@/lib/weather-utils";
+import { getWeatherMetricInfo, getWindDirection } from "@/lib/utils/weather-utils";
 
 interface Reading {
   recordedAt: string;
