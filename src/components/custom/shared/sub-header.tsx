@@ -1,5 +1,5 @@
 
-import React from "react";
+"use client";
 import { StationPublicInfo } from "@/lib/types/telemetry";
 import {
   Select,
