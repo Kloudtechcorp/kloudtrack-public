@@ -2,18 +2,11 @@ import { StationDashboardData, StationPublicInfo, TelemetryHistoryDTO, Telemetry
 import { ApiResponse } from "../types/api-response";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
-const API_KEY = process.env.KLOUDTRACK_API_KEY;
-
 
 async function fetchJson<T>(path: string): Promise<T> {
   const url = `${API_BASE_URL}${path}`;
-  if (!API_KEY) {
-    throw new Error("API key is not set in environment variables");
-  }
-  const header = {
-    "x-kloudtrack-key": API_KEY
-  };
-  const response = await fetch(url, { headers: header });
+  
+  const response = await fetch(url);
 
   if (!response.ok) {
     throw new Error(`API request failed: ${response.status} ${response.statusText}`);
@@ -40,8 +33,5 @@ export async function getStationRecentHistory(stationPublicId: string): Promise<
 }
 
 export async function getAllStationsDashboardData(): Promise<StationDashboardData[]> {
-  // return fetchJson<StationDashboardData[]>(`/telemetry/stations/dashboard`);
-  const dashboardData = await fetchJson<StationDashboardData[]>(`/telemetry/dashboard`);
-  console.log("Fetched dashboard data:", dashboardData);
-  return dashboardData;
+  return fetchJson<StationDashboardData[]>(`/telemetry/dashboard`);
 }
