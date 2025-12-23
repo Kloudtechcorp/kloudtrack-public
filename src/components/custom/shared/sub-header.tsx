@@ -1,5 +1,5 @@
 
-import React from "react";
+"use client";
 import { StationPublicInfo } from "@/lib/types/telemetry";
 import {
   Select,
@@ -30,7 +30,7 @@ const SubHeader: React.FC<SubHeaderProps> = ({ stations, selectedStation, onStat
     >
       <div className="max-w-7xl mx-auto w-full flex items-center">
         <Select value={selectedStation} onValueChange={onStationChange}>
-          <SelectTrigger className="w-[300px] rounded-xl mr-4 bg-white/10 backdrop-blur-md backdrop-brightness-110 border border-white/40 text-white">
+          <SelectTrigger className="w-75 rounded-xl mr-4 bg-white/10 backdrop-blur-md backdrop-brightness-110 border border-white/40 text-white">
             <SelectValue placeholder="Select Station" />
           </SelectTrigger>
           <SelectContent>

@@ -34,3 +34,8 @@ export interface TelemetryHistoryDTO {
   telemetry: TelemetryMetrics[];
 }
 
+export interface StationDashboardData {
+  station: StationPublicInfo;
+  latestTelemetry: TelemetryMetrics | null;
+  recentHistory: TelemetryMetrics[] | null;
+}

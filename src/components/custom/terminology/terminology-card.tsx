@@ -1,5 +1,4 @@
 import { WeatherItem } from "./terminology-tabs";
-// Card for each terminology item
 const TerminologyCard: React.FC<WeatherItem & { color?: string; category?: string }> = ({ term, threshold, definition, color, category }) => {
   return (
     <div

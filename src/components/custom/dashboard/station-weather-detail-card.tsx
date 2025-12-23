@@ -10,7 +10,7 @@ import {
   CartesianGrid,
   LabelList
 } from "recharts";
-import { getWeatherMetricInfo, getWindDirection } from "@/lib/weather-utils";
+import { getWeatherMetricInfo, getWindDirection } from "@/lib/utils/weather-utils";
 
 interface Reading {
   recordedAt: string;
@@ -111,7 +111,7 @@ const StationWeatherDetailCard: React.FC<StationWeatherDetailCardProps> = ({ gro
   ] as [string, Reading[]]);
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
       {reversedGrouped.map(([key, readings]) => {
         if (!readings.length) return null;
         const latest = readings[readings.length - 1];

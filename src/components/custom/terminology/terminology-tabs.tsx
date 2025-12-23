@@ -1,5 +1,3 @@
-
-import React from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { WEATHER_REFERENCES } from "@/lib/constants/WEATHER_REFERENCES";
 import TerminologyCard from "./terminology-card";
