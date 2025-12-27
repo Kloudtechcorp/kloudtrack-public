@@ -1,5 +1,5 @@
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { WEATHER_REFERENCES } from "@/lib/constants/WEATHER_REFERENCES";
+import { WEATHER_REFERENCES } from "@/lib/constants/weather-references";
 import TerminologyCard from "./terminology-card";
 type WeatherRefs = typeof WEATHER_REFERENCES;
 type WeatherKey = keyof WeatherRefs;

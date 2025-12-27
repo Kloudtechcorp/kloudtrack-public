@@ -1,5 +1,5 @@
 import { StationPublicInfo, TelemetryHistoryDTO, TelemetryPublicDTO,  } from "../types/telemetry";
-import { getAllStationsDashboardData, getStationLatestTelemetry, getStationList, getStationRecentHistory } from "../api/stationApi";
+import { getAllStationsDashboardData, getStationLatestTelemetry, getStationList, getStationRecentHistory } from "../api/station-api";
 
 export async function fetchStationList(): Promise<StationPublicInfo[]> {
   return getStationList();

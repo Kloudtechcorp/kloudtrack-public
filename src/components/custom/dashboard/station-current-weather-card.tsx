@@ -4,7 +4,7 @@
 import React from "react";
 import type { TelemetryPublicDTO } from "@/lib/types/telemetry";
 import { Cloud, CloudSun, Navigation } from "lucide-react";
-import { formatDate } from "@/lib/utils/date-formatter";
+import { formatDate } from "@/lib/utils/date";
 
 
 interface CurrentWeatherCardProps {
