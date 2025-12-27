@@ -1,18 +1,27 @@
-import { StationPublicInfo, TelemetryHistoryDTO, TelemetryPublicDTO,  } from "../types/telemetry";
-import { getAllStationsDashboardData, getStationLatestTelemetry, getStationList, getStationRecentHistory } from "../api/station-api";
+/**
+ * Service layer for station data
+ * Uses Kloudtrack API service for server-side calls
+ */
+import { StationPublicInfo, TelemetryHistoryDTO, TelemetryPublicDTO, StationDashboardData } from "../types/telemetry";
+import {
+  getStationsFromKloudtrackApi,
+  getLatestTelemetryFromKloudtrackApi,
+  getRecentTelemetryFromKloudtrackApi,
+  getDashboardDataFromKloudtrackApi
+} from "./kloudtrack-api.service";
 
 export async function fetchStationList(): Promise<StationPublicInfo[]> {
-  return getStationList();
+  return getStationsFromKloudtrackApi();
 }
 
 export async function fetchStationLatestTelemetry(stationPublicId: string): Promise<TelemetryPublicDTO> {
-	return getStationLatestTelemetry(stationPublicId);
+  return getLatestTelemetryFromKloudtrackApi(stationPublicId);
 }
 
 export async function fetchStationRecentHistory(stationPublicId: string): Promise<TelemetryHistoryDTO> {
-  return getStationRecentHistory(stationPublicId);
+  return getRecentTelemetryFromKloudtrackApi(stationPublicId);
 }
 
-export async function fetchAllStationsDashboardData() {
-  return getAllStationsDashboardData();
+export async function fetchAllStationsDashboardData(): Promise<StationDashboardData[]> {
+  return getDashboardDataFromKloudtrackApi();
 }

@@ -2,6 +2,7 @@
  * Server-side client for communicating with Kloudtrack API
  * This runs ONLY on the server and includes the secret API token
  */
+import { StationPublicInfo, TelemetryPublicDTO, TelemetryHistoryDTO, StationDashboardData } from "../types/telemetry";
 
 const KLOUDTRACK_API_BASE_URL = process.env.KLOUDTRACK_API_BASE_URL;
 const KLOUDTRACK_API_TOKEN = process.env.KLOUDTRACK_API_TOKEN;
@@ -38,9 +39,9 @@ class KloudtrackApiClient {
   ): Promise<T> {
     const url = `${this.baseURL}${endpoint}`;
 
-    const headers: HeadersInit = {
+    const headers: Record<string, string> = {
       'Content-Type': 'application/json',
-      ...options?.headers,
+      ...(options?.headers as Record<string, string>),
     };
 
     // Add authorization header if token is available
@@ -105,18 +106,18 @@ export const kloudtrackApi = new KloudtrackApiClient(
 );
 
 // Export specific API methods
-export async function getStationsFromKloudtrackApi() {
-  return kloudtrackApi.get('/telemetry/stations');
+export async function getStationsFromKloudtrackApi(): Promise<StationPublicInfo[]> {
+  return kloudtrackApi.get<StationPublicInfo[]>('/telemetry/stations');
 }
 
-export async function getLatestTelemetryFromKloudtrackApi(stationId: string) {
-  return kloudtrackApi.get(`/telemetry/latest/${stationId}`);
+export async function getLatestTelemetryFromKloudtrackApi(stationId: string): Promise<TelemetryPublicDTO> {
+  return kloudtrackApi.get<TelemetryPublicDTO>(`/telemetry/latest/${stationId}`);
 }
 
-export async function getRecentTelemetryFromKloudtrackApi(stationId: string) {
-  return kloudtrackApi.get(`/telemetry/recent/${stationId}`);
+export async function getRecentTelemetryFromKloudtrackApi(stationId: string): Promise<TelemetryHistoryDTO> {
+  return kloudtrackApi.get<TelemetryHistoryDTO>(`/telemetry/recent/${stationId}`);
 }
 
-export async function getDashboardDataFromKloudtrackApi() {
-  return kloudtrackApi.get('/telemetry/dashboard');
+export async function getDashboardDataFromKloudtrackApi(): Promise<StationDashboardData[]> {
+  return kloudtrackApi.get<StationDashboardData[]>('/telemetry/dashboard');
 }
