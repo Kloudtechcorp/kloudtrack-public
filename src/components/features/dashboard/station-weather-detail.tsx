@@ -12,7 +12,7 @@ interface StationWeatherDetailProps {
 
 const StationWeatherDetail: React.FC<StationWeatherDetailProps> = ({ stationType, historyData }) => {
   // Group readings by category (same logic as before, but now from prop)
-  let grouped: Record<string, { recordedAt: string; value: number|null }[]> = {};
+  const grouped: Record<string, { recordedAt: string; value: number|null }[]> = {};
   if (historyData && historyData.telemetry) {
     const categories = [
       "temperature",
@@ -25,11 +25,11 @@ const StationWeatherDetail: React.FC<StationWeatherDetailProps> = ({ stationType
       "uvIndex",
       "distance",
       "lightIntensity"
-    ];
+    ] as const;
     categories.forEach(cat => {
-      grouped[cat] = historyData.telemetry.map((t: any) => ({
+      grouped[cat] = historyData.telemetry.map((t) => ({
         recordedAt: t.recordedAt,
-        value: t[cat] ?? null
+        value: (t[cat] as number | null | undefined) ?? null
       })).filter(d => d.value !== null);
     });
   }

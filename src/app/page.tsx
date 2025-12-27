@@ -11,7 +11,7 @@ export default async function Home() {
   let dashboardData: StationDashboardData[] = [];
   try {
     dashboardData = await fetchAllStationsDashboardData();
-  } catch (error) {
+  } catch {
     // Optionally log error or show fallback UI
   }
 

@@ -1,9 +1,6 @@
 "use client";
 import React from "react";
-import Image from "next/image";
-import { Switch } from "@/components/ui/switch";
 import { useRouter } from "next/navigation";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { BookOpen } from "lucide-react";
 
 const Header = () => {

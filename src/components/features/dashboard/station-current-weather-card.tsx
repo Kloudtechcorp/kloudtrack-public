@@ -44,7 +44,7 @@ const StationCurrentWeatherCard: React.FC<CurrentWeatherCardProps> = ({ telemetr
     );
   }
 
-  const { station, telemetry } = telemetryData;
+  const { telemetry } = telemetryData;
 
   // MSN Weather-inspired card layout
   return (
