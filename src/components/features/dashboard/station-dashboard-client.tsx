@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import type { StationDashboardData } from "@/lib/types/telemetry";
 import { fetchAllStationsDashboardData } from "@/lib/services/station.service";
-import SubHeader from "@/components/custom/shared/sub-header";
+import SubHeader from "@/components/shared/sub-header";
 import StationCurrentWeatherCard from "./station-current-weather-card";
 import StationMapboxLocation from "./station-mapbox-location";
 import StationWeatherDetail from "./station-weather-detail";

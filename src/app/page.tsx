@@ -2,7 +2,7 @@
 
 import { fetchAllStationsDashboardData } from "@/lib/services/station.service";
 import { StationDashboardData } from "@/lib/types/telemetry";
-import StationDashboardClient from "@/components/custom/dashboard/station-dashboard-client";
+import StationDashboardClient from "@/components/features/dashboard/station-dashboard-client";
 
 
 
