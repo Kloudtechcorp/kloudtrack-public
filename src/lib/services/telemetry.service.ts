@@ -1,0 +1,281 @@
+/**
+ * Telemetry Service - Orchestrates API calls, transforms data, and manages caching
+ * This service layer sits between API routes and the Kloudtrack API client
+ */
+import { kloudtrackApi } from "./kloudtrack-api.service";
+import { InMemoryCache } from "../utils/cache";
+import { toTwoDecimalPlaces } from "../utils/data-helper";
+import { AppError } from "../utils/error";
+import {
+  StationPublicInfo,
+  TelemetryMetrics,
+  StationDashboardData,
+  TelemetryPublicDTO,
+  TelemetryHistoryDTO,
+} from "../types/telemetry";
+
+export class TelemetryService {
+  // Cache for 2.5 minutes (150 seconds) for dashboard data
+  private dashboardCache = new InMemoryCache<StationDashboardData[]>(150);
+
+  // Cache for 60 seconds for individual station data
+  private stationCache = new InMemoryCache<StationDashboardData>(60);
+
+  // Cache for 5 minutes (300 seconds) for station list
+  private stationsListCache = new InMemoryCache<StationPublicInfo[]>(300);
+
+  /**
+   * ORCHESTRATOR: Get dashboard data for ALL stations
+   * Returns array of StationDashboardData with caching
+   */
+  async getAllStationsDashboardData(): Promise<StationDashboardData[]> {
+    const cacheKey = "all-stations-dashboard";
+    const cached = this.dashboardCache.get(cacheKey);
+
+    if (cached) {
+      console.log("Returning cached dashboard data");
+      return cached;
+    }
+
+    try {
+      console.log("Fetching fresh dashboard data from Kloudtrack API");
+
+      // Call the Kloudtrack API dashboard endpoint
+      // This endpoint should return all stations with their latest data
+      const rawData = await kloudtrackApi.get<unknown>("/telemetry/dashboard");
+
+      // Transform the raw data
+      const transformedData = this.transformDashboardData(rawData);
+
+      // Cache the result for 60 seconds
+      this.dashboardCache.set(cacheKey, transformedData, 60);
+
+      return transformedData;
+    } catch (error) {
+      console.error("Failed to fetch dashboard data:", error);
+      this.dashboardCache.clear();
+      throw new AppError("Failed to fetch dashboard data for all stations", 500);
+    }
+  }
+
+  /**
+   * ORCHESTRATOR: Get complete dashboard data for a single station
+   * Combines latest telemetry + recent history in parallel
+   */
+  async getStationDashboardData(stationId: string): Promise<StationDashboardData> {
+    const cacheKey = `station-dashboard-${stationId}`;
+    const cached = this.stationCache.get(cacheKey);
+
+    if (cached) {
+      console.log(`Returning cached data for station ${stationId}`);
+      return cached;
+    }
+
+    try {
+      console.log(`Fetching fresh data for station ${stationId}`);
+
+      // Call both endpoints in parallel for better performance
+      const [latestData, historyData] = await Promise.all([
+        this.getLatestTelemetry(stationId),
+        this.getStationHistory(stationId),
+      ]);
+
+      // Combine the data into StationDashboardData format
+      const result: StationDashboardData = {
+        station: latestData.station,
+        latestTelemetry: latestData.telemetry,
+        recentHistory: historyData,
+      };
+
+      // Cache for 60 seconds
+      this.stationCache.set(cacheKey, result, 60);
+
+      return result;
+    } catch (error) {
+      console.error(`Failed to fetch dashboard data for station ${stationId}:`, error);
+      throw new AppError(`Failed to fetch dashboard data for station ${stationId}`, 500);
+    }
+  }
+
+  /**
+   * Get list of all stations
+   */
+  async getAllStations(): Promise<StationPublicInfo[]> {
+    const cacheKey = "all-stations";
+    const cached = this.stationsListCache.get(cacheKey);
+
+    if (cached) {
+      console.log("Returning cached stations list");
+      return cached;
+    }
+
+    try {
+      console.log("Fetching stations list from Kloudtrack API");
+      const rawData = await kloudtrackApi.get<unknown>("/telemetry/stations");
+      const transformed = this.transformStationsList(rawData);
+
+      this.stationsListCache.set(cacheKey, transformed, 300);
+      return transformed;
+    } catch (error) {
+      console.error("Failed to fetch stations list:", error);
+      throw new AppError("Failed to fetch stations list", 500);
+    }
+  }
+
+  /**
+   * Get latest telemetry for a specific station
+   */
+  async getLatestTelemetry(stationId: string): Promise<TelemetryPublicDTO> {
+    try {
+      const rawData = await kloudtrackApi.get<unknown>(`/telemetry/latest/${stationId}`);
+      return this.transformLatestTelemetry(rawData);
+    } catch (error) {
+      console.error(`Failed to fetch latest telemetry for station ${stationId}:`, error);
+      throw new AppError(`Failed to fetch latest telemetry for station ${stationId}`, 500);
+    }
+  }
+
+  /**
+   * Get recent history for a specific station (just the metrics array)
+   */
+  async getStationHistory(stationId: string): Promise<TelemetryMetrics[]> {
+    try {
+      const rawData = await kloudtrackApi.get<unknown>(`/telemetry/recent/${stationId}`);
+      return this.transformHistoryData(rawData);
+    } catch (error) {
+      console.error(`Failed to fetch history for station ${stationId}:`, error);
+      throw new AppError(`Failed to fetch history for station ${stationId}`, 500);
+    }
+  }
+
+  /**
+   * Get recent history with station info (full DTO)
+   */
+  async getStationHistoryWithInfo(stationId: string): Promise<TelemetryHistoryDTO> {
+    try {
+      const rawData = await kloudtrackApi.get<unknown>(`/telemetry/recent/${stationId}`);
+
+      const data = rawData as Record<string, unknown>;
+      return {
+        station: this.transformStation(data.station || {}),
+        telemetry: this.transformHistoryData(data.telemetry || rawData),
+      };
+    } catch (error) {
+      console.error(`Failed to fetch history for station ${stationId}:`, error);
+      throw new AppError(`Failed to fetch history for station ${stationId}`, 500);
+    }
+  }
+
+  // ==================== PRIVATE TRANSFORMATION METHODS ====================
+
+  /**
+   * Transform raw dashboard response
+   */
+  private transformDashboardData(rawData: unknown): StationDashboardData[] {
+    if (!Array.isArray(rawData)) {
+      return [];
+    }
+
+    return rawData.map((item: unknown) => {
+      const data = item as Record<string, unknown>;
+      return {
+        station: this.transformStation(data.station),
+        latestTelemetry: data.latestTelemetry ? this.transformTelemetry(data.latestTelemetry) : null,
+        recentHistory: Array.isArray(data.recentHistory)
+          ? data.recentHistory.map((t: unknown) => this.transformTelemetry(t))
+          : [],
+      };
+    });
+  }
+
+  /**
+   * Transform raw stations list response
+   */
+  private transformStationsList(rawData: unknown): StationPublicInfo[] {
+    if (!Array.isArray(rawData)) {
+      return [];
+    }
+
+    return rawData.map((station: unknown) => this.transformStation(station));
+  }
+
+  /**
+   * Transform a single station object
+   */
+  private transformStation(station: unknown): StationPublicInfo {
+    const data = station as Record<string, unknown>;
+    return {
+      stationPublicId: (data.id || data.stationPublicId || "") as string,
+      stationName: (data.name || data.stationName || "Unknown Station") as string,
+      stationType: (data.type || data.stationType || "unknown") as string,
+      city: (data.city || "") as string,
+      state: (data.state || "") as string,
+      country: (data.country || "") as string,
+      location: Array.isArray(data.location) ? (data.location as [number, number]) : [0, 0],
+      isActive: data.isActive !== undefined ? (data.isActive as boolean) : true,
+    };
+  }
+
+  /**
+   * Transform raw latest telemetry response
+   */
+  private transformLatestTelemetry(rawData: unknown): TelemetryPublicDTO {
+    const data = rawData as Record<string, unknown>;
+    const station = this.transformStation(data.station || {});
+    const telemetry = this.transformTelemetry(data.telemetry || rawData);
+
+    return {
+      station,
+      telemetry,
+    };
+  }
+
+  /**
+   * Transform raw history response
+   */
+  private transformHistoryData(rawData: unknown): TelemetryMetrics[] {
+    if (!Array.isArray(rawData)) {
+      return [];
+    }
+
+    return rawData.map((reading: unknown) => this.transformTelemetry(reading));
+  }
+
+  /**
+   * Transform a single telemetry reading
+   * Handles data normalization, rounding, and null handling
+   */
+  private transformTelemetry(reading: unknown): TelemetryMetrics {
+    const data = reading as Record<string, unknown>;
+    const wind = data.wind as Record<string, unknown> | undefined;
+
+    return {
+      telemetryId: (data.id || data.telemetryId || 0) as number,
+      recordedAt: (data.recordedAt || new Date().toISOString()) as string,
+      temperature: toTwoDecimalPlaces(data.temperature as number),
+      humidity: toTwoDecimalPlaces(data.humidity as number),
+      pressure: toTwoDecimalPlaces(data.pressure as number),
+      heatIndex: toTwoDecimalPlaces(data.heatIndex as number),
+      // Handle wind object flattening
+      windDirection: toTwoDecimalPlaces((data.windDirection ?? wind?.direction) as number),
+      windSpeed: toTwoDecimalPlaces((data.windSpeed ?? wind?.speed) as number),
+      precipitation: toTwoDecimalPlaces(data.precipitation as number),
+      uvIndex: toTwoDecimalPlaces(data.uvIndex as number),
+      distance: toTwoDecimalPlaces(data.distance as number),
+      lightIntensity: toTwoDecimalPlaces((data.lightIntensity ?? data.light) as number),
+    };
+  }
+
+  /**
+   * Clear all caches (useful for debugging or forced refresh)
+   */
+  clearAllCaches(): void {
+    this.dashboardCache.clear();
+    this.stationCache.clear();
+    this.stationsListCache.clear();
+    console.log("🗑️ All caches cleared");
+  }
+}
+
+// Export singleton instance
+export const telemetryService = new TelemetryService();

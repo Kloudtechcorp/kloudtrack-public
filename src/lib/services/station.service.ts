@@ -1,27 +1,43 @@
 /**
  * Service layer for station data
- * Uses Kloudtrack API service for server-side calls
+ * Uses TelemetryService for server-side calls with caching and data transformation
  */
 import { StationPublicInfo, TelemetryHistoryDTO, TelemetryPublicDTO, StationDashboardData } from "../types/telemetry";
-import {
-  getStationsFromKloudtrackApi,
-  getLatestTelemetryFromKloudtrackApi,
-  getRecentTelemetryFromKloudtrackApi,
-  getDashboardDataFromKloudtrackApi
-} from "./kloudtrack-api.service";
+import { telemetryService } from "./telemetry.service";
 
-export async function fetchStationList(): Promise<StationPublicInfo[]> {
-  return getStationsFromKloudtrackApi();
+/**
+ * StationService - Facade/wrapper around TelemetryService
+ * Provides a simplified, domain-specific API for station-related operations
+ */
+export class StationService {
+  /**
+   * Get list of all stations
+   */
+  async fetchStationList(): Promise<StationPublicInfo[]> {
+    return telemetryService.getAllStations();
+  }
+
+  /**
+   * Get latest telemetry for a specific station
+   */
+  async fetchStationLatestTelemetry(stationPublicId: string): Promise<TelemetryPublicDTO> {
+    return telemetryService.getLatestTelemetry(stationPublicId);
+  }
+
+  /**
+   * Get recent telemetry history for a specific station
+   */
+  async fetchStationRecentHistory(stationPublicId: string): Promise<TelemetryHistoryDTO> {
+    return telemetryService.getStationHistoryWithInfo(stationPublicId);
+  }
+
+  /**
+   * Get dashboard data for all stations
+   */
+  async fetchAllStationsDashboardData(): Promise<StationDashboardData[]> {
+    return telemetryService.getAllStationsDashboardData();
+  }
 }
 
-export async function fetchStationLatestTelemetry(stationPublicId: string): Promise<TelemetryPublicDTO> {
-  return getLatestTelemetryFromKloudtrackApi(stationPublicId);
-}
-
-export async function fetchStationRecentHistory(stationPublicId: string): Promise<TelemetryHistoryDTO> {
-  return getRecentTelemetryFromKloudtrackApi(stationPublicId);
-}
-
-export async function fetchAllStationsDashboardData(): Promise<StationDashboardData[]> {
-  return getDashboardDataFromKloudtrackApi();
-}
+// Export singleton instance
+export const stationService = new StationService();

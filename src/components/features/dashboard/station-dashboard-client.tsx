@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import type { StationDashboardData } from "@/lib/types/telemetry";
-import { fetchAllStationsDashboardData } from "@/lib/services/station.service";
+import { stationService } from "@/lib/services/station.service";
 import SubHeader from "@/components/shared/sub-header";
 import StationCurrentWeatherCard from "./station-current-weather-card";
 import StationMapboxLocation from "./station-mapbox-location";
@@ -24,7 +24,7 @@ export default function StationDashboardClient({ dashboardData: initialData }: P
     const pollData = async () => {
       setIsRefreshing(true);
       try {
-        const updatedData = await fetchAllStationsDashboardData();
+        const updatedData = await stationService.fetchAllStationsDashboardData();
         setDashboardData(updatedData);
       } catch (error) {
         console.error("Failed to fetch updated dashboard data:", error);

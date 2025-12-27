@@ -1,6 +1,6 @@
 
 
-import { fetchAllStationsDashboardData } from "@/lib/services/station.service";
+import { stationService } from "@/lib/services/station.service";
 import { StationDashboardData } from "@/lib/types/telemetry";
 import StationDashboardClient from "@/components/features/dashboard/station-dashboard-client";
 
@@ -10,7 +10,7 @@ import StationDashboardClient from "@/components/features/dashboard/station-dash
 export default async function Home() {
   let dashboardData: StationDashboardData[] = [];
   try {
-    dashboardData = await fetchAllStationsDashboardData();
+    dashboardData = await stationService.fetchAllStationsDashboardData();
   } catch {
     // Optionally log error or show fallback UI
   }

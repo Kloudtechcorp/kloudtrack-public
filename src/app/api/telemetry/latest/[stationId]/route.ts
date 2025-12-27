@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getLatestTelemetryFromKloudtrackApi } from '@/lib/services/kloudtrack-api.service';
+import { telemetryService } from '@/lib/services/telemetry.service';
+import { formatErrorResponse } from '@/lib/utils/error';
 
 /**
  * GET /api/telemetry/latest/:stationId
- * Proxies request to Kloudtrack API with server-side token
+ * Returns latest telemetry for a station with data transformation
  */
 export async function GET(
   request: NextRequest,
@@ -14,12 +15,12 @@ export async function GET(
 
     if (!stationId) {
       return NextResponse.json(
-        { success: false, error: 'Station ID is required' },
+        { success: false, message: 'Station ID is required' },
         { status: 400 }
       );
     }
 
-    const telemetry = await getLatestTelemetryFromKloudtrackApi(stationId);
+    const telemetry = await telemetryService.getLatestTelemetry(stationId);
 
     return NextResponse.json({
       success: true,
@@ -28,12 +29,13 @@ export async function GET(
   } catch (error) {
     console.error('Latest telemetry API error:', error);
 
+    const errorResponse = formatErrorResponse(error);
     return NextResponse.json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to fetch latest telemetry',
+        message: errorResponse.message,
       },
-      { status: 500 }
+      { status: errorResponse.statusCode }
     );
   }
 }
