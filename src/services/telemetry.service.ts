@@ -274,7 +274,7 @@ export class TelemetryService {
   private transformHistoryData(rawData: unknown): TelemetryMetrics[] {
     // Handle case where data is wrapped in an object with "data" field
     let dataArray = rawData;
-    if (typeof rawData === 'object' && rawData !== null && !Array.isArray(rawData)) {
+    if (typeof rawData === "object" && rawData !== null && !Array.isArray(rawData)) {
       const dataObj = rawData as Record<string, unknown>;
       dataArray = dataObj.data || dataObj.telemetry || rawData;
     }
@@ -331,11 +331,11 @@ export class TelemetryService {
       const startDate = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
 
       const params = new URLSearchParams({
-        skip: '0',
-        take: '96',
-        interval: '15',
+        skip: "0",
+        take: "96",
+        interval: "15",
         startDate: startDate,
-        filterOutliers: 'true',
+        filterOutliers: "true",
       });
 
       const rawData = await kloudtrackApi.get<{ status: boolean; data: ParameterDataPoint[] }>(

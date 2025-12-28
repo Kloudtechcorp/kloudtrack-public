@@ -6,6 +6,7 @@ import SubHeader from "@/components/shared/sub-header";
 import StationCurrentWeatherCard from "./station-current-weather-card";
 import StationMapboxLocation from "./station-mapbox-location";
 import StationTodayGraph from "./station-today-graph";
+import StationInsightsCard from "./station-insights-card";
 
 interface Props {
   stations: StationPublicInfo[];
@@ -77,7 +78,7 @@ export default function StationDashboardClient({ stations }: Props) {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           <div className="h-75 w-full rounded-xl overflow-hidden shadow-lg bg-white/10 backdrop-blur-md backdrop-brightness-110 border border-white/20 ">
             <StationCurrentWeatherCard
               telemetryData={telemetryData}
@@ -91,6 +92,15 @@ export default function StationDashboardClient({ stations }: Props) {
                 location={selectedStation ? (selectedStation.location as [number, number]) : null}
               />
             </div>
+          </div>
+        </div>
+
+        <div className="mb-8">
+          <div className="h-96 w-full rounded-xl overflow-hidden shadow-lg bg-white/10 backdrop-blur-md backdrop-brightness-110 border border-white/20">
+            <StationInsightsCard
+              stationId={selectedStationId}
+              loading={isRefreshing}
+            />
           </div>
         </div>
 
