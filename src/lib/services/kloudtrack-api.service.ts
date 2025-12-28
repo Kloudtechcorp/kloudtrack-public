@@ -4,15 +4,16 @@
  */
 import { StationPublicInfo, TelemetryPublicDTO, TelemetryHistoryDTO, StationDashboardData } from "../types/telemetry";
 
-const KLOUDTRACK_API_BASE_URL = process.env.KLOUDTRACK_API_BASE_URL;
-const KLOUDTRACK_API_TOKEN = process.env.KLOUDTRACK_API_TOKEN;
+const KLOUDTRACK_API_BASE_URL = process.env.KLOUDTRACK_API_BASE_URL || "https://api.kloudtechsea.com/api/v1";
+const KLOUDTRACK_API_TOKEN =
+  process.env.KLOUDTRACK_API_TOKEN || "kloud_live_134ee23c2f714a3bf3640fcb86565292d616568cb5219023";
 
 if (!KLOUDTRACK_API_BASE_URL) {
-  console.warn('Warning: KLOUDTRACK_API_BASE_URL is not set. API calls will fail.');
+  console.warn("Warning: KLOUDTRACK_API_BASE_URL is not set. API calls will fail.");
 }
 
 if (!KLOUDTRACK_API_TOKEN) {
-  console.warn('Warning: KLOUDTRACK_API_TOKEN is not set. Using unauthenticated requests.');
+  console.warn("Warning: KLOUDTRACK_API_TOKEN is not set. Using unauthenticated requests.");
 }
 
 interface KloudtrackApiResponse<T> {
@@ -26,27 +27,24 @@ class KloudtrackApiClient {
   private apiToken: string | undefined;
 
   constructor(baseURL: string | undefined, apiToken: string | undefined) {
-    this.baseURL = baseURL || '';
+    this.baseURL = baseURL || "";
     this.apiToken = apiToken;
   }
 
   /**
    * Make authenticated request to Kloudtrack API
    */
-  private async request<T>(
-    endpoint: string,
-    options?: RequestInit
-  ): Promise<T> {
+  private async request<T>(endpoint: string, options?: RequestInit): Promise<T> {
     const url = `${this.baseURL}${endpoint}`;
-
+    console.log({ url });
     const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
       ...(options?.headers as Record<string, string>),
     };
 
     // Add authorization header if token is available
     if (this.apiToken) {
-      headers['Authorization'] = `Bearer ${this.apiToken}`;
+      headers["x-kloudtrack-key"] = `${this.apiToken}`;
     }
 
     try {
@@ -58,56 +56,51 @@ class KloudtrackApiClient {
       });
 
       if (!response.ok) {
-        throw new Error(
-          `Kloudtrack API Error: ${response.status} ${response.statusText}`
-        );
+        throw new Error(`Kloudtrack API Error: ${response.status} ${response.statusText}`);
       }
 
-      const apiResponse = await response.json() as KloudtrackApiResponse<T>;
+      const apiResponse = (await response.json()) as KloudtrackApiResponse<T>;
 
       if (!apiResponse.success) {
-        throw new Error(apiResponse.message || 'Kloudtrack API request failed');
+        throw new Error(apiResponse.message || "Kloudtrack API request failed");
       }
 
       return apiResponse.data;
     } catch (error) {
-      console.error('Kloudtrack API request failed:', error);
+      console.error("Kloudtrack API request failed:", error);
       throw error;
     }
   }
 
   async get<T>(endpoint: string): Promise<T> {
-    return this.request<T>(endpoint, { method: 'GET' });
+    return this.request<T>(endpoint, { method: "GET" });
   }
 
   async post<T>(endpoint: string, data: unknown): Promise<T> {
     return this.request<T>(endpoint, {
-      method: 'POST',
+      method: "POST",
       body: JSON.stringify(data),
     });
   }
 
   async put<T>(endpoint: string, data: unknown): Promise<T> {
     return this.request<T>(endpoint, {
-      method: 'PUT',
+      method: "PUT",
       body: JSON.stringify(data),
     });
   }
 
   async delete<T>(endpoint: string): Promise<T> {
-    return this.request<T>(endpoint, { method: 'DELETE' });
+    return this.request<T>(endpoint, { method: "DELETE" });
   }
 }
 
 // Export singleton instance
-export const kloudtrackApi = new KloudtrackApiClient(
-  KLOUDTRACK_API_BASE_URL,
-  KLOUDTRACK_API_TOKEN
-);
+export const kloudtrackApi = new KloudtrackApiClient(KLOUDTRACK_API_BASE_URL, KLOUDTRACK_API_TOKEN);
 
 // Export specific API methods
 export async function getStationsFromKloudtrackApi(): Promise<StationPublicInfo[]> {
-  return kloudtrackApi.get<StationPublicInfo[]>('/telemetry/stations');
+  return kloudtrackApi.get<StationPublicInfo[]>("/telemetry/stations");
 }
 
 export async function getLatestTelemetryFromKloudtrackApi(stationId: string): Promise<TelemetryPublicDTO> {
@@ -119,5 +112,5 @@ export async function getRecentTelemetryFromKloudtrackApi(stationId: string): Pr
 }
 
 export async function getDashboardDataFromKloudtrackApi(): Promise<StationDashboardData[]> {
-  return kloudtrackApi.get<StationDashboardData[]>('/telemetry/dashboard');
+  return kloudtrackApi.get<StationDashboardData[]>("/telemetry/dashboard");
 }

@@ -13,6 +13,7 @@ import {
   TelemetryPublicDTO,
   TelemetryHistoryDTO,
 } from "../types/telemetry";
+import stationIds from "../constants/stations.json";
 
 export class TelemetryService {
   // Cache for 2.5 minutes (150 seconds) for dashboard data
@@ -26,7 +27,8 @@ export class TelemetryService {
 
   /**
    * ORCHESTRATOR: Get dashboard data for ALL stations
-   * Returns array of StationDashboardData with caching
+   * Uses hardcoded station IDs from stations.json to control which stations are visible
+   * Fetches data for each station in parallel for better performance
    */
   async getAllStationsDashboardData(): Promise<StationDashboardData[]> {
     const cacheKey = "all-stations-dashboard";
@@ -38,19 +40,21 @@ export class TelemetryService {
     }
 
     try {
-      console.log("Fetching fresh dashboard data from Kloudtrack API");
+      console.log("Fetching fresh dashboard data for configured stations");
+      console.log(`Station IDs to fetch: ${stationIds.stationIdToFetch.join(", ")}`);
 
-      // Call the Kloudtrack API dashboard endpoint
-      // This endpoint should return all stations with their latest data
-      const rawData = await kloudtrackApi.get<unknown>("/telemetry/dashboard");
+      // Fetch data for each configured station in parallel
+      const dashboardDataPromises = stationIds.stationIdToFetch.map((stationId) =>
+        this.getStationDashboardData(stationId)
+      );
 
-      // Transform the raw data
-      const transformedData = this.transformDashboardData(rawData);
+      const result = await Promise.all(dashboardDataPromises);
 
       // Cache the result for 60 seconds
-      this.dashboardCache.set(cacheKey, transformedData, 60);
+      this.dashboardCache.set(cacheKey, result, 60);
 
-      return transformedData;
+      console.log(`Successfully fetched data for ${result.length} stations`);
+      return result;
     } catch (error) {
       console.error("Failed to fetch dashboard data:", error);
       this.dashboardCache.clear();
@@ -99,6 +103,8 @@ export class TelemetryService {
 
   /**
    * Get list of all stations
+   * Uses hardcoded station IDs from stations.json
+   * Fetches station info for each configured station
    */
   async getAllStations(): Promise<StationPublicInfo[]> {
     const cacheKey = "all-stations";
@@ -110,12 +116,18 @@ export class TelemetryService {
     }
 
     try {
-      console.log("Fetching stations list from Kloudtrack API");
-      const rawData = await kloudtrackApi.get<unknown>("/telemetry/stations");
-      const transformed = this.transformStationsList(rawData);
+      console.log("Fetching stations list for configured station IDs");
 
-      this.stationsListCache.set(cacheKey, transformed, 300);
-      return transformed;
+      // Fetch station info for each configured station ID
+      const stationPromises = stationIds.stationIdToFetch.map(async (stationId) => {
+        const data = await this.getLatestTelemetry(stationId);
+        return data.station;
+      });
+
+      const stations = await Promise.all(stationPromises);
+
+      this.stationsListCache.set(cacheKey, stations, 300);
+      return stations;
     } catch (error) {
       console.error("Failed to fetch stations list:", error);
       throw new AppError("Failed to fetch stations list", 500);
@@ -127,10 +139,10 @@ export class TelemetryService {
    */
   async getLatestTelemetry(stationId: string): Promise<TelemetryPublicDTO> {
     try {
-      const rawData = await kloudtrackApi.get<unknown>(`/telemetry/latest/${stationId}`);
+      const rawData = await kloudtrackApi.get<unknown>(`/telemetry/station/${stationId}/history?take=1`);
       return this.transformLatestTelemetry(rawData);
     } catch (error) {
-      console.error(`Failed to fetch latest telemetry for station ${stationId}:`, error);
+      console.error(`[getLatestTelemetry] Failed to fetch latest telemetry for station ${stationId}:`, error);
       throw new AppError(`Failed to fetch latest telemetry for station ${stationId}`, 500);
     }
   }
@@ -140,7 +152,21 @@ export class TelemetryService {
    */
   async getStationHistory(stationId: string): Promise<TelemetryMetrics[]> {
     try {
-      const rawData = await kloudtrackApi.get<unknown>(`/telemetry/recent/${stationId}`);
+      // Calculate dates for past 24 hours
+      const endDate = new Date().toISOString();
+      const startDate = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+
+      // Static parameters
+      const interval = 60; // 1 hour in minutes
+      const take = 24; // 24 records (one per hour)
+      const params = new URLSearchParams({
+        interval: interval.toString(),
+        startDate: startDate,
+        endDate: endDate,
+        take: take.toString(),
+        filterOutliers: "true",
+      });
+      const rawData = await kloudtrackApi.get<unknown>(`/telemetry/station/${stationId}/history?${params}`);
       return this.transformHistoryData(rawData);
     } catch (error) {
       console.error(`Failed to fetch history for station ${stationId}:`, error);
@@ -273,7 +299,7 @@ export class TelemetryService {
     this.dashboardCache.clear();
     this.stationCache.clear();
     this.stationsListCache.clear();
-    console.log("🗑️ All caches cleared");
+    console.log("All caches cleared");
   }
 }
 
