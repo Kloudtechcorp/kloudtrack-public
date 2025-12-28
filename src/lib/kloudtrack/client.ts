@@ -8,6 +8,10 @@ import {
   TelemetryHistoryDTO,
   StationDashboardData,
 } from "../../types/telemetry";
+import {
+  StationInsightsResponse,
+  GroupedInsightsResponse,
+} from "../../types/insights";
 
 const KLOUDTRACK_API_BASE_URL = process.env.KLOUDTRACK_API_BASE_URL || "https://api.kloudtechsea.com/api/v1";
 const KLOUDTRACK_API_TOKEN =
@@ -116,4 +120,17 @@ export async function getRecentTelemetryFromKloudtrackApi(stationId: string): Pr
 
 export async function getDashboardDataFromKloudtrackApi(): Promise<StationDashboardData[]> {
   return kloudtrackApi.get<StationDashboardData[]>("/telemetry/dashboard");
+}
+
+export async function getStationInsightsFromKloudtrackApi(stationId: string): Promise<StationInsightsResponse> {
+  return kloudtrackApi.get<StationInsightsResponse>(`/telemetry/insights/${stationId}`);
+}
+
+export async function getGroupedInsightsFromKloudtrackApi(
+  groupBy: 'city' | 'organization',
+  groupKey: string
+): Promise<GroupedInsightsResponse> {
+  return kloudtrackApi.get<GroupedInsightsResponse>(
+    `/telemetry/insights/grouped?groupBy=${groupBy}&groupKey=${encodeURIComponent(groupKey)}`
+  );
 }
