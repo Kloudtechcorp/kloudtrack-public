@@ -12,6 +12,7 @@ import {
   TelemetryPublicDTO,
   TelemetryHistoryDTO,
 } from "../types/telemetry";
+import { ParameterDataPoint } from "../types/parameter";
 import stationIds from "../lib/constants/stations.json";
 import { kloudtrackApi } from "@/lib/kloudtrack/client";
 
@@ -24,6 +25,9 @@ export class TelemetryService {
 
   // Cache for 5 minutes (300 seconds) for station list
   private stationsListCache = new InMemoryCache<StationPublicInfo[]>(300);
+
+  // Cache for 60 seconds for parameter history data
+  private parameterCache = new InMemoryCache<ParameterDataPoint[]>(60);
 
   /**
    * ORCHESTRATOR: Get dashboard data for ALL stations
@@ -308,12 +312,57 @@ export class TelemetryService {
   }
 
   /**
+   * Get parameter-specific history for a station
+   * Used by Today Graph component for individual parameter charts
+   */
+  async getStationParameterHistory(stationId: string, parameter: string): Promise<ParameterDataPoint[]> {
+    const cacheKey = `parameter-history-${stationId}-${parameter}`;
+    const cached = this.parameterCache.get(cacheKey);
+
+    if (cached) {
+      console.log(`Returning cached ${parameter} data for station ${stationId}`);
+      return cached;
+    }
+
+    try {
+      console.log(`Fetching fresh ${parameter} data for station ${stationId}`);
+
+      // Calculate 24 hours ago
+      const startDate = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+
+      const params = new URLSearchParams({
+        skip: '0',
+        take: '96',
+        interval: '15',
+        startDate: startDate,
+        filterOutliers: 'true',
+      });
+
+      const rawData = await kloudtrackApi.get<{ status: boolean; data: ParameterDataPoint[] }>(
+        `/telemetry/station/${stationId}/history/${parameter}?${params}`
+      );
+
+      const result = rawData.data || [];
+
+      // Cache for 60 seconds
+      this.parameterCache.set(cacheKey, result, 60);
+
+      console.log(`Successfully fetched ${result.length} data points for ${parameter}`);
+      return result;
+    } catch (error) {
+      console.error(`Failed to fetch ${parameter} history for station ${stationId}:`, error);
+      throw new AppError(`Failed to fetch ${parameter} history for station ${stationId}`, 500);
+    }
+  }
+
+  /**
    * Clear all caches (useful for debugging or forced refresh)
    */
   clearAllCaches(): void {
     this.dashboardCache.clear();
     this.stationCache.clear();
     this.stationsListCache.clear();
+    this.parameterCache.clear();
     console.log("All caches cleared");
   }
 }

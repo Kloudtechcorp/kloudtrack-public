@@ -3,6 +3,7 @@
  * Uses TelemetryService for server-side calls with caching and data transformation
  */
 import { StationPublicInfo, TelemetryHistoryDTO, TelemetryPublicDTO, StationDashboardData } from "../types/telemetry";
+import { ParameterDataPoint } from "../types/parameter";
 import { telemetryService } from "./telemetry.service";
 
 /**
@@ -43,6 +44,14 @@ export class StationService {
    */
   async fetchStationDashboardData(stationPublicId: string): Promise<StationDashboardData> {
     return telemetryService.getStationDashboardData(stationPublicId);
+  }
+
+  /**
+   * Get parameter-specific history for a station
+   * Used by Today Graph component
+   */
+  async fetchStationParameterHistory(stationPublicId: string, parameter: string): Promise<ParameterDataPoint[]> {
+    return telemetryService.getStationParameterHistory(stationPublicId, parameter);
   }
 }
 

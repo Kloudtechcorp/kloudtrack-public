@@ -5,7 +5,7 @@ import { stationService } from "@/services/station.service";
 import SubHeader from "@/components/shared/sub-header";
 import StationCurrentWeatherCard from "./station-current-weather-card";
 import StationMapboxLocation from "./station-mapbox-location";
-import StationWeatherDetail from "./station-weather-detail";
+import StationTodayGraph from "./station-today-graph";
 
 interface Props {
   stations: StationPublicInfo[];
@@ -55,9 +55,6 @@ export default function StationDashboardClient({ stations }: Props) {
   const telemetryData = stationData?.latestTelemetry
     ? { station: stationData.station, telemetry: stationData.latestTelemetry }
     : null;
-  const historyData = stationData?.recentHistory
-    ? { station: stationData.station, telemetry: stationData.recentHistory }
-    : null;
 
   return (
     <>
@@ -97,10 +94,9 @@ export default function StationDashboardClient({ stations }: Props) {
           </div>
         </div>
 
-        <StationWeatherDetail
+        <StationTodayGraph
           stationPublicId={selectedStation ? selectedStation.stationPublicId : ""}
           stationType={selectedStation ? selectedStation.stationType : undefined}
-          historyData={historyData}
         />
       </div>
     </>
