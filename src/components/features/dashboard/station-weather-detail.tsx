@@ -1,7 +1,5 @@
-
 import StationWeatherDetailCard from "./station-weather-detail-card";
-import { TelemetryHistoryDTO } from "@/lib/types/telemetry";
-
+import { TelemetryHistoryDTO } from "@/types/telemetry";
 
 interface StationWeatherDetailProps {
   stationPublicId: string;
@@ -9,10 +7,9 @@ interface StationWeatherDetailProps {
   historyData?: TelemetryHistoryDTO | null;
 }
 
-
 const StationWeatherDetail: React.FC<StationWeatherDetailProps> = ({ stationType, historyData }) => {
   // Group readings by category (same logic as before, but now from prop)
-  const grouped: Record<string, { recordedAt: string; value: number|null }[]> = {};
+  const grouped: Record<string, { recordedAt: string; value: number | null }[]> = {};
   if (historyData && historyData.telemetry) {
     const categories = [
       "temperature",
@@ -24,13 +21,15 @@ const StationWeatherDetail: React.FC<StationWeatherDetailProps> = ({ stationType
       "precipitation",
       "uvIndex",
       "distance",
-      "lightIntensity"
+      "lightIntensity",
     ] as const;
-    categories.forEach(cat => {
-      grouped[cat] = historyData.telemetry.map((t) => ({
-        recordedAt: t.recordedAt,
-        value: (t[cat] as number | null | undefined) ?? null
-      })).filter(d => d.value !== null);
+    categories.forEach((cat) => {
+      grouped[cat] = historyData.telemetry
+        .map((t) => ({
+          recordedAt: t.recordedAt,
+          value: (t[cat] as number | null | undefined) ?? null,
+        }))
+        .filter((d) => d.value !== null);
     });
   }
 
@@ -42,6 +41,6 @@ const StationWeatherDetail: React.FC<StationWeatherDetailProps> = ({ stationType
       <StationWeatherDetailCard grouped={grouped} stationType={stationType} />
     </div>
   );
-}
+};
 
 export default StationWeatherDetail;

@@ -1,13 +1,6 @@
-
 "use client";
-import { StationPublicInfo } from "@/lib/types/telemetry";
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem
-} from "@/components/ui/select";
+import { StationPublicInfo } from "@/types/telemetry";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 
 interface SubHeaderProps {
   stations: StationPublicInfo[];

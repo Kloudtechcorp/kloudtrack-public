@@ -2,7 +2,12 @@
  * Server-side client for communicating with Kloudtrack API
  * This runs ONLY on the server and includes the secret API token
  */
-import { StationPublicInfo, TelemetryPublicDTO, TelemetryHistoryDTO, StationDashboardData } from "../types/telemetry";
+import {
+  StationPublicInfo,
+  TelemetryPublicDTO,
+  TelemetryHistoryDTO,
+  StationDashboardData,
+} from "../../types/telemetry";
 
 const KLOUDTRACK_API_BASE_URL = process.env.KLOUDTRACK_API_BASE_URL || "https://api.kloudtechsea.com/api/v1";
 const KLOUDTRACK_API_TOKEN =
@@ -36,7 +41,6 @@ class KloudtrackApiClient {
    */
   private async request<T>(endpoint: string, options?: RequestInit): Promise<T> {
     const url = `${this.baseURL}${endpoint}`;
-    console.log({ url });
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
       ...(options?.headers as Record<string, string>),
@@ -64,7 +68,6 @@ class KloudtrackApiClient {
       if (!apiResponse.success) {
         throw new Error(apiResponse.message || "Kloudtrack API request failed");
       }
-
       return apiResponse.data;
     } catch (error) {
       console.error("Kloudtrack API request failed:", error);

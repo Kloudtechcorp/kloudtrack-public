@@ -2,10 +2,9 @@
  * Telemetry Service - Orchestrates API calls, transforms data, and manages caching
  * This service layer sits between API routes and the Kloudtrack API client
  */
-import { kloudtrackApi } from "./kloudtrack-api.service";
-import { InMemoryCache } from "../utils/cache";
-import { toTwoDecimalPlaces } from "../utils/data-helper";
-import { AppError } from "../utils/error";
+import { InMemoryCache } from "../lib/utils/cache";
+import { toTwoDecimalPlaces } from "../lib/utils/data-helper";
+import { AppError } from "../lib/utils/error";
 import {
   StationPublicInfo,
   TelemetryMetrics,
@@ -13,7 +12,8 @@ import {
   TelemetryPublicDTO,
   TelemetryHistoryDTO,
 } from "../types/telemetry";
-import stationIds from "../constants/stations.json";
+import stationIds from "../lib/constants/stations.json";
+import { kloudtrackApi } from "@/lib/kloudtrack/client";
 
 export class TelemetryService {
   // Cache for 2.5 minutes (150 seconds) for dashboard data
@@ -248,7 +248,15 @@ export class TelemetryService {
   private transformLatestTelemetry(rawData: unknown): TelemetryPublicDTO {
     const data = rawData as Record<string, unknown>;
     const station = this.transformStation(data.station || {});
-    const telemetry = this.transformTelemetry(data.telemetry || rawData);
+
+    // Handle case where data is an array (from /history endpoint)
+    // The API returns { station: {...}, data: [...] }
+    let telemetryData = data.data || data.telemetry || rawData;
+    if (Array.isArray(telemetryData) && telemetryData.length > 0) {
+      telemetryData = telemetryData[0];
+    }
+
+    const telemetry = this.transformTelemetry(telemetryData);
 
     return {
       station,
@@ -260,11 +268,18 @@ export class TelemetryService {
    * Transform raw history response
    */
   private transformHistoryData(rawData: unknown): TelemetryMetrics[] {
-    if (!Array.isArray(rawData)) {
+    // Handle case where data is wrapped in an object with "data" field
+    let dataArray = rawData;
+    if (typeof rawData === 'object' && rawData !== null && !Array.isArray(rawData)) {
+      const dataObj = rawData as Record<string, unknown>;
+      dataArray = dataObj.data || dataObj.telemetry || rawData;
+    }
+
+    if (!Array.isArray(dataArray)) {
       return [];
     }
 
-    return rawData.map((reading: unknown) => this.transformTelemetry(reading));
+    return dataArray.map((reading: unknown) => this.transformTelemetry(reading));
   }
 
   /**

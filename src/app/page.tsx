@@ -1,19 +1,15 @@
-
-
-import { stationService } from "@/lib/services/station.service";
-import { StationDashboardData } from "@/lib/types/telemetry";
+import { stationService } from "@/services/station.service";
+import { StationPublicInfo } from "@/types/telemetry";
 import StationDashboardClient from "@/components/features/dashboard/station-dashboard-client";
-
-
 
 // Server Component
 export default async function Home() {
-  let dashboardData: StationDashboardData[] = [];
+  let stations: StationPublicInfo[] = [];
   try {
-    dashboardData = await stationService.fetchAllStationsDashboardData();
+    stations = await stationService.fetchStationList();
   } catch {
     // Optionally log error or show fallback UI
   }
 
-  return <StationDashboardClient dashboardData={dashboardData} />;
+  return <StationDashboardClient stations={stations} />;
 }

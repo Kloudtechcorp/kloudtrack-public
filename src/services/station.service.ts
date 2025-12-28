@@ -37,6 +37,13 @@ export class StationService {
   async fetchAllStationsDashboardData(): Promise<StationDashboardData[]> {
     return telemetryService.getAllStationsDashboardData();
   }
+
+  /**
+   * Get dashboard data for a specific station
+   */
+  async fetchStationDashboardData(stationPublicId: string): Promise<StationDashboardData> {
+    return telemetryService.getStationDashboardData(stationPublicId);
+  }
 }
 
 // Export singleton instance

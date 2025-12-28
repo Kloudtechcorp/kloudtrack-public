@@ -1,11 +1,8 @@
-
-
 "use client";
 import React from "react";
-import type { TelemetryPublicDTO } from "@/lib/types/telemetry";
+import type { TelemetryPublicDTO } from "@/types/telemetry";
 import { Cloud, CloudSun, Navigation } from "lucide-react";
 import { formatDate } from "@/lib/utils/date";
-
 
 interface CurrentWeatherCardProps {
   telemetryData: TelemetryPublicDTO | null;
@@ -13,10 +10,13 @@ interface CurrentWeatherCardProps {
   error?: string | null;
 }
 
-
 const iconColor = "#fff";
 
-const StationCurrentWeatherCard: React.FC<CurrentWeatherCardProps> = ({ telemetryData, loading = false, error = null }) => {
+const StationCurrentWeatherCard: React.FC<CurrentWeatherCardProps> = ({
+  telemetryData,
+  loading = false,
+  error = null,
+}) => {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center h-full p-6 text-blue-400 animate-pulse">
@@ -52,7 +52,9 @@ const StationCurrentWeatherCard: React.FC<CurrentWeatherCardProps> = ({ telemetr
       <div className="flex-1 flex flex-col gap-6">
         <div>
           <p>Current Weather</p>
-          <p className="text-xs opacity-70">{formatDate(telemetry.recordedAt).formatted} ({formatDate(telemetry.recordedAt).relative})</p>
+          <p className="text-xs opacity-70">
+            {formatDate(telemetry.recordedAt).formatted} ({formatDate(telemetry.recordedAt).relative})
+          </p>
         </div>
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mt-4">
           <div className="flex items-center">
@@ -70,9 +72,7 @@ const StationCurrentWeatherCard: React.FC<CurrentWeatherCardProps> = ({ telemetr
               </div>
               <div className="ml-6 flex flex-col items-end justify-end text-md ">
                 <p>
-                  <span className="opacity-70">
-                    Feels Like 
-                  </span>
+                  <span className="opacity-70">Feels Like</span>
                   <span className="opacity-100 ml-1">
                     {telemetry.heatIndex != null ? `${Math.round(telemetry.heatIndex)}°C` : "N/A"}
                   </span>
@@ -92,14 +92,16 @@ const StationCurrentWeatherCard: React.FC<CurrentWeatherCardProps> = ({ telemetr
         {/* Pressure */}
         <div className="flex flex-col">
           <span className="opacity-70 text-xs">Pressure</span>
-          <span className="text-md">{telemetry.pressure != null ? `${Math.round(telemetry.pressure)} hPa` : "N/A"}</span>
+          <span className="text-md">
+            {telemetry.pressure != null ? `${Math.round(telemetry.pressure)} hPa` : "N/A"}
+          </span>
         </div>
         {/* Wind Speed and Direction */}
         <div className="flex flex-col">
           <span className="opacity-70 text-xs">Wind</span>
           <span className="flex items-center gap-1 text-sm">
             {telemetry.windSpeed != null ? `${Math.round(telemetry.windSpeed)} km/h` : "N/A"}
-            {typeof telemetry.windDirection === 'number' && (
+            {typeof telemetry.windDirection === "number" && (
               <Navigation
                 size={14}
                 style={{ transform: `rotate(${telemetry.windDirection - 45}deg)` }}
@@ -112,7 +114,9 @@ const StationCurrentWeatherCard: React.FC<CurrentWeatherCardProps> = ({ telemetr
         {/* Precipitation */}
         <div className="flex flex-col">
           <span className="opacity-70 text-xs">Precipitation</span>
-          <span className="text-md">{telemetry.precipitation != null ? `${Math.round(telemetry.precipitation)} mm` : "N/A"}</span>
+          <span className="text-md">
+            {telemetry.precipitation != null ? `${Math.round(telemetry.precipitation)} mm` : "N/A"}
+          </span>
         </div>
         {/* UV Index */}
         <div className="flex flex-col">
@@ -122,7 +126,9 @@ const StationCurrentWeatherCard: React.FC<CurrentWeatherCardProps> = ({ telemetr
         {/* Light Intensity */}
         <div className="flex flex-col">
           <span className="opacity-70 text-xs">Light Intensity</span>
-          <span className="text-md">{telemetry.lightIntensity != null ? `${Math.round(telemetry.lightIntensity)} lx` : "N/A"}</span>
+          <span className="text-md">
+            {telemetry.lightIntensity != null ? `${Math.round(telemetry.lightIntensity)} lx` : "N/A"}
+          </span>
         </div>
       </div>
     </div>

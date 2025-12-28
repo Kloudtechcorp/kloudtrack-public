@@ -1,6 +1,6 @@
-import { NextResponse } from 'next/server';
-import { telemetryService } from '@/lib/services/telemetry.service';
-import { formatErrorResponse } from '@/lib/utils/error';
+import { NextResponse } from "next/server";
+import { telemetryService } from "@/services/telemetry.service";
+import { formatErrorResponse } from "@/lib/utils/error";
 
 /**
  * GET /api/telemetry/dashboard
@@ -17,7 +17,7 @@ export async function GET() {
       data,
     });
   } catch (error) {
-    console.error('Dashboard API error:', error);
+    console.error("Dashboard API error:", error);
 
     const errorResponse = formatErrorResponse(error);
     return NextResponse.json(
