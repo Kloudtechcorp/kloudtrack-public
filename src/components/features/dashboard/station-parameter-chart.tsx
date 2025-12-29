@@ -22,10 +22,10 @@ const StationParameterChart: React.FC<StationParameterChartProps> = ({
   // Loading state
   if (loading) {
     return (
-      <div className="bg-zinc-950 border-2 border-zinc-800 p-8">
+      <div className="bg-card-bg border-2 border-card-border p-8">
         <div className="flex flex-col items-center justify-center h-[400px]">
-          <div className="w-8 h-8 border-2 border-zinc-700 border-t-zinc-500 animate-spin mb-4"></div>
-          <span className="text-zinc-600 text-xs font-mono uppercase tracking-wider">
+          <div className="w-8 h-8 border-2 border-card-border border-t-muted animate-spin mb-4"></div>
+          <span className="text-muted text-xs font-mono uppercase tracking-wider">
             LOADING {parameter.label.toUpperCase()}
           </span>
         </div>
@@ -36,7 +36,7 @@ const StationParameterChart: React.FC<StationParameterChartProps> = ({
   // Error state
   if (error) {
     return (
-      <div className="bg-zinc-950 border-2 border-zinc-800 p-8">
+      <div className="bg-card-bg border-2 border-card-border p-8">
         <div className="flex flex-col items-center justify-center h-[400px]">
           <div className="border-2 border-red-500 bg-red-500/10 p-4 mb-4">
             <Cloud size={28} className="text-red-500" strokeWidth={2} />
@@ -47,9 +47,8 @@ const StationParameterChart: React.FC<StationParameterChartProps> = ({
           {onRetry && (
             <button
               onClick={onRetry}
-              className="px-6 py-2 border-2 border-zinc-700 bg-zinc-900 hover:bg-zinc-800 hover:border-zinc-600
-                         text-zinc-400 hover:text-white text-xs font-mono uppercase tracking-wider
-                         transition-colors"
+              className="px-6 py-2 border-2 border-input-border bg-secondary hover:bg-secondary-hover
+                         text-muted hover:text-foreground text-xs font-mono uppercase tracking-wider"
             >
               RETRY
             </button>
@@ -62,12 +61,12 @@ const StationParameterChart: React.FC<StationParameterChartProps> = ({
   // Empty state
   if (!data || data.length === 0) {
     return (
-      <div className="bg-zinc-950 border-2 border-zinc-800 p-8">
+      <div className="bg-card-bg border-2 border-card-border p-8">
         <div className="flex flex-col items-center justify-center h-[400px]">
-          <div className="border-2 border-zinc-800 p-4 mb-4">
-            <Cloud size={28} className="text-zinc-700" strokeWidth={2} />
+          <div className="border-2 border-card-border p-4 mb-4">
+            <Cloud size={28} className="text-muted" strokeWidth={2} />
           </div>
-          <span className="text-zinc-600 text-xs font-mono uppercase tracking-wider">
+          <span className="text-muted text-xs font-mono uppercase tracking-wider">
             [NO DATA AVAILABLE]
           </span>
         </div>
@@ -93,17 +92,17 @@ const StationParameterChart: React.FC<StationParameterChartProps> = ({
   const yDomain = [Math.max(0, minValue - padding), maxValue + padding];
 
   return (
-    <div className="bg-zinc-950 border-2 border-zinc-800">
-      <div className="border-b-2 border-zinc-800 px-6 py-3 flex items-center justify-between">
+    <div className="bg-card-bg border-2 border-card-border">
+      <div className="border-b-2 border-card-border px-6 py-3 flex items-center justify-between">
         <div>
-          <h3 className="text-white text-sm font-mono font-bold uppercase tracking-wider">
+          <h3 className="text-foreground text-sm font-mono font-bold uppercase tracking-wider">
             {parameter.label}
           </h3>
-          <p className="text-zinc-600 text-[10px] font-mono uppercase tracking-wider mt-0.5">
+          <p className="text-muted text-[10px] font-mono uppercase tracking-wider mt-0.5">
             24H TIMELINE
           </p>
         </div>
-        <div className="text-zinc-600 text-xs font-mono">
+        <div className="text-muted text-xs font-mono">
           {parameter.unit && `[${parameter.unit}]`}
         </div>
       </div>
@@ -118,36 +117,45 @@ const StationParameterChart: React.FC<StationParameterChartProps> = ({
               </linearGradient>
             </defs>
 
-            <CartesianGrid strokeDasharray="0" stroke="#27272a" strokeWidth={1} />
+            <CartesianGrid
+              strokeDasharray="0"
+              stroke="var(--color-card-border)"
+              strokeWidth={1}
+            />
 
             <XAxis
               dataKey="displayTime"
-              stroke="#52525b"
-              tick={{ fill: '#71717a', fontSize: 10, fontFamily: 'monospace' }}
-              tickLine={{ stroke: '#52525b' }}
+              stroke="var(--color-muted)"
+              tick={{ fill: 'var(--color-muted)', fontSize: 10, fontFamily: 'monospace' }}
+              tickLine={{ stroke: 'var(--color-muted)' }}
               interval="preserveStartEnd"
               minTickGap={50}
             />
 
             <YAxis
-              stroke="#52525b"
-              tick={{ fill: '#71717a', fontSize: 10, fontFamily: 'monospace' }}
-              tickLine={{ stroke: '#52525b' }}
+              stroke="var(--color-muted)"
+              tick={{ fill: 'var(--color-muted)', fontSize: 10, fontFamily: 'monospace' }}
+              tickLine={{ stroke: 'var(--color-muted)' }}
               domain={yDomain}
               tickFormatter={(value) => value.toFixed(1)}
             />
 
             <Tooltip
               contentStyle={{
-                backgroundColor: '#09090b',
-                border: '2px solid #27272a',
+                backgroundColor: 'var(--color-background)',
+                border: '2px solid var(--color-card-border)',
                 borderRadius: '0',
-                color: '#ffffff',
+                color: 'var(--color-foreground)',
                 padding: '8px 12px',
                 fontSize: '11px',
                 fontFamily: 'monospace',
               }}
-              labelStyle={{ color: '#71717a', fontSize: 10, marginBottom: 4, fontFamily: 'monospace' }}
+              labelStyle={{
+                color: 'var(--color-muted)',
+                fontSize: 10,
+                marginBottom: 4,
+                fontFamily: 'monospace'
+              }}
               labelFormatter={(label) => `TIME: ${label}`}
               formatter={(value: number) => [
                 `${value.toFixed(2)}${parameter.unit ? ` ${parameter.unit}` : ''}`,
@@ -162,7 +170,7 @@ const StationParameterChart: React.FC<StationParameterChartProps> = ({
               strokeWidth={2}
               fill={`url(#gradient-${parameter.key})`}
               dot={false}
-              activeDot={{ r: 4, fill: parameter.color, stroke: '#ffffff', strokeWidth: 2 }}
+              activeDot={{ r: 4, fill: parameter.color, stroke: 'var(--color-background)', strokeWidth: 2 }}
             />
           </AreaChart>
         </ResponsiveContainer>

@@ -7,30 +7,22 @@ import { cn } from "@/lib/utils/cn";
 const Switch = React.forwardRef<
   React.ElementRef<typeof SwitchPrimitives.Root>,
   React.ComponentPropsWithoutRef<typeof SwitchPrimitives.Root>
->(({ className, ...props }, ref) => {
-  const [isChecked, setIsChecked] = React.useState(false);
-
-  return (
-    <SwitchPrimitives.Root
+>(({ className, ...props }, ref) => (
+  <SwitchPrimitives.Root
+    className={cn(
+      "peer inline-flex h-5 w-9 shrink-0 cursor-pointer items-center border-2 border-primary bg-input-bg disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-foreground data-[state=unchecked]:bg-input-bg",
+      className
+    )}
+    {...props}
+    ref={ref}
+  >
+    <SwitchPrimitives.Thumb
       className={cn(
-        "peer inline-flex h-8 w-14 shrink-0 cursor-pointer items-center justify-start rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-[#FBD008] data-[state=unchecked]:bg-input",
-        className
+        "pointer-events-none block h-3 w-3 bg-background transition-transform data-[state=checked]:translate-x-4 data-[state=unchecked]:translate-x-0"
       )}
-      {...props}
-      ref={ref}
-      checked={isChecked}
-      onCheckedChange={setIsChecked}
-    >
-      <SwitchPrimitives.Thumb
-        className={cn(
-          "pointer-events-none flex items-center justify-center h-8 w-8 rounded-full bg-background ring-0 transition-transform data-[state=checked]:translate-x-6 data-[state=unchecked]:translate-x-0"
-        )}
-      >
-        <span className="font-bold">{isChecked ? "°F" : "°C"}</span>
-      </SwitchPrimitives.Thumb>
-    </SwitchPrimitives.Root>
-  );
-});
+    />
+  </SwitchPrimitives.Root>
+));
 
 Switch.displayName = SwitchPrimitives.Root.displayName;
 

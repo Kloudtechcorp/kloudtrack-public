@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
 import Header from "@/components/shared/header";
 import { Toaster } from "@/components/ui/toaster";
-import GradientWrapper from "@/components/shared/gradient";
+import { ThemeProvider } from "@/contexts/theme-context";
 import "./globals.css";
 
 const montserrat = Montserrat({ subsets: ["latin"] });
@@ -15,13 +15,15 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en">
       <body className={montserrat.className}>
-              <GradientWrapper>
-                <Header />
-                {children}
-                <Toaster />
-              </GradientWrapper>
+        <ThemeProvider>
+          <div className="flex flex-col min-h-screen">
+            <Header />
+            {children}
+            <Toaster />
+          </div>
+        </ThemeProvider>
       </body>
     </html>
   );

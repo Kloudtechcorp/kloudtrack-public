@@ -10,11 +10,11 @@ interface SubHeaderProps {
 
 const SubHeader: React.FC<SubHeaderProps> = ({ stations, selectedStation, onStationChange }) => {
   return (
-    <div className="w-full sticky top-0 z-40 h-12 flex items-center bg-zinc-900 border-b-2 border-zinc-800 px-4">
+    <div className="w-full sticky top-0 z-40 h-12 flex items-center bg-secondary border-b-2 border-primary px-4">
       <div className="max-w-[1600px] mx-auto w-full flex items-center gap-3">
-        <div className="text-zinc-600 text-xs font-mono uppercase tracking-wider">SELECT:</div>
+        <div className="text-muted text-xs font-mono uppercase tracking-wider">SELECT:</div>
         <Select value={selectedStation} onValueChange={onStationChange}>
-          <SelectTrigger className="w-auto min-w-[240px] h-8 border-2 border-zinc-800 bg-zinc-950 hover:bg-zinc-900 hover:border-zinc-700 text-white font-mono text-xs uppercase tracking-wider transition-colors">
+          <SelectTrigger className="w-auto min-w-[240px] h-8 border-2 border-input-border bg-input-bg hover:bg-secondary-hover text-foreground font-mono text-xs uppercase tracking-wider">
             <SelectValue placeholder="[NO STATION]" />
           </SelectTrigger>
           <SelectContent>

@@ -61,11 +61,11 @@ export default function StationDashboardClient({ stations }: Props) {
       <SubHeader stations={stations} selectedStation={selectedStationId} onStationChange={setSelectedStationId} />
       <div className="max-w-[1600px] mx-auto w-full px-4 py-6">
         {/* Header Section */}
-        <div className="mb-6 pb-4 border-b-2 border-zinc-800">
+        <div className="mb-6 pb-4 border-b-2 border-primary">
           <div className="flex items-center justify-between">
             <div>
-              <div className="text-xs font-mono text-zinc-600 uppercase tracking-wider mb-1">STATION</div>
-              <div className="text-white text-xl font-bold font-mono">
+              <div className="text-xs font-mono text-muted uppercase tracking-wider mb-1">STATION</div>
+              <div className="text-foreground text-xl font-bold font-mono">
                 {selectedStation
                   ? [selectedStation.city, selectedStation.state, selectedStation.country]
                       .filter((v) => typeof v === "string" && v.trim() !== "")
@@ -74,8 +74,8 @@ export default function StationDashboardClient({ stations }: Props) {
               </div>
             </div>
             {isRefreshing && (
-              <div className="flex items-center gap-2 text-zinc-500 text-xs font-mono">
-                <div className="w-3 h-3 border-2 border-zinc-700 border-t-zinc-500 animate-spin"></div>
+              <div className="flex items-center gap-2 text-muted text-xs font-mono">
+                <div className="w-3 h-3 border-2 border-card-border border-t-muted animate-spin"></div>
                 <span>SYNCING...</span>
               </div>
             )}
