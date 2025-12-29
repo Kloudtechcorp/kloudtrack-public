@@ -5,10 +5,7 @@
  */
 
 import { InMemoryCache } from "../lib/utils/cache";
-import {
-  getStationInsightsFromKloudtrackApi,
-  getGroupedInsightsFromKloudtrackApi,
-} from "../lib/kloudtrack/client";
+import { getStationInsightsFromKloudtrackApi, getGroupedInsightsFromKloudtrackApi } from "../lib/kloudtrack/client";
 import type {
   StationInsightData,
   GroupedInsightData,
@@ -49,14 +46,14 @@ class InsightsService {
 
     try {
       // Fetch from Kloudtrack API
-      const response: StationInsightsResponse = await getStationInsightsFromKloudtrackApi(stationId);
-
+      const response: StationInsightData = await getStationInsightsFromKloudtrackApi(stationId);
+      console.log({ response });
       // Validate response
-      if (response.status === 'error' || !response.data) {
-        throw new Error(response.error?.message || 'Failed to fetch station insights');
+      if (!response) {
+        throw new Error("Failed to fetch station insights");
       }
 
-      const insightData = response.data;
+      const insightData = response;
 
       // Cache the result
       this.stationInsightsCache.set(cacheKey, insightData);
@@ -74,10 +71,7 @@ class InsightsService {
    * @param groupKey - City name or organization ID
    * @returns Grouped insights data
    */
-  async getGroupedInsights(
-    groupBy: 'city' | 'organization',
-    groupKey: string
-  ): Promise<GroupedInsightData> {
+  async getGroupedInsights(groupBy: "city" | "organization", groupKey: string): Promise<GroupedInsightData> {
     const cacheKey = `grouped:${groupBy}:${groupKey}`;
 
     // Check cache first
@@ -90,14 +84,11 @@ class InsightsService {
 
     try {
       // Fetch from Kloudtrack API
-      const response: GroupedInsightsResponse = await getGroupedInsightsFromKloudtrackApi(
-        groupBy,
-        groupKey
-      );
+      const response: GroupedInsightsResponse = await getGroupedInsightsFromKloudtrackApi(groupBy, groupKey);
 
       // Validate response
-      if (response.status === 'error' || !response.data) {
-        throw new Error(response.error?.message || 'Failed to fetch grouped insights');
+      if (response.status === "error" || !response.data) {
+        throw new Error(response.error?.message || "Failed to fetch grouped insights");
       }
 
       const insightData = response.data;
@@ -107,10 +98,7 @@ class InsightsService {
 
       return insightData;
     } catch (error) {
-      console.error(
-        `[InsightsService] Error fetching grouped insights for ${groupBy}=${groupKey}:`,
-        error
-      );
+      console.error(`[InsightsService] Error fetching grouped insights for ${groupBy}=${groupKey}:`, error);
       throw error;
     }
   }
@@ -119,7 +107,7 @@ class InsightsService {
    * Clear all insights caches (useful for debugging or manual refresh)
    */
   clearAllCaches(): void {
-    console.log('[InsightsService] Clearing all insights caches');
+    console.log("[InsightsService] Clearing all insights caches");
     this.stationInsightsCache.clear();
     this.groupedInsightsCache.clear();
   }
@@ -131,11 +119,11 @@ class InsightsService {
     return {
       stationInsights: {
         size: this.stationInsightsCache.size,
-        keys: Array.from(this.stationInsightsCache['cache'].keys()),
+        keys: Array.from(this.stationInsightsCache["cache"].keys()),
       },
       groupedInsights: {
         size: this.groupedInsightsCache.size,
-        keys: Array.from(this.groupedInsightsCache['cache'].keys()),
+        keys: Array.from(this.groupedInsightsCache["cache"].keys()),
       },
     };
   }
