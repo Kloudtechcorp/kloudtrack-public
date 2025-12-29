@@ -3,10 +3,9 @@ import { useState, useEffect } from "react";
 import type { StationDashboardData, StationPublicInfo } from "@/types/telemetry";
 import { stationService } from "@/services/station.service";
 import SubHeader from "@/components/shared/sub-header";
-import StationCurrentWeatherCard from "./station-current-weather-card";
+import StationWeatherInsightsMerged from "./station-weather-insights-merged";
 import StationMapboxLocation from "./station-mapbox-location";
 import StationTodayGraph from "./station-today-graph";
-import StationInsightsCard from "./station-insights-card";
 
 interface Props {
   stations: StationPublicInfo[];
@@ -60,54 +59,55 @@ export default function StationDashboardClient({ stations }: Props) {
   return (
     <>
       <SubHeader stations={stations} selectedStation={selectedStationId} onStationChange={setSelectedStationId} />
-      <div className="max-w-7xl mx-auto w-full flex flex-col gap-4 mt-8">
-        {isRefreshing && (
-          <div className="text-white/60 text-sm flex items-center gap-2">
-            <div className="animate-spin h-4 w-4 border-2 border-white/60 border-t-transparent rounded-full"></div>
-            <span>Updating data...</span>
-          </div>
-        )}
-
-        <div className="text-white text-xl">
-          <p>
-            {selectedStation
-              ? [selectedStation.city, selectedStation.state, selectedStation.country]
-                  .filter((v) => typeof v === "string" && v.trim() !== "")
-                  .join(", ")
-              : "Select a station"}
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-          <div className="h-75 w-full rounded-xl overflow-hidden shadow-lg bg-white/10 backdrop-blur-md backdrop-brightness-110 border border-white/20 ">
-            <StationCurrentWeatherCard
-              telemetryData={telemetryData}
-              loading={false}
-              error={telemetryData === null ? "Failed to load telemetry data." : null}
-            />
-          </div>
-          <div className="h-75 w-full rounded-xl overflow-hidden">
-            <div className="h-full w-full">
-              <StationMapboxLocation
-                location={selectedStation ? (selectedStation.location as [number, number]) : null}
-              />
+      <div className="max-w-[1600px] mx-auto w-full px-4 py-6">
+        {/* Header Section */}
+        <div className="mb-6 pb-4 border-b-2 border-zinc-800">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="text-xs font-mono text-zinc-600 uppercase tracking-wider mb-1">STATION</div>
+              <div className="text-white text-xl font-bold font-mono">
+                {selectedStation
+                  ? [selectedStation.city, selectedStation.state, selectedStation.country]
+                      .filter((v) => typeof v === "string" && v.trim() !== "")
+                      .join(" / ")
+                  : "[NO SELECTION]"}
+              </div>
             </div>
+            {isRefreshing && (
+              <div className="flex items-center gap-2 text-zinc-500 text-xs font-mono">
+                <div className="w-3 h-3 border-2 border-zinc-700 border-t-zinc-500 animate-spin"></div>
+                <span>SYNCING...</span>
+              </div>
+            )}
           </div>
         </div>
 
-        <div className="mb-8">
-          <div className="h-96 w-full rounded-xl overflow-hidden shadow-lg bg-white/10 backdrop-blur-md backdrop-brightness-110 border border-white/20">
-            <StationInsightsCard
+        {/* Main Grid Layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+          {/* Weather + Insights (2/3 width) */}
+          <div className="lg:col-span-2 h-[600px]">
+            <StationWeatherInsightsMerged
+              telemetryData={telemetryData}
               stationId={selectedStationId}
               loading={isRefreshing}
             />
           </div>
+
+          {/* Map (1/3 width) */}
+          <div className="h-[600px]">
+            <StationMapboxLocation
+              location={selectedStation ? (selectedStation.location as [number, number]) : null}
+            />
+          </div>
         </div>
 
-        <StationTodayGraph
-          stationPublicId={selectedStation ? selectedStation.stationPublicId : ""}
-          stationType={selectedStation ? selectedStation.stationType : undefined}
-        />
+        {/* Graphs Section */}
+        <div>
+          <StationTodayGraph
+            stationPublicId={selectedStation ? selectedStation.stationPublicId : ""}
+            stationType={selectedStation ? selectedStation.stationType : undefined}
+          />
+        </div>
       </div>
     </>
   );

@@ -10,8 +10,6 @@ interface CurrentWeatherCardProps {
   error?: string | null;
 }
 
-const iconColor = "#fff";
-
 const StationCurrentWeatherCard: React.FC<CurrentWeatherCardProps> = ({
   telemetryData,
   loading = false,
@@ -19,115 +17,129 @@ const StationCurrentWeatherCard: React.FC<CurrentWeatherCardProps> = ({
 }) => {
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center h-full p-6 text-blue-400 animate-pulse">
-        <Cloud size={48} color={iconColor} />
-        <span className="mt-2">Loading...</span>
+      <div className="flex flex-col items-center justify-center h-full px-8 py-12">
+        <div className="relative">
+          <div className="absolute inset-0 animate-ping">
+            <Cloud size={32} className="text-white/5" strokeWidth={1.5} />
+          </div>
+          <Cloud size={32} className="relative text-white/20" strokeWidth={1.5} />
+        </div>
+        <span className="mt-6 text-white/30 text-sm font-light tracking-wide">Loading</span>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="flex flex-col items-center justify-center h-full p-6 text-red-400">
-        <Cloud size={48} color={iconColor} />
-        <span className="mt-2">{error}</span>
+      <div className="flex flex-col items-center justify-center h-full px-8 py-12">
+        <div className="p-4 rounded-full bg-red-500/5 mb-4">
+          <Cloud size={28} className="text-red-300/60" strokeWidth={1.5} />
+        </div>
+        <span className="text-red-200/70 text-sm font-light tracking-wide text-center max-w-[240px]">{error}</span>
       </div>
     );
   }
 
   if (!telemetryData) {
     return (
-      <div className="flex flex-col items-center justify-center h-full p-6 text-gray-400">
-        <Cloud size={48} color={iconColor} />
-        <span className="mt-2">Select a station</span>
+      <div className="flex flex-col items-center justify-center h-full px-8 py-12">
+        <div className="p-5 rounded-full bg-white/[0.02] border border-white/[0.06] mb-5">
+          <Cloud size={28} className="text-white/20" strokeWidth={1.5} />
+        </div>
+        <span className="text-white/25 text-sm font-light tracking-wide text-center">Select a station</span>
       </div>
     );
   }
 
   const { telemetry } = telemetryData;
 
-  // MSN Weather-inspired card layout
   return (
-    <div className="flex flex-col h-full justify-between mb-4 text-white gap-2 py-8 px-6">
-      <div className="flex-1 flex flex-col gap-6">
-        <div>
-          <p>Current Weather</p>
-          <p className="text-xs opacity-70">
-            {formatDate(telemetry.recordedAt).formatted} ({formatDate(telemetry.recordedAt).relative})
+    <div className="flex flex-col h-full justify-between text-white py-10 px-8">
+      <div className="flex-1 flex flex-col">
+        <div className="mb-8">
+          <p className="text-[13px] text-white/40 font-light tracking-wide uppercase mb-1">Now</p>
+          <p className="text-[11px] text-white/25 font-light tracking-wide">
+            {formatDate(telemetry.recordedAt).formatted}
           </p>
         </div>
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between mt-4">
-          <div className="flex items-center">
-            <CloudSun size={64} color={iconColor} />
-            <div className="ml-4 flex">
-              <div className="flex">
-                {telemetry.temperature != null ? (
-                  <>
-                    <span className="text-6xl font-bold">{Math.round(telemetry.temperature)}</span>
-                    <span className="text-3xl font-bold">°C</span>
-                  </>
-                ) : (
-                  <span className="text-6xl font-bold">N/A</span>
-                )}
-              </div>
-              <div className="ml-6 flex flex-col items-end justify-end text-md ">
-                <p>
-                  <span className="opacity-70">Feels Like</span>
-                  <span className="opacity-100 ml-1">
-                    {telemetry.heatIndex != null ? `${Math.round(telemetry.heatIndex)}°C` : "N/A"}
-                  </span>
-                </p>
-              </div>
-            </div>
+
+        <div className="flex items-start gap-6 mb-auto">
+          <div className="p-2 rounded-2xl bg-white/[0.02]">
+            <CloudSun size={52} className="text-white/30" strokeWidth={1.5} />
+          </div>
+          <div className="flex items-baseline gap-1 -mt-1">
+            {telemetry.temperature != null ? (
+              <>
+                <span className="text-[72px] font-extralight leading-none tracking-tighter text-white/95">
+                  {Math.round(telemetry.temperature)}
+                </span>
+                <span className="text-[32px] font-extralight text-white/50 mb-2">°C</span>
+              </>
+            ) : (
+              <span className="text-[72px] font-extralight leading-none text-white/40">—</span>
+            )}
           </div>
         </div>
+
+        {telemetry.heatIndex != null && (
+          <div className="mt-6 pt-6 border-t border-white/[0.06]">
+            <p className="text-[12px] text-white/30 font-light tracking-wide mb-1">Feels Like</p>
+            <p className="text-[20px] font-light text-white/70 tracking-tight">
+              {Math.round(telemetry.heatIndex)}°C
+            </p>
+          </div>
+        )}
       </div>
 
-      <div className="flex flex-row justify-between mt-6 flex-wrap gap-4">
-        {/* Humidity */}
-        <div className="flex flex-col">
-          <span className="opacity-70 text-xs">Humidity</span>
-          <span className="text-md">{telemetry.humidity != null ? `${Math.round(telemetry.humidity)}%` : "N/A"}</span>
-        </div>
-        {/* Pressure */}
-        <div className="flex flex-col">
-          <span className="opacity-70 text-xs">Pressure</span>
-          <span className="text-md">
-            {telemetry.pressure != null ? `${Math.round(telemetry.pressure)} hPa` : "N/A"}
+      <div className="grid grid-cols-3 gap-x-6 gap-y-6 mt-8 pt-8 border-t border-white/[0.06]">
+        <div className="flex flex-col gap-1.5">
+          <span className="text-[10px] text-white/30 font-light tracking-wider uppercase">Humidity</span>
+          <span className="text-[15px] font-light text-white/80 tracking-tight">
+            {telemetry.humidity != null ? `${Math.round(telemetry.humidity)}%` : "—"}
           </span>
         </div>
-        {/* Wind Speed and Direction */}
-        <div className="flex flex-col">
-          <span className="opacity-70 text-xs">Wind</span>
-          <span className="flex items-center gap-1 text-sm">
-            {telemetry.windSpeed != null ? `${Math.round(telemetry.windSpeed)} km/h` : "N/A"}
+
+        <div className="flex flex-col gap-1.5">
+          <span className="text-[10px] text-white/30 font-light tracking-wider uppercase">Pressure</span>
+          <span className="text-[15px] font-light text-white/80 tracking-tight">
+            {telemetry.pressure != null ? `${Math.round(telemetry.pressure)}` : "—"}
+          </span>
+        </div>
+
+        <div className="flex flex-col gap-1.5">
+          <span className="text-[10px] text-white/30 font-light tracking-wider uppercase">Wind</span>
+          <span className="flex items-center gap-1.5 text-[15px] font-light text-white/80 tracking-tight">
+            {telemetry.windSpeed != null ? `${Math.round(telemetry.windSpeed)}` : "—"}
             {typeof telemetry.windDirection === "number" && (
               <Navigation
-                size={14}
+                size={12}
+                strokeWidth={1.5}
                 style={{ transform: `rotate(${telemetry.windDirection - 45}deg)` }}
-                className="ml-1 transition-transform duration-300"
+                className="text-white/40 transition-transform duration-300"
                 aria-label={`Wind direction: ${Math.round(telemetry.windDirection)}°`}
               />
             )}
           </span>
         </div>
-        {/* Precipitation */}
-        <div className="flex flex-col">
-          <span className="opacity-70 text-xs">Precipitation</span>
-          <span className="text-md">
-            {telemetry.precipitation != null ? `${Math.round(telemetry.precipitation)} mm` : "N/A"}
+
+        <div className="flex flex-col gap-1.5">
+          <span className="text-[10px] text-white/30 font-light tracking-wider uppercase">Rain</span>
+          <span className="text-[15px] font-light text-white/80 tracking-tight">
+            {telemetry.precipitation != null ? `${Math.round(telemetry.precipitation)}` : "—"}
           </span>
         </div>
-        {/* UV Index */}
-        <div className="flex flex-col">
-          <span className="opacity-70 text-xs">UV Index</span>
-          <span className="text-md">{telemetry.uvIndex != null ? `${Math.round(telemetry.uvIndex)}` : "N/A"}</span>
+
+        <div className="flex flex-col gap-1.5">
+          <span className="text-[10px] text-white/30 font-light tracking-wider uppercase">UV</span>
+          <span className="text-[15px] font-light text-white/80 tracking-tight">
+            {telemetry.uvIndex != null ? `${Math.round(telemetry.uvIndex)}` : "—"}
+          </span>
         </div>
-        {/* Light Intensity */}
-        <div className="flex flex-col">
-          <span className="opacity-70 text-xs">Light Intensity</span>
-          <span className="text-md">
-            {telemetry.lightIntensity != null ? `${Math.round(telemetry.lightIntensity)} lx` : "N/A"}
+
+        <div className="flex flex-col gap-1.5">
+          <span className="text-[10px] text-white/30 font-light tracking-wider uppercase">Light</span>
+          <span className="text-[15px] font-light text-white/80 tracking-tight">
+            {telemetry.lightIntensity != null ? `${Math.round(telemetry.lightIntensity)}` : "—"}
           </span>
         </div>
       </div>

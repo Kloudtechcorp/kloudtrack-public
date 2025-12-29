@@ -22,10 +22,12 @@ const StationParameterChart: React.FC<StationParameterChartProps> = ({
   // Loading state
   if (loading) {
     return (
-      <div className="bg-white/10 backdrop-blur-md backdrop-brightness-110 border border-white/20 rounded-lg p-6">
-        <div className="flex flex-col items-center justify-center h-[400px] text-white/60 animate-pulse">
-          <Cloud size={48} className="mb-4" />
-          <span>Loading {parameter.label} data...</span>
+      <div className="bg-zinc-950 border-2 border-zinc-800 p-8">
+        <div className="flex flex-col items-center justify-center h-[400px]">
+          <div className="w-8 h-8 border-2 border-zinc-700 border-t-zinc-500 animate-spin mb-4"></div>
+          <span className="text-zinc-600 text-xs font-mono uppercase tracking-wider">
+            LOADING {parameter.label.toUpperCase()}
+          </span>
         </div>
       </div>
     );
@@ -34,16 +36,22 @@ const StationParameterChart: React.FC<StationParameterChartProps> = ({
   // Error state
   if (error) {
     return (
-      <div className="bg-white/10 backdrop-blur-md backdrop-brightness-110 border border-white/20 rounded-lg p-6">
-        <div className="flex flex-col items-center justify-center h-[400px] text-red-400">
-          <Cloud size={48} className="mb-4" />
-          <span className="mb-4">{error}</span>
+      <div className="bg-zinc-950 border-2 border-zinc-800 p-8">
+        <div className="flex flex-col items-center justify-center h-[400px]">
+          <div className="border-2 border-red-500 bg-red-500/10 p-4 mb-4">
+            <Cloud size={28} className="text-red-500" strokeWidth={2} />
+          </div>
+          <span className="text-red-400 text-xs font-mono text-center max-w-[300px] mb-6">
+            [ERROR] {error}
+          </span>
           {onRetry && (
             <button
               onClick={onRetry}
-              className="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg transition-colors"
+              className="px-6 py-2 border-2 border-zinc-700 bg-zinc-900 hover:bg-zinc-800 hover:border-zinc-600
+                         text-zinc-400 hover:text-white text-xs font-mono uppercase tracking-wider
+                         transition-colors"
             >
-              Retry
+              RETRY
             </button>
           )}
         </div>
@@ -54,10 +62,14 @@ const StationParameterChart: React.FC<StationParameterChartProps> = ({
   // Empty state
   if (!data || data.length === 0) {
     return (
-      <div className="bg-white/10 backdrop-blur-md backdrop-brightness-110 border border-white/20 rounded-lg p-6">
-        <div className="flex flex-col items-center justify-center h-[400px] text-white/60">
-          <Cloud size={48} className="mb-4" />
-          <span>No data available for {parameter.label}</span>
+      <div className="bg-zinc-950 border-2 border-zinc-800 p-8">
+        <div className="flex flex-col items-center justify-center h-[400px]">
+          <div className="border-2 border-zinc-800 p-4 mb-4">
+            <Cloud size={28} className="text-zinc-700" strokeWidth={2} />
+          </div>
+          <span className="text-zinc-600 text-xs font-mono uppercase tracking-wider">
+            [NO DATA AVAILABLE]
+          </span>
         </div>
       </div>
     );
@@ -81,70 +93,80 @@ const StationParameterChart: React.FC<StationParameterChartProps> = ({
   const yDomain = [Math.max(0, minValue - padding), maxValue + padding];
 
   return (
-    <div className="bg-white/10 backdrop-blur-md backdrop-brightness-110 border border-white/20 rounded-lg p-6">
-      <div className="mb-4">
-        <h3 className="text-white text-lg font-semibold">
-          {parameter.label} {parameter.unit && `(${parameter.unit})`}
-        </h3>
-        <p className="text-white/60 text-sm">Last 24 hours</p>
+    <div className="bg-zinc-950 border-2 border-zinc-800">
+      <div className="border-b-2 border-zinc-800 px-6 py-3 flex items-center justify-between">
+        <div>
+          <h3 className="text-white text-sm font-mono font-bold uppercase tracking-wider">
+            {parameter.label}
+          </h3>
+          <p className="text-zinc-600 text-[10px] font-mono uppercase tracking-wider mt-0.5">
+            24H TIMELINE
+          </p>
+        </div>
+        <div className="text-zinc-600 text-xs font-mono">
+          {parameter.unit && `[${parameter.unit}]`}
+        </div>
       </div>
 
-      <ResponsiveContainer width="100%" height={400}>
-        <AreaChart data={chartData}>
-          <defs>
-            <linearGradient id={`gradient-${parameter.key}`} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor={parameter.color} stopOpacity={0.3} />
-              <stop offset="95%" stopColor={parameter.color} stopOpacity={0} />
-            </linearGradient>
-          </defs>
+      <div className="p-6">
+        <ResponsiveContainer width="100%" height={400}>
+          <AreaChart data={chartData}>
+            <defs>
+              <linearGradient id={`gradient-${parameter.key}`} x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor={parameter.color} stopOpacity={0.3} />
+                <stop offset="95%" stopColor={parameter.color} stopOpacity={0} />
+              </linearGradient>
+            </defs>
 
-          <CartesianGrid strokeDasharray="3 3" stroke="#334155" opacity={0.3} />
+            <CartesianGrid strokeDasharray="0" stroke="#27272a" strokeWidth={1} />
 
-          <XAxis
-            dataKey="displayTime"
-            stroke="#ffffff"
-            opacity={0.6}
-            tick={{ fill: '#ffffff', opacity: 0.6 }}
-            tickLine={{ stroke: '#ffffff', opacity: 0.3 }}
-            interval="preserveStartEnd"
-            minTickGap={50}
-          />
+            <XAxis
+              dataKey="displayTime"
+              stroke="#52525b"
+              tick={{ fill: '#71717a', fontSize: 10, fontFamily: 'monospace' }}
+              tickLine={{ stroke: '#52525b' }}
+              interval="preserveStartEnd"
+              minTickGap={50}
+            />
 
-          <YAxis
-            stroke="#ffffff"
-            opacity={0.6}
-            tick={{ fill: '#ffffff', opacity: 0.6 }}
-            tickLine={{ stroke: '#ffffff', opacity: 0.3 }}
-            domain={yDomain}
-            tickFormatter={(value) => value.toFixed(1)}
-          />
+            <YAxis
+              stroke="#52525b"
+              tick={{ fill: '#71717a', fontSize: 10, fontFamily: 'monospace' }}
+              tickLine={{ stroke: '#52525b' }}
+              domain={yDomain}
+              tickFormatter={(value) => value.toFixed(1)}
+            />
 
-          <Tooltip
-            contentStyle={{
-              backgroundColor: '#1e293b',
-              border: 'none',
-              borderRadius: '8px',
-              color: '#ffffff',
-            }}
-            labelStyle={{ color: '#ffffff', opacity: 0.8 }}
-            labelFormatter={(label) => `Time: ${label}`}
-            formatter={(value: number) => [
-              `${value.toFixed(2)}${parameter.unit ? ` ${parameter.unit}` : ''}`,
-              parameter.label,
-            ]}
-          />
+            <Tooltip
+              contentStyle={{
+                backgroundColor: '#09090b',
+                border: '2px solid #27272a',
+                borderRadius: '0',
+                color: '#ffffff',
+                padding: '8px 12px',
+                fontSize: '11px',
+                fontFamily: 'monospace',
+              }}
+              labelStyle={{ color: '#71717a', fontSize: 10, marginBottom: 4, fontFamily: 'monospace' }}
+              labelFormatter={(label) => `TIME: ${label}`}
+              formatter={(value: number) => [
+                `${value.toFixed(2)}${parameter.unit ? ` ${parameter.unit}` : ''}`,
+                '',
+              ]}
+            />
 
-          <Area
-            type="monotone"
-            dataKey="value"
-            stroke={parameter.color}
-            strokeWidth={2}
-            fill={`url(#gradient-${parameter.key})`}
-            dot={false}
-            activeDot={{ r: 6, fill: parameter.color, stroke: '#ffffff', strokeWidth: 2 }}
-          />
-        </AreaChart>
-      </ResponsiveContainer>
+            <Area
+              type="monotone"
+              dataKey="value"
+              stroke={parameter.color}
+              strokeWidth={2}
+              fill={`url(#gradient-${parameter.key})`}
+              dot={false}
+              activeDot={{ r: 4, fill: parameter.color, stroke: '#ffffff', strokeWidth: 2 }}
+            />
+          </AreaChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   );
 };

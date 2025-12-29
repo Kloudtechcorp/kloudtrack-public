@@ -10,21 +10,12 @@ interface SubHeaderProps {
 
 const SubHeader: React.FC<SubHeaderProps> = ({ stations, selectedStation, onStationChange }) => {
   return (
-    <div
-      className="
-        w-full
-        sticky top-0 z-50 h-16
-        flex items-center text-center
-        bg-slate-900/45
-        backdrop-blur-md backdrop-brightness-110
-        border-b border-white/10
-        px-4
-      "
-    >
-      <div className="max-w-7xl mx-auto w-full flex items-center">
+    <div className="w-full sticky top-0 z-40 h-12 flex items-center bg-zinc-900 border-b-2 border-zinc-800 px-4">
+      <div className="max-w-[1600px] mx-auto w-full flex items-center gap-3">
+        <div className="text-zinc-600 text-xs font-mono uppercase tracking-wider">SELECT:</div>
         <Select value={selectedStation} onValueChange={onStationChange}>
-          <SelectTrigger className="w-75 rounded-xl mr-4 bg-white/10 backdrop-blur-md backdrop-brightness-110 border border-white/40 text-white">
-            <SelectValue placeholder="Select Station" />
+          <SelectTrigger className="w-auto min-w-[240px] h-8 border-2 border-zinc-800 bg-zinc-950 hover:bg-zinc-900 hover:border-zinc-700 text-white font-mono text-xs uppercase tracking-wider transition-colors">
+            <SelectValue placeholder="[NO STATION]" />
           </SelectTrigger>
           <SelectContent>
             {stations.map((station) => (
