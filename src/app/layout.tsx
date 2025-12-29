@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
-import Header from "@/components/custom/shared/header";
+import Header from "@/components/shared/header";
 import { Toaster } from "@/components/ui/toaster";
-import GradientWrapper from "@/components/custom/shared/gradient";
+import GradientWrapper from "@/components/shared/gradient";
 import "./globals.css";
 
 const montserrat = Montserrat({ subsets: ["latin"] });

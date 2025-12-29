@@ -30,26 +30,37 @@ const StationMapboxLocation = ({ location }: StationMapboxLocationProps) => {
   }, [lat, lon, mapboxToken]);
 
   return (
-    <div className="relative w-full h-full">
+    <div className="relative w-full h-full bg-zinc-950 border-2 border-zinc-800">
       {mapImgUrl ? (
         <>
           <img
             src={mapImgUrl}
             alt="Map snapshot of the station location"
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover grayscale opacity-60"
             loading="lazy"
           />
+          <div className="absolute inset-0 bg-zinc-950/40"></div>
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            {/* Pulsing yellow dot */}
-            <div className="relative w-2.5 h-2.5">
-              <span className="absolute top-0 left-0 w-full h-full rounded-full bg-yellow-400 opacity-75 animate-ping"></span>
-              <span className="absolute top-0 left-0 w-full h-full rounded-full bg-yellow-500"></span>
+            <div className="relative">
+              <div className="w-4 h-4 border-2 border-yellow-500 bg-yellow-500/20 animate-pulse"></div>
+              <div className="absolute -inset-2 border border-yellow-500/40 animate-ping"></div>
+            </div>
+          </div>
+          <div className="absolute top-0 left-0 right-0 border-b-2 border-zinc-800 bg-zinc-950/90 px-4 py-2">
+            <p className="text-zinc-500 text-[10px] font-mono uppercase tracking-wider">LOCATION</p>
+          </div>
+          <div className="absolute bottom-0 left-0 right-0 border-t-2 border-zinc-800 bg-zinc-950/90 px-4 py-2">
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 bg-yellow-500"></div>
+              <p className="text-zinc-500 text-[10px] font-mono">
+                LAT: {lat?.toFixed(4) || "--"} / LON: {lon?.toFixed(4) || "--"}
+              </p>
             </div>
           </div>
         </>
       ) : (
-        <div className="w-full h-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-xs text-gray-500">
-          Map unavailable
+        <div className="w-full h-full flex items-center justify-center">
+          <span className="text-zinc-600 text-xs font-mono">[MAP UNAVAILABLE]</span>
         </div>
       )}
     </div>

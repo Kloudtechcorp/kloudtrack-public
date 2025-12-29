@@ -1,7 +1,7 @@
 "use client";
 
-import Disclaimer from "@/components/custom/terminology/disclaimer";
-import TerminologyTabs from "@/components/custom/terminology/terminology-tabs";
+import Disclaimer from "@/components/features/terminology/disclaimer";
+import TerminologyTabs from "@/components/features/terminology/terminology-tabs";
 
 export default function Home() {
   return (
