@@ -2,9 +2,10 @@
  * Service layer for station data
  * Uses TelemetryService for server-side calls with caching and data transformation
  */
-import { StationPublicInfo, TelemetryHistoryDTO, TelemetryPublicDTO, StationDashboardData } from "../types/telemetry";
-import { ParameterDataPoint } from "../types/parameter";
+import { StationPublicInfo, TelemetryPublicDTO } from "../types/telemetry";
+// import { ParameterDataPoint } from "../types/parameter";
 import { telemetryService } from "./telemetry.service";
+import { TelemetryMetricRaw } from "@/types/telemetry-raw";
 
 /**
  * StationService - Facade/wrapper around TelemetryService
@@ -25,34 +26,14 @@ export class StationService {
     return telemetryService.getLatestTelemetry(stationPublicId);
   }
 
-  /**
-   * Get recent telemetry history for a specific station
-   */
-  async fetchStationRecentHistory(stationPublicId: string): Promise<TelemetryHistoryDTO> {
-    return telemetryService.getStationHistoryWithInfo(stationPublicId);
-  }
-
-  /**
-   * Get dashboard data for all stations
-   */
-  async fetchAllStationsDashboardData(): Promise<StationDashboardData[]> {
-    return telemetryService.getAllStationsDashboardData();
-  }
-
-  /**
-   * Get dashboard data for a specific station
-   */
-  async fetchStationDashboardData(stationPublicId: string): Promise<StationDashboardData> {
-    return telemetryService.getStationDashboardData(stationPublicId);
-  }
-
-  /**
+   /**
    * Get parameter-specific history for a station
    * Used by Today Graph component
    */
-  async fetchStationParameterHistory(stationPublicId: string, parameter: string): Promise<ParameterDataPoint[]> {
+  async fetchStationParameterHistory(stationPublicId: string, parameter: string): Promise<TelemetryMetricRaw[]> {
     return telemetryService.getStationParameterHistory(stationPublicId, parameter);
   }
+
 }
 
 // Export singleton instance

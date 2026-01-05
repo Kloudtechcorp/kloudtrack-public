@@ -3,7 +3,8 @@ import React, { useState, useEffect, useCallback } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import StationParameterChart from "./station-parameter-chart";
 import { PARAMETERS } from "@/lib/constants/parameters";
-import { ParameterType, ParameterDataPoint } from "@/types/parameter";
+import { ParameterType } from "@/types/parameter";
+import { TelemetryMetricRaw } from "@/types/telemetry-raw";
 
 interface StationTodayGraphTabsProps {
   stationPublicId: string;
@@ -11,9 +12,21 @@ interface StationTodayGraphTabsProps {
 
 const StationTodayGraphTabs: React.FC<StationTodayGraphTabsProps> = ({ stationPublicId }) => {
   const [activeParameter, setActiveParameter] = useState<ParameterType>('temperature');
-  const [parameterData, setParameterData] = useState<Partial<Record<ParameterType, ParameterDataPoint[]>>>({});
+  const [parameterData, setParameterData] = useState<Partial<Record<ParameterType, TelemetryMetricRaw[]>>>({});
   const [loading, setLoading] = useState<Partial<Record<ParameterType, boolean>>>({});
   const [errors, setErrors] = useState<Partial<Record<ParameterType, string | null>>>({});
+
+  // // Reset all cached data when station changes so that
+  // // new station data is fetched instead of reusing the
+  // // previous station's parameter data.
+  // useEffect(() => {
+  //   if (!stationPublicId) return;
+
+  //   setParameterData({});
+  //   setLoading({});
+  //   setErrors({});
+  //   setActiveParameter('temperature');
+  // }, [stationPublicId]);
 
   // Fetch data for a specific parameter
   const fetchParameterData = useCallback(

@@ -1,11 +1,12 @@
 "use client";
 import React from "react";
 import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart } from "recharts";
-import { ParameterDataPoint, ParameterConfig } from "@/types/parameter";
+import { ParameterConfig } from "@/types/parameter";
 import { Cloud } from "lucide-react";
+import { TelemetryMetricRaw } from "@/types/telemetry-raw";
 
 interface StationParameterChartProps {
-  data: ParameterDataPoint[];
+  data: TelemetryMetricRaw[];
   parameter: ParameterConfig;
   loading: boolean;
   error: string | null;

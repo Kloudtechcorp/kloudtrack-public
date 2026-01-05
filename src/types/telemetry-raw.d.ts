@@ -57,12 +57,12 @@ export interface TelemetryHistoryTakeRaw {
 export interface TelemetryMetricRaw {
   id: number;
   recordedAt: string;
-  createdAt: string;
+  createdAt?: string;
   value: number;
 }
 
 // History param (metric)
 export interface TelemetryHistoryMetricRaw {
   station: StationRaw;
-  metrics: TelemetryMetricRaw[];
+  data: TelemetryMetricRaw[];
 }

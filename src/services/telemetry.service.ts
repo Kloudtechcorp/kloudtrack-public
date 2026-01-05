@@ -10,16 +10,13 @@ import {
   TelemetryMetrics,
   StationDashboardData,
   TelemetryPublicDTO,
-  TelemetryHistoryDTO,
 } from "../types/telemetry";
-import { ParameterDataPoint } from "../types/parameter";
+// import { ParameterDataPoint } from "../types/parameter";
 import stationIds from "../lib/constants/stations.json";
-import { kloudtrackApi } from "@/lib/kloudtrack/client";
+import { getLatestTelemetryFromKloudtrackApi, getTelemetryMetricHistoryFromKloudtrackApi } from "@/lib/kloudtrack/client";
+import { TelemetryMetricRaw } from "@/types/telemetry-raw";
 
 export class TelemetryService {
-  // Cache for 2.5 minutes (150 seconds) for dashboard data
-  private dashboardCache = new InMemoryCache<StationDashboardData[]>(150);
-
   // Cache for 60 seconds for individual station data
   private stationCache = new InMemoryCache<StationDashboardData>(60);
 
@@ -27,44 +24,7 @@ export class TelemetryService {
   private stationsListCache = new InMemoryCache<StationPublicInfo[]>(300);
 
   // Cache for 60 seconds for parameter history data
-  private parameterCache = new InMemoryCache<ParameterDataPoint[]>(60);
-
-  /**
-   * ORCHESTRATOR: Get dashboard data for ALL stations
-   * Uses hardcoded station IDs from stations.json to control which stations are visible
-   * Fetches data for each station in parallel for better performance
-   */
-  async getAllStationsDashboardData(): Promise<StationDashboardData[]> {
-    const cacheKey = "all-stations-dashboard";
-    const cached = this.dashboardCache.get(cacheKey);
-
-    if (cached) {
-      console.log("Returning cached dashboard data");
-      return cached;
-    }
-
-    try {
-      console.log("Fetching fresh dashboard data for configured stations");
-      console.log(`Station IDs to fetch: ${stationIds.stationIdToFetch.join(", ")}`);
-
-      // Fetch data for each configured station in parallel
-      const dashboardDataPromises = stationIds.stationIdToFetch.map((stationId) =>
-        this.getStationDashboardData(stationId)
-      );
-
-      const result = await Promise.all(dashboardDataPromises);
-
-      // Cache the result for 60 seconds
-      this.dashboardCache.set(cacheKey, result, 60);
-
-      console.log(`Successfully fetched data for ${result.length} stations`);
-      return result;
-    } catch (error) {
-      console.error("Failed to fetch dashboard data:", error);
-      this.dashboardCache.clear();
-      throw new AppError("Failed to fetch dashboard data for all stations", 500);
-    }
-  }
+  private parameterCache = new InMemoryCache<TelemetryMetricRaw[]>(60);
 
   /**
    * ORCHESTRATOR: Get complete dashboard data for a single station
@@ -83,16 +43,16 @@ export class TelemetryService {
       console.log(`Fetching fresh data for station ${stationId}`);
 
       // Call both endpoints in parallel for better performance
-      const [latestData, historyData] = await Promise.all([
+      const [latestData] = await Promise.all([
         this.getLatestTelemetry(stationId),
-        this.getStationHistory(stationId),
+        // this.getStationHistory(stationId),
       ]);
 
       // Combine the data into StationDashboardData format
       const result: StationDashboardData = {
         station: latestData.station,
         latestTelemetry: latestData.telemetry,
-        recentHistory: historyData,
+        // recentHistory: historyData,
       };
 
       // Cache for 60 seconds
@@ -143,7 +103,7 @@ export class TelemetryService {
    */
   async getLatestTelemetry(stationId: string): Promise<TelemetryPublicDTO> {
     try {
-      const rawData = await kloudtrackApi.get<unknown>(`/telemetry/station/${stationId}/history?take=1`);
+      const rawData = await getLatestTelemetryFromKloudtrackApi(stationId);
       return this.transformLatestTelemetry(rawData);
     } catch (error) {
       console.error(`[getLatestTelemetry] Failed to fetch latest telemetry for station ${stationId}:`, error);
@@ -151,83 +111,52 @@ export class TelemetryService {
     }
   }
 
-  /**
-   * Get recent history for a specific station (just the metrics array)
+    /**
+   * Get parameter-specific history for a station
+   * Used by Today Graph component for individual parameter charts
    */
-  async getStationHistory(stationId: string): Promise<TelemetryMetrics[]> {
+  async getStationParameterHistory(stationId: string, parameter: string): Promise<TelemetryMetricRaw[]> {
+    const cacheKey = `parameter-history-${stationId}-${parameter}`;
+    const cached = this.parameterCache.get(cacheKey);
+
+    if (cached) {
+      console.log(`Returning cached ${parameter} data for station ${stationId}`);
+      return cached;
+    }
+
     try {
-      // Calculate dates for past 24 hours
-      const endDate = new Date().toISOString();
+      console.log(`Fetching fresh ${parameter} data for station ${stationId}`);
+
+      // Calculate 24 hours ago
       const startDate = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
 
-      // Static parameters
-      const interval = 60; // 1 hour in minutes
-      const take = 24; // 24 records (one per hour)
       const params = new URLSearchParams({
-        interval: interval.toString(),
+        skip: "0",
+        take: "96",
+        interval: "15",
         startDate: startDate,
-        endDate: endDate,
-        take: take.toString(),
         filterOutliers: "true",
       });
-      const rawData = await kloudtrackApi.get<unknown>(`/telemetry/station/${stationId}/history?${params}`);
-      return this.transformHistoryData(rawData);
-    } catch (error) {
-      console.error(`Failed to fetch history for station ${stationId}:`, error);
-      throw new AppError(`Failed to fetch history for station ${stationId}`, 500);
-    }
-  }
 
-  /**
-   * Get recent history with station info (full DTO)
-   */
-  async getStationHistoryWithInfo(stationId: string): Promise<TelemetryHistoryDTO> {
-    try {
-      const rawData = await kloudtrackApi.get<unknown>(`/telemetry/recent/${stationId}`);
+      // const rawData = await kloudtrackApi.get<{ status: boolean; data: ParameterDataPoint[] }>(
+      //   `/telemetry/station/${stationId}/history/${parameter}?${params}`
+      // );
 
-      const data = rawData as Record<string, unknown>;
-      return {
-        station: this.transformStation(data.station || {}),
-        telemetry: this.transformHistoryData(data.telemetry || rawData),
-      };
+      const rawData = await getTelemetryMetricHistoryFromKloudtrackApi(stationId, parameter, Object.fromEntries(params));
+      const result = rawData.data || [];
+
+      // Cache for 60 seconds
+      this.parameterCache.set(cacheKey, result, 60);
+
+      console.log(`Successfully fetched ${result.length} data points for ${parameter}`);
+      return result;
     } catch (error) {
-      console.error(`Failed to fetch history for station ${stationId}:`, error);
-      throw new AppError(`Failed to fetch history for station ${stationId}`, 500);
+      console.error(`Failed to fetch ${parameter} history for station ${stationId}:`, error);
+      throw new AppError(`Failed to fetch ${parameter} history for station ${stationId}`, 500);
     }
   }
 
   // ==================== PRIVATE TRANSFORMATION METHODS ====================
-
-  /**
-   * Transform raw dashboard response
-   */
-  private transformDashboardData(rawData: unknown): StationDashboardData[] {
-    if (!Array.isArray(rawData)) {
-      return [];
-    }
-
-    return rawData.map((item: unknown) => {
-      const data = item as Record<string, unknown>;
-      return {
-        station: this.transformStation(data.station),
-        latestTelemetry: data.latestTelemetry ? this.transformTelemetry(data.latestTelemetry) : null,
-        recentHistory: Array.isArray(data.recentHistory)
-          ? data.recentHistory.map((t: unknown) => this.transformTelemetry(t))
-          : [],
-      };
-    });
-  }
-
-  /**
-   * Transform raw stations list response
-   */
-  private transformStationsList(rawData: unknown): StationPublicInfo[] {
-    if (!Array.isArray(rawData)) {
-      return [];
-    }
-
-    return rawData.map((station: unknown) => this.transformStation(station));
-  }
 
   /**
    * Transform a single station object
@@ -269,24 +198,6 @@ export class TelemetryService {
   }
 
   /**
-   * Transform raw history response
-   */
-  private transformHistoryData(rawData: unknown): TelemetryMetrics[] {
-    // Handle case where data is wrapped in an object with "data" field
-    let dataArray = rawData;
-    if (typeof rawData === "object" && rawData !== null && !Array.isArray(rawData)) {
-      const dataObj = rawData as Record<string, unknown>;
-      dataArray = dataObj.data || dataObj.telemetry || rawData;
-    }
-
-    if (!Array.isArray(dataArray)) {
-      return [];
-    }
-
-    return dataArray.map((reading: unknown) => this.transformTelemetry(reading));
-  }
-
-  /**
    * Transform a single telemetry reading
    * Handles data normalization, rounding, and null handling
    */
@@ -311,55 +222,12 @@ export class TelemetryService {
     };
   }
 
-  /**
-   * Get parameter-specific history for a station
-   * Used by Today Graph component for individual parameter charts
-   */
-  async getStationParameterHistory(stationId: string, parameter: string): Promise<ParameterDataPoint[]> {
-    const cacheKey = `parameter-history-${stationId}-${parameter}`;
-    const cached = this.parameterCache.get(cacheKey);
 
-    if (cached) {
-      console.log(`Returning cached ${parameter} data for station ${stationId}`);
-      return cached;
-    }
-
-    try {
-      console.log(`Fetching fresh ${parameter} data for station ${stationId}`);
-
-      // Calculate 24 hours ago
-      const startDate = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
-
-      const params = new URLSearchParams({
-        skip: "0",
-        take: "96",
-        interval: "15",
-        startDate: startDate,
-        filterOutliers: "true",
-      });
-
-      const rawData = await kloudtrackApi.get<{ status: boolean; data: ParameterDataPoint[] }>(
-        `/telemetry/station/${stationId}/history/${parameter}?${params}`
-      );
-
-      const result = rawData.data || [];
-
-      // Cache for 60 seconds
-      this.parameterCache.set(cacheKey, result, 60);
-
-      console.log(`Successfully fetched ${result.length} data points for ${parameter}`);
-      return result;
-    } catch (error) {
-      console.error(`Failed to fetch ${parameter} history for station ${stationId}:`, error);
-      throw new AppError(`Failed to fetch ${parameter} history for station ${stationId}`, 500);
-    }
-  }
 
   /**
    * Clear all caches (useful for debugging or forced refresh)
    */
   clearAllCaches(): void {
-    this.dashboardCache.clear();
     this.stationCache.clear();
     this.stationsListCache.clear();
     this.parameterCache.clear();

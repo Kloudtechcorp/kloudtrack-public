@@ -9,7 +9,6 @@ import { getStationInsightsFromKloudtrackApi, getGroupedInsightsFromKloudtrackAp
 import type {
   StationInsightData,
   GroupedInsightData,
-  StationInsightsResponse,
   GroupedInsightsResponse,
 } from "../types/insights";
 
@@ -47,7 +46,6 @@ class InsightsService {
     try {
       // Fetch from Kloudtrack API
       const response: StationInsightData = await getStationInsightsFromKloudtrackApi(stationId);
-      console.log({ response });
       // Validate response
       if (!response) {
         throw new Error("Failed to fetch station insights");

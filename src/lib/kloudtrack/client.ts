@@ -3,7 +3,7 @@
  * This runs ONLY on the server and includes the secret API token
  */
 import { GroupedInsightsResponse, StationInsightData } from "../../types/insights";
-import { DashboardRaw, TelemetryHistoryTakeRaw } from "@/types/telemetry-raw";
+import { DashboardRaw, TelemetryHistoryMetricRaw, TelemetryHistoryTakeRaw } from "@/types/telemetry-raw";
 
 const KLOUDTRACK_API_BASE_URL = process.env.KLOUDTRACK_API_BASE_URL || "https://api.kloudtechsea.com/api/v1";
 const KLOUDTRACK_API_TOKEN =
@@ -99,7 +99,14 @@ export const kloudtrackApi = new KloudtrackApiClient(KLOUDTRACK_API_BASE_URL, KL
 
 // Export specific API methods
 export async function getLatestTelemetryFromKloudtrackApi(stationId: string): Promise<TelemetryHistoryTakeRaw> {
-  return kloudtrackApi.get<TelemetryHistoryTakeRaw>(`/telemetry/station/${stationId}/history?=take=1`);
+  return kloudtrackApi.get<TelemetryHistoryTakeRaw>(`/telemetry/station/${stationId}/history?take=1`);
+
+}
+
+export async function getTelemetryMetricHistoryFromKloudtrackApi(stationId: string, parameter: string, params: Record<string, string>): Promise<TelemetryHistoryMetricRaw> {
+  const queryString = new URLSearchParams(params).toString();
+  console.log('Query String:', queryString);  
+  return kloudtrackApi.get<TelemetryHistoryMetricRaw>(`/telemetry/station/${stationId}/history/${parameter}?${queryString}`);
 }
 
 export async function getDashboardDataFromKloudtrackApi(): Promise<DashboardRaw> {
