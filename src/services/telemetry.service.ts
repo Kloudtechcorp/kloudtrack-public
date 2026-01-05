@@ -142,8 +142,19 @@ export class TelemetryService {
       //   `/telemetry/station/${stationId}/history/${parameter}?${params}`
       // );
 
-      const rawData = await getTelemetryMetricHistoryFromKloudtrackApi(stationId, parameter, Object.fromEntries(params));
-      const result = rawData.data || [];
+      const rawData = await getTelemetryMetricHistoryFromKloudtrackApi(
+        stationId,
+        parameter,
+        Object.fromEntries(params)
+      );
+
+      // Ensure data is ordered from oldest -> newest so that
+      // charts display the latest value on the right side.
+      const result = (rawData.data || []).slice().sort((a, b) => {
+        const aTime = new Date(a.recordedAt).getTime();
+        const bTime = new Date(b.recordedAt).getTime();
+        return aTime - bTime;
+      });
 
       // Cache for 60 seconds
       this.parameterCache.set(cacheKey, result, 60);

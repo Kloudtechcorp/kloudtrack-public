@@ -16,17 +16,17 @@ const StationTodayGraphTabs: React.FC<StationTodayGraphTabsProps> = ({ stationPu
   const [loading, setLoading] = useState<Partial<Record<ParameterType, boolean>>>({});
   const [errors, setErrors] = useState<Partial<Record<ParameterType, string | null>>>({});
 
-  // // Reset all cached data when station changes so that
-  // // new station data is fetched instead of reusing the
-  // // previous station's parameter data.
-  // useEffect(() => {
-  //   if (!stationPublicId) return;
+  // Reset all cached data when station changes so that
+  // new station data is fetched instead of reusing the
+  // previous station's parameter data.
+  useEffect(() => {
+    if (!stationPublicId) return;
 
-  //   setParameterData({});
-  //   setLoading({});
-  //   setErrors({});
-  //   setActiveParameter('temperature');
-  // }, [stationPublicId]);
+    setParameterData({});
+    setLoading({});
+    setErrors({});
+    setActiveParameter('temperature');
+  }, [stationPublicId]);
 
   // Fetch data for a specific parameter
   const fetchParameterData = useCallback(
