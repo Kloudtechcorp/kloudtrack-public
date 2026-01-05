@@ -1,7 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
 import type { StationDashboardData, StationPublicInfo } from "@/types/telemetry";
-import { stationService } from "@/services/station.service";
 import SubHeader from "@/components/shared/sub-header";
 import StationWeatherInsightsMerged from "./station-weather-insights-merged";
 import StationMapboxLocation from "./station-mapbox-location";
@@ -22,8 +21,14 @@ export default function StationDashboardClient({ stations }: Props) {
 
     setIsRefreshing(true);
     try {
-      const data = await stationService.fetchStationDashboardData(stationId);
-      setStationData(data);
+      const response = await fetch(`/api/telemetry/station/${stationId}`);
+      const result = await response.json();
+
+      if (result.success && result.data) {
+        setStationData(result.data);
+      } else {
+        console.error(`Failed to fetch data for station ${stationId}:`, result.message);
+      }
     } catch (error) {
       console.error(`Failed to fetch data for station ${stationId}:`, error);
     } finally {

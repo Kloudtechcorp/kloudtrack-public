@@ -4,7 +4,6 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import StationParameterChart from "./station-parameter-chart";
 import { PARAMETERS } from "@/lib/constants/parameters";
 import { ParameterType, ParameterDataPoint } from "@/types/parameter";
-import { stationService } from "@/services/station.service";
 
 interface StationTodayGraphTabsProps {
   stationPublicId: string;
@@ -31,8 +30,14 @@ const StationTodayGraphTabs: React.FC<StationTodayGraphTabsProps> = ({ stationPu
       setErrors((prev) => ({ ...prev, [parameterKey]: null }));
 
       try {
-        const data = await stationService.fetchStationParameterHistory(stationPublicId, parameter.apiKey);
-        setParameterData((prev) => ({ ...prev, [parameterKey]: data }));
+        const response = await fetch(`/api/telemetry/station/${stationPublicId}/parameter/${parameter.apiKey}`);
+        const result = await response.json();
+
+        if (result.success && result.data) {
+          setParameterData((prev) => ({ ...prev, [parameterKey]: result.data }));
+        } else {
+          throw new Error(result.message || `Failed to fetch ${parameterKey} data`);
+        }
       } catch (error) {
         console.error(`Failed to fetch ${parameterKey} data:`, error);
         setErrors((prev) => ({
@@ -60,8 +65,12 @@ const StationTodayGraphTabs: React.FC<StationTodayGraphTabsProps> = ({ stationPu
       if (!parameter) return;
 
       try {
-        const data = await stationService.fetchStationParameterHistory(stationPublicId, parameter.apiKey);
-        setParameterData((prev) => ({ ...prev, [activeParameter]: data }));
+        const response = await fetch(`/api/telemetry/station/${stationPublicId}/parameter/${parameter.apiKey}`);
+        const result = await response.json();
+
+        if (result.success && result.data) {
+          setParameterData((prev) => ({ ...prev, [activeParameter]: result.data }));
+        }
       } catch (error) {
         console.error(`Failed to refresh ${activeParameter} data:`, error);
       }
