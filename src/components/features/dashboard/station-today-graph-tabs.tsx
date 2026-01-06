@@ -122,7 +122,7 @@ const StationTodayGraphTabs: React.FC<StationTodayGraphTabsProps> = ({ stationPu
             <TabsTrigger
               key={param.key}
               value={param.key}
-              className="flex-1 min-w-[120px] text-muted font-mono text-xs uppercase tracking-wider
+              className="flex-1 min-w-30 text-muted font-mono text-xs uppercase tracking-wider
                          data-[state=active]:text-foreground
                          data-[state=active]:bg-secondary
                          border-r-2 border-b-2 border-card-border last:border-r-0

@@ -9,7 +9,7 @@ const Header = () => {
 
   return (
     <div className="w-full h-14 flex items-center bg-background border-b-2 border-primary z-50">
-      <div className="container mx-auto px-4">
+      <div className="w-full max-w-7xl mx-auto">
         <div className="flex w-full items-center justify-between">
           <span className="cursor-pointer" onClick={() => router.push("/")}>
             <p className="text-base font-mono font-bold uppercase tracking-wider">

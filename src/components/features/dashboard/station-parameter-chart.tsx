@@ -24,7 +24,7 @@ const StationParameterChart: React.FC<StationParameterChartProps> = ({
   if (loading) {
     return (
       <div className="bg-card-bg border-2 border-card-border p-8">
-        <div className="flex flex-col items-center justify-center h-[400px]">
+        <div className="flex flex-col items-center justify-center h-100">
           <div className="w-8 h-8 border-2 border-card-border border-t-muted animate-spin mb-4"></div>
           <span className="text-muted text-xs font-mono uppercase tracking-wider">
             LOADING {parameter.label.toUpperCase()}
@@ -38,11 +38,11 @@ const StationParameterChart: React.FC<StationParameterChartProps> = ({
   if (error) {
     return (
       <div className="bg-card-bg border-2 border-card-border p-8">
-        <div className="flex flex-col items-center justify-center h-[400px]">
+        <div className="flex flex-col items-center justify-center h-100">
           <div className="border-2 border-red-500 bg-red-500/10 p-4 mb-4">
             <Cloud size={28} className="text-red-500" strokeWidth={2} />
           </div>
-          <span className="text-red-400 text-xs font-mono text-center max-w-[300px] mb-6">
+          <span className="text-red-400 text-xs font-mono text-center max-w-75 mb-6">
             [ERROR] {error}
           </span>
           {onRetry && (
@@ -63,7 +63,7 @@ const StationParameterChart: React.FC<StationParameterChartProps> = ({
   if (!data || data.length === 0) {
     return (
       <div className="bg-card-bg border-2 border-card-border p-8">
-        <div className="flex flex-col items-center justify-center h-[400px]">
+        <div className="flex flex-col items-center justify-center h-100">
           <div className="border-2 border-card-border p-4 mb-4">
             <Cloud size={28} className="text-muted" strokeWidth={2} />
           </div>
