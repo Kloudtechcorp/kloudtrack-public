@@ -15,16 +15,16 @@ const StationTodayGraphTabs: React.FC<StationTodayGraphTabsProps> = ({ stationPu
   const [parameterData, setParameterData] = useState<Partial<Record<ParameterType, TelemetryMetricRaw[]>>>({});
   const [loading, setLoading] = useState<Partial<Record<ParameterType, boolean>>>({});
   const [errors, setErrors] = useState<Partial<Record<ParameterType, string | null>>>({});
+  const [fetchedParameters, setFetchedParameters] = useState<Set<ParameterType>>(new Set());
 
-  // Reset all cached data when station changes so that
-  // new station data is fetched instead of reusing the
-  // previous station's parameter data.
+  // Reset all cached data when station changes
   useEffect(() => {
     if (!stationPublicId) return;
 
     setParameterData({});
     setLoading({});
     setErrors({});
+    setFetchedParameters(new Set()); 
     setActiveParameter('temperature');
   }, [stationPublicId]);
 
@@ -34,8 +34,7 @@ const StationTodayGraphTabs: React.FC<StationTodayGraphTabsProps> = ({ stationPu
       const parameter = PARAMETERS.find((p) => p.key === parameterKey);
       if (!parameter || !stationPublicId) return;
 
-      // Check if data is already loaded
-      if (parameterData[parameterKey] && parameterData[parameterKey]!.length > 0) {
+      if (fetchedParameters.has(parameterKey)) {
         return;
       }
 
@@ -47,7 +46,10 @@ const StationTodayGraphTabs: React.FC<StationTodayGraphTabsProps> = ({ stationPu
         const result = await response.json();
 
         if (result.success && result.data) {
+          // Store the data even if it's an empty array
           setParameterData((prev) => ({ ...prev, [parameterKey]: result.data }));
+          // Mark this parameter as fetched
+          setFetchedParameters((prev) => new Set(prev).add(parameterKey));
         } else {
           throw new Error(result.message || `Failed to fetch ${parameterKey} data`);
         }
@@ -61,7 +63,7 @@ const StationTodayGraphTabs: React.FC<StationTodayGraphTabsProps> = ({ stationPu
         setLoading((prev) => ({ ...prev, [parameterKey]: false }));
       }
     },
-    [stationPublicId, parameterData]
+    [stationPublicId, fetchedParameters]
   );
 
   // Fetch data when active parameter changes (lazy loading)
@@ -102,6 +104,12 @@ const StationTodayGraphTabs: React.FC<StationTodayGraphTabsProps> = ({ stationPu
       const newData = { ...prev };
       delete newData[parameterKey];
       return newData;
+    });
+    // Remove from fetched parameters to allow re-fetch
+    setFetchedParameters((prev) => {
+      const newSet = new Set(prev);
+      newSet.delete(parameterKey);
+      return newSet;
     });
     fetchParameterData(parameterKey);
   };
