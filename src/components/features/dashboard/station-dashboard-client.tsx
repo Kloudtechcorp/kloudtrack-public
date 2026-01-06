@@ -69,8 +69,8 @@ export default function StationDashboardClient({ stations }: Props) {
         <div className="mb-6 pb-4 border-b-2 border-primary">
           <div className="flex items-center justify-between">
             <div>
-              <div className="text-xs font-mono text-muted uppercase tracking-wider mb-1">STATION</div>
-              <div className="text-foreground text-xl font-bold font-mono">
+              <div className="text-xs font-mono text-foreground uppercase tracking-wider mb-1">STATION</div>
+              <div className="text-muted-foreground text-xl font-bold font-mono">
                 {selectedStation
                   ? [selectedStation.city, selectedStation.state, selectedStation.country]
                       .filter((v) => typeof v === "string" && v.trim() !== "")

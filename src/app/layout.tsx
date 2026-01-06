@@ -16,14 +16,14 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body className={montserrat.className}>
-        <ThemeProvider>
-          <div className="flex flex-col min-h-screen">
+      <body className={`${montserrat.className} dark`}>
+        {/* <ThemeProvider> */}
+          <div className="flex flex-col bg-background min-h-screen">
             <Header />
             {children}
             <Toaster />
           </div>
-        </ThemeProvider>
+        {/* </ThemeProvider> */}
       </body>
     </html>
   );

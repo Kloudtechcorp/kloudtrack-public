@@ -121,19 +121,19 @@ const StationTodayGraphTabs: React.FC<StationTodayGraphTabsProps> = ({ stationPu
       onValueChange={(value) => setActiveParameter(value as ParameterType)}
       className="w-full"
     >
-      <div className="border-2 border-card-border bg-card-bg mb-6">
+      <div className="border-2 border-card-border bg-card mb-6">
         <div className="border-b-2 border-card-border px-4 py-2">
-          <div className="text-xs font-mono text-muted uppercase tracking-wider">HISTORICAL DATA</div>
+          <div className="text-xs font-mono text-foreground uppercase tracking-wider">HISTORICAL DATA</div>
         </div>
-        <TabsList className="bg-transparent border-0 w-full p-0 flex flex-wrap gap-0">
+        <TabsList className="bg-transparent border-0 w-full h-full p-0 flex flex-wrap gap-0">
           {PARAMETERS.map((param) => (
             <TabsTrigger
               key={param.key}
               value={param.key}
-              className="flex-1 min-w-30 text-muted font-mono text-xs uppercase tracking-wider
-                         data-[state=active]:text-foreground
+              className="flex-1 min-w-30 text-muted-foreground font-mono text-xs uppercase tracking-wider
+                         data-[state=active]:text-main
                          data-[state=active]:bg-secondary
-                         border-r-2 border-b-2 border-card-border last:border-r-0
+                         data-[state=active]:border-main
                          px-4 py-3
                          hover:bg-secondary-hover hover:text-foreground
                          rounded-none"

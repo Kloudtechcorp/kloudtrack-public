@@ -21,7 +21,7 @@ const StationMapboxLocation = ({ location }: StationMapboxLocationProps) => {
     if (lat == null || lon == null) return null;
     const width = 480; // px
     const height = 320; // px
-    const zoom = 8;
+    const zoom = 7;
     if (mapboxToken) {
       return `https://api.mapbox.com/styles/v1/mapbox/light-v11/static/${lon},${lat},${zoom},0/${width}x${height}@2x?access_token=${mapboxToken}`;
     }
@@ -30,7 +30,7 @@ const StationMapboxLocation = ({ location }: StationMapboxLocationProps) => {
   }, [lat, lon, mapboxToken]);
 
   return (
-    <div className="relative w-full h-full bg-card-bg border-2 border-card-border">
+    <div className="relative w-full h-full bg-card border-2 border-card-border">
       {mapImgUrl ? (
         <>
           <img
@@ -42,17 +42,17 @@ const StationMapboxLocation = ({ location }: StationMapboxLocationProps) => {
           <div className="absolute inset-0 bg-background/40"></div>
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
             <div className="relative">
-              <div className="w-4 h-4 border-2 border-accent bg-accent/20 animate-pulse"></div>
-              <div className="absolute -inset-2 border border-accent/40 animate-ping"></div>
+              <div className="w-4 h-4 border-2 border-main bg-main animate-pulse"></div>
+              <div className="absolute -inset-2 border border-main/40 animate-ping"></div>
             </div>
           </div>
-          <div className="absolute top-0 left-0 right-0 border-b-2 border-card-border bg-background/90 px-4 py-2">
-            <p className="text-muted text-[10px] font-mono uppercase tracking-wider">LOCATION</p>
+          <div className="absolute top-0 left-0 right-0 border-b-2 border-card-border bg-card px-4 py-2">
+            <p className="text-foreground text-[10px] font-mono uppercase tracking-wider">LOCATION</p>
           </div>
-          <div className="absolute bottom-0 left-0 right-0 border-t-2 border-card-border bg-background/90 px-4 py-2">
+          <div className="absolute bottom-0 left-0 right-0 border-t-2 border-card-border bg-card px-4 py-2">
             <div className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-accent"></div>
-              <p className="text-muted text-[10px] font-mono">
+              <div className="w-2 h-2 bg-main"></div>
+              <p className="text-muted-foreground text-[10px] font-mono">
                 LAT: {lat?.toFixed(4) || "--"} / LON: {lon?.toFixed(4) || "--"}
               </p>
             </div>
@@ -60,7 +60,7 @@ const StationMapboxLocation = ({ location }: StationMapboxLocationProps) => {
         </>
       ) : (
         <div className="w-full h-full flex items-center justify-center">
-          <span className="text-muted text-xs font-mono">[MAP UNAVAILABLE]</span>
+          <span className="text-muted-foreground text-xs font-mono">[MAP UNAVAILABLE]</span>
         </div>
       )}
     </div>
