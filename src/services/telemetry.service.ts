@@ -40,13 +40,8 @@ export class TelemetryService {
     }
 
     try {
-      console.log(`Fetching fresh data for station ${stationId}`);
-
       // Call both endpoints in parallel for better performance
-      const [latestData] = await Promise.all([
-        this.getLatestTelemetry(stationId),
-        // this.getStationHistory(stationId),
-      ]);
+      const latestData = await this.getLatestTelemetry(stationId);
 
       // Combine the data into StationDashboardData format
       const result: StationDashboardData = {

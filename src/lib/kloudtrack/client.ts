@@ -105,7 +105,6 @@ export async function getLatestTelemetryFromKloudtrackApi(stationId: string): Pr
 
 export async function getTelemetryMetricHistoryFromKloudtrackApi(stationId: string, parameter: string, params: Record<string, string>): Promise<TelemetryHistoryMetricRaw> {
   const queryString = new URLSearchParams(params).toString();
-  console.log('Query String:', queryString);  
   return kloudtrackApi.get<TelemetryHistoryMetricRaw>(`/telemetry/station/${stationId}/history/${parameter}?${queryString}`);
 }
 
