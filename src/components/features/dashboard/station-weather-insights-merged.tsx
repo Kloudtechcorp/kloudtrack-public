@@ -215,11 +215,11 @@ const StationWeatherInsightsMerged: React.FC<StationWeatherInsightsMergedProps> 
                   </div>
                   <div
                     className={`flex items-center gap-1 px-2 py-1 border text-[10px] font-mono font-bold uppercase ${getSeverityColor(
-                      insight.classification.severity
+                      insight.classification.level
                     )}`}
                   >
-                    {getSeverityIcon(insight.classification.severity)}
-                    {insight.classification.label}
+                    {getSeverityIcon(insight.classification.level)}
+                    {insight.classification.category.toUpperCase()}
                   </div>
                 </div>
                 <p className="text-muted-foreground text-xs leading-relaxed">{insight.narrative}</p>
