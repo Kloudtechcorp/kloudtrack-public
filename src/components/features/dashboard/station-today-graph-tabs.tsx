@@ -122,7 +122,7 @@ const StationTodayGraphTabs: React.FC<StationTodayGraphTabsProps> = ({ stationPu
       className="w-full"
     >
       <div className="border-2 border-card-border bg-card mb-6">
-        <div className="border-b-2 border-card-border px-4 py-2">
+        <div className="border-b-2 border-card-border px-6 py-4">
           <div className="text-xs font-mono text-foreground uppercase tracking-wider">HISTORICAL DATA</div>
         </div>
         <TabsList className="bg-transparent border-0 w-full h-full p-0 flex flex-wrap gap-0">
@@ -134,7 +134,7 @@ const StationTodayGraphTabs: React.FC<StationTodayGraphTabsProps> = ({ stationPu
                          data-[state=active]:text-main
                          data-[state=active]:bg-secondary
                          data-[state=active]:border-main
-                         px-4 py-3
+                         px-4 py-4
                          hover:bg-secondary-hover hover:text-foreground
                          rounded-none"
             >

@@ -75,7 +75,7 @@ const StationWeatherInsightsMerged: React.FC<StationWeatherInsightsMergedProps> 
 
   if (loading || isLoadingInsights) {
     return (
-      <div className="h-full flex items-center justify-centerborder-2 border-card-border">
+      <div className="h-full flex items-center justify-center border-2 border-card-border">
         <div className="text-center font-mono">
           <div className="text-foreground text-sm mb-2">[LOADING]</div>
           <div className="text-foreground text-xs">FETCHING DATA...</div>
