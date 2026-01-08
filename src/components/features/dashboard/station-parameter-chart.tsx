@@ -96,10 +96,10 @@ const StationParameterChart: React.FC<StationParameterChartProps> = ({
 
   // Decide chart type based on parameter key
   const barChartKeys = ["windSpeed", "precipitation", "uvIndex"];
-  const areaChartKeys = ["humidity", "pressure"];
+  // const areaChartKeys = ["humidity", "pressure"];
   const isBarChart = barChartKeys.includes(parameter.key);
   const isLineChart = parameter.key === "temperature";
-  const isAreaChart = areaChartKeys.includes(parameter.key);
+  // const isAreaChart = areaChartKeys.includes(parameter.key);
 
   // Use WEATHER_COLORS for chart color, fallback to parameter.color or a default
   const chartColor = WEATHER_COLORS[parameter.key as keyof typeof WEATHER_COLORS] || parameter.color || '#38bdf8';

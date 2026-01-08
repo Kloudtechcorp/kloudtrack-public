@@ -2,9 +2,6 @@
 import React, { useEffect, useState } from "react";
 import type { StationInsightData, MetricInsight } from "@/types/insights";
 import {
-  TrendingUp,
-  TrendingDown,
-  Minus,
   AlertTriangle,
   Info,
   AlertCircle,
@@ -80,18 +77,18 @@ const StationInsightsCard: React.FC<StationInsightsCardProps> = ({ stationId, lo
     }
   };
 
-  const getTrendIcon = (direction?: string) => {
-    const iconProps = { size: 14, strokeWidth: 1.5 };
-    switch (direction) {
-      case "up":
-        return <TrendingUp {...iconProps} className="text-red-300/60" />;
-      case "down":
-        return <TrendingDown {...iconProps} className="text-blue-300/60" />;
-      case "stable":
-      default:
-        return <Minus {...iconProps} className="text-white/30" />;
-    }
-  };
+  // const getTrendIcon = (direction?: string) => {
+  //   const iconProps = { size: 14, strokeWidth: 1.5 };
+  //   switch (direction) {
+  //     case "up":
+  //       return <TrendingUp {...iconProps} className="text-red-300/60" />;
+  //     case "down":
+  //       return <TrendingDown {...iconProps} className="text-blue-300/60" />;
+  //     case "stable":
+  //     default:
+  //       return <Minus {...iconProps} className="text-white/30" />;
+  //   }
+  // };
 
   const renderInsight = (insight: MetricInsight, index: number) => {
     return (
@@ -125,10 +122,10 @@ const StationInsightsCard: React.FC<StationInsightsCardProps> = ({ stationId, lo
           <span
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-light
                        border backdrop-blur-md tracking-wide uppercase
-                       transition-all duration-300 ${getSeverityColor(insight.classification.severity)}`}
+                       transition-all duration-300 ${getSeverityColor(insight.classification.level)}`}
           >
-            {getSeverityIcon(insight.classification.severity)}
-            <span className="mt-px">{insight.classification.label}</span>
+            {getSeverityIcon(insight.classification.level)}
+            <span className="mt-px">{insight.classification.level}</span>
           </span>
         </div>
 

@@ -19,8 +19,8 @@ export const readingColors: Record<string, string> = {
   humidity: "#3b82f6",        // Blue
   pressure: "#a855f7",        // Purple
   heatIndex: "#f97316",       // Orange
-  windDirection: "#10b981",   // Cyan
-  windSpeed: "#10b981",       // Cyan
+  windDirection: "#10b981",   // Green
+  windSpeed: "#10b981",       // Green
   precipitation: "#3b82f6",   // Blue
   uvIndex: "#eab308",         // Yellow
   distance: "#10b981",        // Green

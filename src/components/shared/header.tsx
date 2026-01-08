@@ -2,7 +2,6 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 import { BookOpen } from "lucide-react";
-import { ThemeToggle } from "@/components/theme-toggle";
 
 const Header = () => {
   const router = useRouter();
