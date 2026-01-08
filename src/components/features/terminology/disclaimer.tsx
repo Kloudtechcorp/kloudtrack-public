@@ -7,7 +7,7 @@ const Disclaimer = () => {
         <a
           href="https://www.pagasa.dost.gov.ph/"
           target="_blank"
-          className="text-primary underline px-1"
+          className="text-main underline px-1"
         >
           pagasa.dost.gov.ph
         </a>
