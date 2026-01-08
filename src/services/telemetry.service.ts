@@ -127,7 +127,6 @@ export class TelemetryService {
 
       const params = new URLSearchParams({
         skip: "0",
-        take: "96",
         interval: "15",
         startDate: startDate,
         filterOutliers: "true",
