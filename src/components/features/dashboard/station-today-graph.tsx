@@ -10,7 +10,7 @@ interface StationTodayGraphProps {
 const StationTodayGraph: React.FC<StationTodayGraphProps> = ({ stationPublicId }) => {
   return (
     <div className="flex flex-col gap-4 mb-8">
-      <p className="text-white text-xl">Today Graph</p>
+      <p className="text-foreground text-xl">Today&apos;s Weather Graph</p>
       <StationTodayGraphTabs stationPublicId={stationPublicId} />
     </div>
   );

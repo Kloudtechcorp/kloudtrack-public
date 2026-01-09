@@ -2,9 +2,6 @@
 import React, { useEffect, useState } from "react";
 import type { StationInsightData, MetricInsight } from "@/types/insights";
 import {
-  TrendingUp,
-  TrendingDown,
-  Minus,
   AlertTriangle,
   Info,
   AlertCircle,
@@ -80,25 +77,25 @@ const StationInsightsCard: React.FC<StationInsightsCardProps> = ({ stationId, lo
     }
   };
 
-  const getTrendIcon = (direction?: string) => {
-    const iconProps = { size: 14, strokeWidth: 1.5 };
-    switch (direction) {
-      case "up":
-        return <TrendingUp {...iconProps} className="text-red-300/60" />;
-      case "down":
-        return <TrendingDown {...iconProps} className="text-blue-300/60" />;
-      case "stable":
-      default:
-        return <Minus {...iconProps} className="text-white/30" />;
-    }
-  };
+  // const getTrendIcon = (direction?: string) => {
+  //   const iconProps = { size: 14, strokeWidth: 1.5 };
+  //   switch (direction) {
+  //     case "up":
+  //       return <TrendingUp {...iconProps} className="text-red-300/60" />;
+  //     case "down":
+  //       return <TrendingDown {...iconProps} className="text-blue-300/60" />;
+  //     case "stable":
+  //     default:
+  //       return <Minus {...iconProps} className="text-white/30" />;
+  //   }
+  // };
 
   const renderInsight = (insight: MetricInsight, index: number) => {
     return (
       <div
         key={index}
-        className="group relative p-5 rounded-2xl bg-white/[0.02] border border-white/[0.06]
-                   hover:bg-white/[0.04] hover:border-white/10
+        className="group relative p-5 rounded-2xl bg-white/2 border border-white/6
+                   hover:bg-white/4 hover:border-white/10
                    transition-all duration-500 ease-out
                    hover:shadow-lg hover:shadow-black/5
                    backdrop-blur-sm"
@@ -125,10 +122,10 @@ const StationInsightsCard: React.FC<StationInsightsCardProps> = ({ stationId, lo
           <span
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-light
                        border backdrop-blur-md tracking-wide uppercase
-                       transition-all duration-300 ${getSeverityColor(insight.classification.severity)}`}
+                       transition-all duration-300 ${getSeverityColor(insight.classification.level)}`}
           >
-            {getSeverityIcon(insight.classification.severity)}
-            <span className="mt-[1px]">{insight.classification.label}</span>
+            {getSeverityIcon(insight.classification.level)}
+            <span className="mt-px">{insight.classification.level}</span>
           </span>
         </div>
 
@@ -136,7 +133,7 @@ const StationInsightsCard: React.FC<StationInsightsCardProps> = ({ stationId, lo
           {insight.narrative}
         </p>
 
-        <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/[0.02] to-transparent
+        <div className="absolute inset-0 rounded-2xl bg-linear-to-br from-white/2 to-transparent
                         opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
       </div>
     );
@@ -164,7 +161,7 @@ const StationInsightsCard: React.FC<StationInsightsCardProps> = ({ stationId, lo
         <div className="p-4 rounded-full bg-red-500/5 mb-4">
           <AlertCircle size={28} className="text-red-300/60" strokeWidth={1.5} />
         </div>
-        <span className="text-red-200/70 text-sm font-light tracking-wide text-center max-w-[240px]">
+        <span className="text-red-200/70 text-sm font-light tracking-wide text-center max-w-60">
           {error}
         </span>
       </div>
@@ -174,10 +171,10 @@ const StationInsightsCard: React.FC<StationInsightsCardProps> = ({ stationId, lo
   if (!insightsData) {
     return (
       <div className="flex flex-col items-center justify-center h-full px-8 py-12">
-        <div className="p-5 rounded-full bg-white/[0.02] border border-white/[0.06] mb-5">
+        <div className="p-5 rounded-full bg-white/2 border border-white/6 mb-5">
           <Lightbulb size={28} className="text-white/20" strokeWidth={1.5} />
         </div>
-        <span className="text-white/25 text-sm font-light tracking-wide text-center max-w-[200px] leading-relaxed">
+        <span className="text-white/25 text-sm font-light tracking-wide text-center max-w-50 leading-relaxed">
           Select a station to view insights
         </span>
       </div>
@@ -186,7 +183,7 @@ const StationInsightsCard: React.FC<StationInsightsCardProps> = ({ stationId, lo
 
   return (
     <div className="flex flex-col h-full">
-      <div className="px-8 pt-8 pb-6 border-b border-white/[0.04]">
+      <div className="px-8 pt-8 pb-6 border-b border-white/4">
         <div className="flex items-center gap-3 mb-2">
           <div className="p-1.5 rounded-lg bg-amber-400/5">
             <Lightbulb size={18} className="text-amber-300/40" strokeWidth={1.5} />
