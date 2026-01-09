@@ -4,6 +4,7 @@ import type { TelemetryPublicDTO } from "@/types/telemetry";
 import type { StationInsightData, MetricInsight } from "@/types/insights";
 import { CloudSun, Navigation, AlertTriangle, Info, AlertCircle, AlertOctagon } from "lucide-react";
 import { formatDate } from "@/lib/utils/date";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface StationWeatherInsightsMergedProps {
   telemetryData: TelemetryPublicDTO | null;
@@ -75,20 +76,21 @@ const StationWeatherInsightsMerged: React.FC<StationWeatherInsightsMergedProps> 
 
   if (loading || isLoadingInsights) {
     return (
-      <div className="h-full flex items-center justify-center border-2 border-card-border">
-        <div className="text-center font-mono">
-          <div className="text-foreground text-sm mb-2">[LOADING]</div>
-          <div className="text-foreground text-xs">FETCHING DATA...</div>
-        </div>
-      </div>
+      // <div className="h-full flex items-center justify-center border-2 border-card-border">
+      //   <div className="text-center font-mono">
+      //     <div className="text-foreground text-sm mb-2">[LOADING]</div>
+      //     <div className="text-foreground text-xs">FETCHING DATA...</div>
+      //   </div>
+      // </div>
+      <Skeleton className="w-full h-full rounded-lg" />
     );
   }
 
-  if (!telemetryData) {
+  if (!telemetryData || !telemetryData.telemetry) {
     return (
       <div className="h-full flex items-center justify-center bg-card border-2 border-card-border">
         <div className="text-center font-mono text-foreground text-sm">
-          [NO STATION SELECTED]
+          [NO DATA AVAILABLE]
         </div>
       </div>
     );
