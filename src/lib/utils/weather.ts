@@ -19,8 +19,8 @@ export const readingColors: Record<string, string> = {
   humidity: "#3b82f6",        // Blue
   pressure: "#a855f7",        // Purple
   heatIndex: "#f97316",       // Orange
-  windDirection: "#06b6d4",   // Cyan
-  windSpeed: "#06b6d4",       // Cyan
+  windDirection: "#10b981",   // Green
+  windSpeed: "#10b981",       // Green
   precipitation: "#3b82f6",   // Blue
   uvIndex: "#eab308",         // Yellow
   distance: "#10b981",        // Green
@@ -43,6 +43,20 @@ export const unitMeasurement: Record<string, string> = {
   distance: "cm",
   lightIntensity: "lx"
 }
+
+export const WEATHER_COLORS = {
+  heatIndex: "#fb923c",      // orange-400
+  temperature: "#f87171",    // red-400
+  humidity: "#60a5fa",       // blue-400
+  pressure: "#a78bfa",       // violet-400
+  wind: "#4ade80",           // green-400
+  windSpeed: "#4ade80",      // green-400
+  windDirection: "#4ade80",  // green-400
+  uvIndex: "#facc15",        // yellow-400
+  lightIntensity: "#fbbf24", // amber-400
+  light: "#fbbf24",          // amber-400
+  precipitation: "#06b6d4",  // cyan-600
+} as const;
 
 /**
  * Gets the label and color for a metric key.

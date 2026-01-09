@@ -2,13 +2,8 @@
  * Server-side client for communicating with Kloudtrack API
  * This runs ONLY on the server and includes the secret API token
  */
-import {
-  StationPublicInfo,
-  TelemetryPublicDTO,
-  TelemetryHistoryDTO,
-  StationDashboardData,
-} from "../../types/telemetry";
-import { StationInsightsResponse, GroupedInsightsResponse, StationInsightData } from "../../types/insights";
+import { GroupedInsightsResponse, StationInsightData } from "../../types/insights";
+import { TelemetryHistoryMetricRaw, TelemetryHistoryTakeRaw } from "@/types/telemetry-raw";
 
 const KLOUDTRACK_API_BASE_URL = process.env.KLOUDTRACK_API_BASE_URL || "https://api.kloudtechsea.com/api/v1";
 const KLOUDTRACK_API_TOKEN =
@@ -103,20 +98,13 @@ class KloudtrackApiClient {
 export const kloudtrackApi = new KloudtrackApiClient(KLOUDTRACK_API_BASE_URL, KLOUDTRACK_API_TOKEN);
 
 // Export specific API methods
-export async function getStationsFromKloudtrackApi(): Promise<StationPublicInfo[]> {
-  return kloudtrackApi.get<StationPublicInfo[]>("/telemetry/stations");
+export async function getLatestTelemetryFromKloudtrackApi(stationId: string): Promise<TelemetryHistoryTakeRaw> {
+  return kloudtrackApi.get<TelemetryHistoryTakeRaw>(`/telemetry/station/${stationId}/history?take=1`);
 }
 
-export async function getLatestTelemetryFromKloudtrackApi(stationId: string): Promise<TelemetryPublicDTO> {
-  return kloudtrackApi.get<TelemetryPublicDTO>(`/telemetry/latest/${stationId}`);
-}
-
-export async function getRecentTelemetryFromKloudtrackApi(stationId: string): Promise<TelemetryHistoryDTO> {
-  return kloudtrackApi.get<TelemetryHistoryDTO>(`/telemetry/recent/${stationId}`);
-}
-
-export async function getDashboardDataFromKloudtrackApi(): Promise<StationDashboardData[]> {
-  return kloudtrackApi.get<StationDashboardData[]>("/telemetry/dashboard");
+export async function getTelemetryMetricHistoryFromKloudtrackApi(stationId: string, parameter: string, params: Record<string, string>): Promise<TelemetryHistoryMetricRaw> {
+  const queryString = new URLSearchParams(params).toString();
+  return kloudtrackApi.get<TelemetryHistoryMetricRaw>(`/telemetry/station/${stationId}/history/${parameter}?${queryString}`);
 }
 
 export async function getStationInsightsFromKloudtrackApi(stationId: string): Promise<StationInsightData> {

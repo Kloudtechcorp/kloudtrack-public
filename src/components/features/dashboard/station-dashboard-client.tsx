@@ -1,7 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import type { StationDashboardData, StationPublicInfo } from "@/types/telemetry";
-import { stationService } from "@/services/station.service";
+import type { StationPublicInfo, TelemetryPublicDTO } from "@/types/telemetry";
 import SubHeader from "@/components/shared/sub-header";
 import StationWeatherInsightsMerged from "./station-weather-insights-merged";
 import StationMapboxLocation from "./station-mapbox-location";
@@ -13,7 +12,7 @@ interface Props {
 
 export default function StationDashboardClient({ stations }: Props) {
   const [selectedStationId, setSelectedStationId] = useState(stations.length > 0 ? stations[0].stationPublicId : "");
-  const [stationData, setStationData] = useState<StationDashboardData | null>(null);
+  const [stationData, setStationData] = useState<TelemetryPublicDTO | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   // Fetch data for selected station
@@ -22,8 +21,14 @@ export default function StationDashboardClient({ stations }: Props) {
 
     setIsRefreshing(true);
     try {
-      const data = await stationService.fetchStationDashboardData(stationId);
-      setStationData(data);
+      const response = await fetch(`/api/telemetry/station/${stationId}`);
+      const result = await response.json();
+
+      if (result.success && result.data) {
+        setStationData(result.data);
+      } else {
+        console.error(`Failed to fetch data for station ${stationId}:`, result.message);
+      }
     } catch (error) {
       console.error(`Failed to fetch data for station ${stationId}:`, error);
     } finally {
@@ -52,20 +57,20 @@ export default function StationDashboardClient({ stations }: Props) {
 
   // Derive all display data from current state
   const selectedStation = stationData?.station || null;
-  const telemetryData = stationData?.latestTelemetry
-    ? { station: stationData.station, telemetry: stationData.latestTelemetry }
+  const telemetryData = stationData?.telemetry
+    ? { station: stationData.station, telemetry: stationData.telemetry }
     : null;
 
   return (
     <>
       <SubHeader stations={stations} selectedStation={selectedStationId} onStationChange={setSelectedStationId} />
-      <div className="max-w-[1600px] mx-auto w-full px-4 py-6">
+      <div className="max-w-7xl mx-auto w-full px-4 py-6">
         {/* Header Section */}
         <div className="mb-6 pb-4 border-b-2 border-primary">
           <div className="flex items-center justify-between">
             <div>
-              <div className="text-xs font-mono text-muted uppercase tracking-wider mb-1">STATION</div>
-              <div className="text-foreground text-xl font-bold font-mono">
+              <div className="text-xs font-mono text-foreground uppercase tracking-wider mb-1">STATION</div>
+              <div className="text-muted-foreground text-xl font-bold font-mono">
                 {selectedStation
                   ? [selectedStation.city, selectedStation.state, selectedStation.country]
                       .filter((v) => typeof v === "string" && v.trim() !== "")
@@ -85,7 +90,7 @@ export default function StationDashboardClient({ stations }: Props) {
         {/* Main Grid Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
           {/* Weather + Insights (2/3 width) */}
-          <div className="lg:col-span-2 h-[600px]">
+          <div className="lg:col-span-2 h-150">
             <StationWeatherInsightsMerged
               telemetryData={telemetryData}
               stationId={selectedStationId}
@@ -94,7 +99,7 @@ export default function StationDashboardClient({ stations }: Props) {
           </div>
 
           {/* Map (1/3 width) */}
-          <div className="h-[600px]">
+          <div className="h-150">
             <StationMapboxLocation
               location={selectedStation ? (selectedStation.location as [number, number]) : null}
             />

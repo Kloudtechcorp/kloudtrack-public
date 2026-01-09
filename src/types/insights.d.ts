@@ -7,9 +7,8 @@
  * Classification level for a metric value
  */
 interface InsightClassification {
-  level: string
-  label: string
-  severity: 'info' | 'moderate' | 'warning' | 'critical'
+  level: 'info' | 'moderate' | 'warning' | 'critical'
+  category: string
   description: string
 }
 
@@ -19,9 +18,9 @@ interface InsightClassification {
 interface InsightComparison {
   yesterday?: {
     difference: number
-    percentChange: number
+    value: number
     direction: 'up' | 'down' | 'stable'
-    description: string
+    message: string
   }
   oneHourAgo?: {
     difference: number

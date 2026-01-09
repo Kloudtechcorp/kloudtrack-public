@@ -28,7 +28,7 @@ export const PARAMETERS: ParameterConfig[] = [
   },
   {
     key: 'windSpeed',
-    apiKey: 'wind-speed',
+    apiKey: 'windSpeed',
     label: 'Wind Speed',
     color: '#06b6d4',
     unit: 'km/h',
@@ -42,7 +42,7 @@ export const PARAMETERS: ParameterConfig[] = [
   },
   {
     key: 'uvIndex',
-    apiKey: 'uv-index',
+    apiKey: 'uvIndex',
     label: 'UV Index',
     color: '#eab308',
     unit: '',

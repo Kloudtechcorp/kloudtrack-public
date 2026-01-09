@@ -3,21 +3,36 @@ import { telemetryService } from "@/services/telemetry.service";
 import { formatErrorResponse } from "@/lib/utils/error";
 
 /**
- * GET /api/telemetry/dashboard
- * Orchestrates and returns dashboard data for all stations
+ * GET /api/telemetry/station/[stationId]
+ * Returns dashboard data for a single station
  * Includes server-side caching and data transformation
  */
-export async function GET() {
+export async function GET(
+  request: Request,
+  { params }: { params: Promise<{ stationId: string }> }
+) {
   try {
+    const { stationId } = await params;
+
+    if (!stationId) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Station ID is required",
+        },
+        { status: 400 }
+      );
+    }
+
     // Use telemetry service which handles caching and transformation
-    const data = await telemetryService.getAllStationsDashboardData();
+    const data = await telemetryService.getStationDashboardData(stationId);
 
     return NextResponse.json({
       success: true,
       data,
     });
   } catch (error) {
-    console.error("Dashboard API error:", error);
+    console.error("Station dashboard API error:", error);
 
     const errorResponse = formatErrorResponse(error);
     return NextResponse.json(
@@ -30,5 +45,5 @@ export async function GET() {
   }
 }
 
-// Cache at Next.js level as well (acts as a second layer of caching)
+// Cache at Next.js level (acts as a second layer of caching)
 export const revalidate = 60; // Cache for 60 seconds

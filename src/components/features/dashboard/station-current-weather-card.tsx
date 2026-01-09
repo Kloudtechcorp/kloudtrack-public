@@ -3,6 +3,7 @@ import React from "react";
 import type { TelemetryPublicDTO } from "@/types/telemetry";
 import { Cloud, CloudSun, Navigation } from "lucide-react";
 import { formatDate } from "@/lib/utils/date";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface CurrentWeatherCardProps {
   telemetryData: TelemetryPublicDTO | null;
@@ -17,15 +18,16 @@ const StationCurrentWeatherCard: React.FC<CurrentWeatherCardProps> = ({
 }) => {
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center h-full px-8 py-12">
-        <div className="relative">
-          <div className="absolute inset-0 animate-ping">
-            <Cloud size={32} className="text-white/5" strokeWidth={1.5} />
-          </div>
-          <Cloud size={32} className="relative text-white/20" strokeWidth={1.5} />
-        </div>
-        <span className="mt-6 text-white/30 text-sm font-light tracking-wide">Loading</span>
-      </div>
+      // <div className="flex flex-col items-center justify-center h-full px-8 py-12">
+      //   <div className="relative">
+      //     <div className="absolute inset-0 animate-ping">
+      //       <Cloud size={32} className="text-white/5" strokeWidth={1.5} />
+      //     </div>
+      //     <Cloud size={32} className="relative text-white/20" strokeWidth={1.5} />
+      //   </div>
+      //   <span className="mt-6 text-white/30 text-sm font-light tracking-wide">Loading</span>
+      // </div>
+      <Skeleton className="w-full h-full rounded-lg" />
     );
   }
 
@@ -35,23 +37,25 @@ const StationCurrentWeatherCard: React.FC<CurrentWeatherCardProps> = ({
         <div className="p-4 rounded-full bg-red-500/5 mb-4">
           <Cloud size={28} className="text-red-300/60" strokeWidth={1.5} />
         </div>
-        <span className="text-red-200/70 text-sm font-light tracking-wide text-center max-w-[240px]">{error}</span>
+        <span className="text-red-200/70 text-sm font-light tracking-wide text-center max-w-60">{error}</span>
       </div>
     );
   }
 
-  if (!telemetryData) {
+  if (!telemetryData || !telemetryData.telemetry) {
     return (
       <div className="flex flex-col items-center justify-center h-full px-8 py-12">
-        <div className="p-5 rounded-full bg-white/[0.02] border border-white/[0.06] mb-5">
+        <div className="p-5 rounded-full bg-white/2 border border-white/6 mb-5">
           <Cloud size={28} className="text-white/20" strokeWidth={1.5} />
         </div>
-        <span className="text-white/25 text-sm font-light tracking-wide text-center">Select a station</span>
+        <span className="text-white/25 text-sm font-light tracking-wide text-center">No data available</span>
       </div>
     );
   }
 
   const { telemetry } = telemetryData;
+
+  
 
   return (
     <div className="flex flex-col h-full justify-between text-white py-10 px-8">
@@ -64,7 +68,7 @@ const StationCurrentWeatherCard: React.FC<CurrentWeatherCardProps> = ({
         </div>
 
         <div className="flex items-start gap-6 mb-auto">
-          <div className="p-2 rounded-2xl bg-white/[0.02]">
+          <div className="p-2 rounded-2xl bg-white/2">
             <CloudSun size={52} className="text-white/30" strokeWidth={1.5} />
           </div>
           <div className="flex items-baseline gap-1 -mt-1">
@@ -82,7 +86,7 @@ const StationCurrentWeatherCard: React.FC<CurrentWeatherCardProps> = ({
         </div>
 
         {telemetry.heatIndex != null && (
-          <div className="mt-6 pt-6 border-t border-white/[0.06]">
+          <div className="mt-6 pt-6 border-t border-white/6">
             <p className="text-[12px] text-white/30 font-light tracking-wide mb-1">Feels Like</p>
             <p className="text-[20px] font-light text-white/70 tracking-tight">
               {Math.round(telemetry.heatIndex)}°C
@@ -91,7 +95,7 @@ const StationCurrentWeatherCard: React.FC<CurrentWeatherCardProps> = ({
         )}
       </div>
 
-      <div className="grid grid-cols-3 gap-x-6 gap-y-6 mt-8 pt-8 border-t border-white/[0.06]">
+      <div className="grid grid-cols-3 gap-x-6 gap-y-6 mt-8 pt-8 border-t border-white/6">
         <div className="flex flex-col gap-1.5">
           <span className="text-[10px] text-white/30 font-light tracking-wider uppercase">Humidity</span>
           <span className="text-[15px] font-light text-white/80 tracking-tight">

@@ -1,11 +1,13 @@
 "use client";
 import React from "react";
-import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart } from "recharts";
-import { ParameterDataPoint, ParameterConfig } from "@/types/parameter";
+import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart, Bar, BarChart, Line, LineChart } from "recharts";
+import { ParameterConfig } from "@/types/parameter";
+import { WEATHER_COLORS } from "@/lib/utils/weather";
 import { Cloud } from "lucide-react";
+import { TelemetryMetricRaw } from "@/types/telemetry-raw";
 
 interface StationParameterChartProps {
-  data: ParameterDataPoint[];
+  data: TelemetryMetricRaw[];
   parameter: ParameterConfig;
   loading: boolean;
   error: string | null;
@@ -22,10 +24,10 @@ const StationParameterChart: React.FC<StationParameterChartProps> = ({
   // Loading state
   if (loading) {
     return (
-      <div className="bg-card-bg border-2 border-card-border p-8">
-        <div className="flex flex-col items-center justify-center h-[400px]">
+      <div className="bg-card border-2 border-card-border p-8">
+        <div className="flex flex-col items-center justify-center h-100">
           <div className="w-8 h-8 border-2 border-card-border border-t-muted animate-spin mb-4"></div>
-          <span className="text-muted text-xs font-mono uppercase tracking-wider">
+          <span className="text-muted-foreground text-xs font-mono uppercase tracking-wider">
             LOADING {parameter.label.toUpperCase()}
           </span>
         </div>
@@ -36,19 +38,19 @@ const StationParameterChart: React.FC<StationParameterChartProps> = ({
   // Error state
   if (error) {
     return (
-      <div className="bg-card-bg border-2 border-card-border p-8">
-        <div className="flex flex-col items-center justify-center h-[400px]">
+      <div className="bg-card border-2 border-card-border p-8">
+        <div className="flex flex-col items-center justify-center h-100">
           <div className="border-2 border-red-500 bg-red-500/10 p-4 mb-4">
             <Cloud size={28} className="text-red-500" strokeWidth={2} />
           </div>
-          <span className="text-red-400 text-xs font-mono text-center max-w-[300px] mb-6">
+          <span className="text-red-400 text-xs font-mono text-center max-w-75 mb-6">
             [ERROR] {error}
           </span>
           {onRetry && (
             <button
               onClick={onRetry}
               className="px-6 py-2 border-2 border-input-border bg-secondary hover:bg-secondary-hover
-                         text-muted hover:text-foreground text-xs font-mono uppercase tracking-wider"
+                         text-muted-foreground hover:text-foreground text-xs font-mono uppercase tracking-wider"
             >
               RETRY
             </button>
@@ -61,12 +63,12 @@ const StationParameterChart: React.FC<StationParameterChartProps> = ({
   // Empty state
   if (!data || data.length === 0) {
     return (
-      <div className="bg-card-bg border-2 border-card-border p-8">
-        <div className="flex flex-col items-center justify-center h-[400px]">
+      <div className="bg-card border-2 border-card-border p-8">
+        <div className="flex flex-col items-center justify-center h-100">
           <div className="border-2 border-card-border p-4 mb-4">
-            <Cloud size={28} className="text-muted" strokeWidth={2} />
+            <Cloud size={28} className="text-muted-foreground" strokeWidth={2} />
           </div>
-          <span className="text-muted text-xs font-mono uppercase tracking-wider">
+          <span className="text-muted-foreground text-xs font-mono uppercase tracking-wider">
             [NO DATA AVAILABLE]
           </span>
         </div>
@@ -91,88 +93,204 @@ const StationParameterChart: React.FC<StationParameterChartProps> = ({
   const padding = (maxValue - minValue) * 0.1;
   const yDomain = [Math.max(0, minValue - padding), maxValue + padding];
 
+
+  // Decide chart type based on parameter key
+  const barChartKeys = ["windSpeed", "precipitation", "uvIndex"];
+  // const areaChartKeys = ["humidity", "pressure"];
+  const isBarChart = barChartKeys.includes(parameter.key);
+  const isLineChart = parameter.key === "temperature";
+  // const isAreaChart = areaChartKeys.includes(parameter.key);
+
+  // Use WEATHER_COLORS for chart color, fallback to parameter.color or a default
+  const chartColor = WEATHER_COLORS[parameter.key as keyof typeof WEATHER_COLORS] || parameter.color || '#38bdf8';
+
   return (
-    <div className="bg-card-bg border-2 border-card-border">
+    <div className="bg-card border-2 border-card-border">
       <div className="border-b-2 border-card-border px-6 py-3 flex items-center justify-between">
         <div>
           <h3 className="text-foreground text-sm font-mono font-bold uppercase tracking-wider">
             {parameter.label}
           </h3>
-          <p className="text-muted text-[10px] font-mono uppercase tracking-wider mt-0.5">
+          <p className="text-muted-foreground text-[10px] font-mono uppercase tracking-wider mt-0.5">
             24H TIMELINE
           </p>
         </div>
-        <div className="text-muted text-xs font-mono">
+        <div className="text-muted-foreground text-xs font-mono">
           {parameter.unit && `[${parameter.unit}]`}
         </div>
       </div>
 
       <div className="p-6">
         <ResponsiveContainer width="100%" height={400}>
-          <AreaChart data={chartData}>
-            <defs>
-              <linearGradient id={`gradient-${parameter.key}`} x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor={parameter.color} stopOpacity={0.3} />
-                <stop offset="95%" stopColor={parameter.color} stopOpacity={0} />
-              </linearGradient>
-            </defs>
-
-            <CartesianGrid
-              strokeDasharray="0"
-              stroke="var(--color-card-border)"
-              strokeWidth={1}
-            />
-
-            <XAxis
-              dataKey="displayTime"
-              stroke="var(--color-muted)"
-              tick={{ fill: 'var(--color-muted)', fontSize: 10, fontFamily: 'monospace' }}
-              tickLine={{ stroke: 'var(--color-muted)' }}
-              interval="preserveStartEnd"
-              minTickGap={50}
-            />
-
-            <YAxis
-              stroke="var(--color-muted)"
-              tick={{ fill: 'var(--color-muted)', fontSize: 10, fontFamily: 'monospace' }}
-              tickLine={{ stroke: 'var(--color-muted)' }}
-              domain={yDomain}
-              tickFormatter={(value) => value.toFixed(1)}
-            />
-
-            <Tooltip
-              contentStyle={{
-                backgroundColor: 'var(--color-background)',
-                border: '2px solid var(--color-card-border)',
-                borderRadius: '0',
-                color: 'var(--color-foreground)',
-                padding: '8px 12px',
-                fontSize: '11px',
-                fontFamily: 'monospace',
-              }}
-              labelStyle={{
-                color: 'var(--color-muted)',
-                fontSize: 10,
-                marginBottom: 4,
-                fontFamily: 'monospace'
-              }}
-              labelFormatter={(label) => `TIME: ${label}`}
-              formatter={(value: number) => [
-                `${value.toFixed(2)}${parameter.unit ? ` ${parameter.unit}` : ''}`,
-                '',
-              ]}
-            />
-
-            <Area
-              type="monotone"
-              dataKey="value"
-              stroke={parameter.color}
-              strokeWidth={2}
-              fill={`url(#gradient-${parameter.key})`}
-              dot={false}
-              activeDot={{ r: 4, fill: parameter.color, stroke: 'var(--color-background)', strokeWidth: 2 }}
-            />
-          </AreaChart>
+          {isBarChart ? (
+            <BarChart data={chartData}>
+              <CartesianGrid
+                strokeDasharray="0"
+                stroke="var(--color-card-border)"
+                strokeWidth={1}
+              />
+              <XAxis
+                dataKey="displayTime"
+                stroke="var(--color-muted)"
+                tick={{ fill: 'var(--color-muted)', fontSize: 10, fontFamily: 'monospace' }}
+                tickLine={{ stroke: 'var(--color-muted)' }}
+                interval="preserveStartEnd"
+                minTickGap={50}
+              />
+              <YAxis
+                stroke="var(--color-muted)"
+                tick={{ fill: 'var(--color-muted)', fontSize: 10, fontFamily: 'monospace' }}
+                tickLine={{ stroke: 'var(--color-muted)' }}
+                domain={yDomain}
+                tickFormatter={(value) => value.toFixed(1)}
+              />
+              <Tooltip
+                cursor={{ fill: 'var(--color-secondary-hover)' }}
+                contentStyle={{
+                  backgroundColor: 'var(--color-background)',
+                  border: '2px solid var(--color-card-border)',
+                  borderRadius: '0',
+                  color: 'var(--color-foreground)',
+                  padding: '8px 12px',
+                  fontSize: '11px',
+                  fontFamily: 'monospace',
+                }}
+                labelStyle={{
+                  color: 'var(--color-muted)',
+                  fontSize: 10,
+                  marginBottom: 4,
+                  fontFamily: 'monospace'
+                }}
+                labelFormatter={(label) => `TIME: ${label}`}
+                formatter={(value: number) => [
+                  `${value.toFixed(2)}${parameter.unit ? ` ${parameter.unit}` : ''}`,
+                  '',
+                ]}
+              />
+              <Bar
+                dataKey="value"
+                fill={chartColor}
+                radius={[4, 4, 0, 0]}
+                maxBarSize={24}
+                isAnimationActive={true}
+              />
+            </BarChart>
+          ) : isLineChart ? (
+            <LineChart data={chartData}>
+              <CartesianGrid
+                strokeDasharray="0"
+                stroke="var(--color-card-border)"
+                strokeWidth={1}
+              />
+              <XAxis
+                dataKey="displayTime"
+                stroke="var(--color-muted)"
+                tick={{ fill: 'var(--color-muted)', fontSize: 10, fontFamily: 'monospace' }}
+                tickLine={{ stroke: 'var(--color-muted)' }}
+                interval="preserveStartEnd"
+                minTickGap={50}
+              />
+              <YAxis
+                stroke="var(--color-muted)"
+                tick={{ fill: 'var(--color-muted)', fontSize: 10, fontFamily: 'monospace' }}
+                tickLine={{ stroke: 'var(--color-muted)' }}
+                domain={yDomain}
+                tickFormatter={(value) => value.toFixed(1)}
+              />
+              <Tooltip
+                cursor={{ fill: 'var(--color-secondary-hover)' }}
+                contentStyle={{
+                  backgroundColor: 'var(--color-background)',
+                  border: '2px solid var(--color-card-border)',
+                  borderRadius: '0',
+                  color: 'var(--color-foreground)',
+                  padding: '8px 12px',
+                  fontSize: '11px',
+                  fontFamily: 'monospace',
+                }}
+                labelStyle={{
+                  color: 'var(--color-muted)',
+                  fontSize: 10,
+                  marginBottom: 4,
+                  fontFamily: 'monospace'
+                }}
+                labelFormatter={(label) => `TIME: ${label}`}
+                formatter={(value: number) => [
+                  `${value.toFixed(2)}${parameter.unit ? ` ${parameter.unit}` : ''}`,
+                  '',
+                ]}
+              />
+              <Line
+                type="monotone"
+                dataKey="value"
+                stroke={chartColor}
+                strokeWidth={2}
+                dot={false}
+                activeDot={{ r: 4, fill: chartColor, stroke: 'var(--color-background)', strokeWidth: 2 }}
+              />
+            </LineChart>
+          ) : (
+            <AreaChart data={chartData}>
+              <defs>
+                <linearGradient id={`gradient-${parameter.key}`} x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor={chartColor} stopOpacity={0.3} />
+                  <stop offset="95%" stopColor={chartColor} stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid
+                strokeDasharray="0"
+                stroke="var(--color-card-border)"
+                strokeWidth={1}
+              />
+              <XAxis
+                dataKey="displayTime"
+                stroke="var(--color-muted)"
+                tick={{ fill: 'var(--color-muted)', fontSize: 10, fontFamily: 'monospace' }}
+                tickLine={{ stroke: 'var(--color-muted)' }}
+                interval="preserveStartEnd"
+                minTickGap={50}
+              />
+              <YAxis
+                stroke="var(--color-muted)"
+                tick={{ fill: 'var(--color-muted)', fontSize: 10, fontFamily: 'monospace' }}
+                tickLine={{ stroke: 'var(--color-muted)' }}
+                domain={yDomain}
+                tickFormatter={(value) => value.toFixed(1)}
+              />
+              <Tooltip
+                cursor={{ fill: 'var(--color-secondary-hover)' }}
+                contentStyle={{
+                  backgroundColor: 'var(--color-background)',
+                  border: '2px solid var(--color-card-border)',
+                  borderRadius: '0',
+                  color: 'var(--color-foreground)',
+                  padding: '8px 12px',
+                  fontSize: '11px',
+                  fontFamily: 'monospace',
+                }}
+                labelStyle={{
+                  color: 'var(--color-muted)',
+                  fontSize: 10,
+                  marginBottom: 4,
+                  fontFamily: 'monospace'
+                }}
+                labelFormatter={(label) => `TIME: ${label}`}
+                formatter={(value: number) => [
+                  `${value.toFixed(2)}${parameter.unit ? ` ${parameter.unit}` : ''}`,
+                  '',
+                ]}
+              />
+              <Area
+                type="monotone"
+                dataKey="value"
+                stroke={chartColor}
+                strokeWidth={2}
+                fill={`url(#gradient-${parameter.key})`}
+                dot={false}
+                activeDot={{ r: 4, fill: chartColor, stroke: 'var(--color-background)', strokeWidth: 2 }}
+              />
+            </AreaChart>
+          )}
         </ResponsiveContainer>
       </div>
     </div>

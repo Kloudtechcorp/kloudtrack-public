@@ -3,8 +3,8 @@ import React, { useState, useEffect, useCallback } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import StationParameterChart from "./station-parameter-chart";
 import { PARAMETERS } from "@/lib/constants/parameters";
-import { ParameterType, ParameterDataPoint } from "@/types/parameter";
-import { stationService } from "@/services/station.service";
+import { ParameterType } from "@/types/parameter";
+import { TelemetryMetricRaw } from "@/types/telemetry-raw";
 
 interface StationTodayGraphTabsProps {
   stationPublicId: string;
@@ -12,9 +12,21 @@ interface StationTodayGraphTabsProps {
 
 const StationTodayGraphTabs: React.FC<StationTodayGraphTabsProps> = ({ stationPublicId }) => {
   const [activeParameter, setActiveParameter] = useState<ParameterType>('temperature');
-  const [parameterData, setParameterData] = useState<Partial<Record<ParameterType, ParameterDataPoint[]>>>({});
+  const [parameterData, setParameterData] = useState<Partial<Record<ParameterType, TelemetryMetricRaw[]>>>({});
   const [loading, setLoading] = useState<Partial<Record<ParameterType, boolean>>>({});
   const [errors, setErrors] = useState<Partial<Record<ParameterType, string | null>>>({});
+  const [fetchedParameters, setFetchedParameters] = useState<Set<ParameterType>>(new Set());
+
+  // Reset all cached data when station changes
+  useEffect(() => {
+    if (!stationPublicId) return;
+
+    setParameterData({});
+    setLoading({});
+    setErrors({});
+    setFetchedParameters(new Set()); 
+    setActiveParameter('temperature');
+  }, [stationPublicId]);
 
   // Fetch data for a specific parameter
   const fetchParameterData = useCallback(
@@ -22,8 +34,7 @@ const StationTodayGraphTabs: React.FC<StationTodayGraphTabsProps> = ({ stationPu
       const parameter = PARAMETERS.find((p) => p.key === parameterKey);
       if (!parameter || !stationPublicId) return;
 
-      // Check if data is already loaded
-      if (parameterData[parameterKey] && parameterData[parameterKey]!.length > 0) {
+      if (fetchedParameters.has(parameterKey)) {
         return;
       }
 
@@ -31,8 +42,17 @@ const StationTodayGraphTabs: React.FC<StationTodayGraphTabsProps> = ({ stationPu
       setErrors((prev) => ({ ...prev, [parameterKey]: null }));
 
       try {
-        const data = await stationService.fetchStationParameterHistory(stationPublicId, parameter.apiKey);
-        setParameterData((prev) => ({ ...prev, [parameterKey]: data }));
+        const response = await fetch(`/api/telemetry/station/${stationPublicId}/parameter/${parameter.apiKey}`);
+        const result = await response.json();
+
+        if (result.success && result.data) {
+          // Store the data even if it's an empty array
+          setParameterData((prev) => ({ ...prev, [parameterKey]: result.data }));
+          // Mark this parameter as fetched
+          setFetchedParameters((prev) => new Set(prev).add(parameterKey));
+        } else {
+          throw new Error(result.message || `Failed to fetch ${parameterKey} data`);
+        }
       } catch (error) {
         console.error(`Failed to fetch ${parameterKey} data:`, error);
         setErrors((prev) => ({
@@ -43,7 +63,7 @@ const StationTodayGraphTabs: React.FC<StationTodayGraphTabsProps> = ({ stationPu
         setLoading((prev) => ({ ...prev, [parameterKey]: false }));
       }
     },
-    [stationPublicId, parameterData]
+    [stationPublicId, fetchedParameters]
   );
 
   // Fetch data when active parameter changes (lazy loading)
@@ -60,8 +80,12 @@ const StationTodayGraphTabs: React.FC<StationTodayGraphTabsProps> = ({ stationPu
       if (!parameter) return;
 
       try {
-        const data = await stationService.fetchStationParameterHistory(stationPublicId, parameter.apiKey);
-        setParameterData((prev) => ({ ...prev, [activeParameter]: data }));
+        const response = await fetch(`/api/telemetry/station/${stationPublicId}/parameter/${parameter.apiKey}`);
+        const result = await response.json();
+
+        if (result.success && result.data) {
+          setParameterData((prev) => ({ ...prev, [activeParameter]: result.data }));
+        }
       } catch (error) {
         console.error(`Failed to refresh ${activeParameter} data:`, error);
       }
@@ -81,6 +105,12 @@ const StationTodayGraphTabs: React.FC<StationTodayGraphTabsProps> = ({ stationPu
       delete newData[parameterKey];
       return newData;
     });
+    // Remove from fetched parameters to allow re-fetch
+    setFetchedParameters((prev) => {
+      const newSet = new Set(prev);
+      newSet.delete(parameterKey);
+      return newSet;
+    });
     fetchParameterData(parameterKey);
   };
 
@@ -91,20 +121,20 @@ const StationTodayGraphTabs: React.FC<StationTodayGraphTabsProps> = ({ stationPu
       onValueChange={(value) => setActiveParameter(value as ParameterType)}
       className="w-full"
     >
-      <div className="border-2 border-card-border bg-card-bg mb-6">
-        <div className="border-b-2 border-card-border px-4 py-2">
-          <div className="text-xs font-mono text-muted uppercase tracking-wider">HISTORICAL DATA</div>
+      <div className="border-2 border-card-border bg-card mb-6">
+        <div className="border-b-2 border-card-border px-6 py-4">
+          <div className="text-xs font-mono text-foreground uppercase tracking-wider">HISTORICAL DATA</div>
         </div>
-        <TabsList className="bg-transparent border-0 w-full p-0 flex flex-wrap gap-0">
+        <TabsList className="bg-transparent border-0 w-full h-full p-0 flex flex-wrap gap-0">
           {PARAMETERS.map((param) => (
             <TabsTrigger
               key={param.key}
               value={param.key}
-              className="flex-1 min-w-[120px] text-muted font-mono text-xs uppercase tracking-wider
-                         data-[state=active]:text-foreground
+              className="flex-1 min-w-30 text-muted-foreground font-mono text-xs uppercase tracking-wider
+                         data-[state=active]:text-main
                          data-[state=active]:bg-secondary
-                         border-r-2 border-b-2 border-card-border last:border-r-0
-                         px-4 py-3
+                         data-[state=active]:border-main
+                         px-4 py-4
                          hover:bg-secondary-hover hover:text-foreground
                          rounded-none"
             >
