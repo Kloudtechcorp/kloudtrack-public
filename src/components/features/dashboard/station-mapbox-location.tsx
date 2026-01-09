@@ -71,14 +71,14 @@ const StationMapboxLocation = ({ location }: StationMapboxLocationProps) => {
           </div>
 
           {/* Top label */}
-          <div className="absolute top-0 left-0 right-0 border-b-2 border-card-border bg-card px-6 py-3">
+          <div className="absolute top-0 left-0 right-0 border-b-2 border-card-border bg-primary-foreground px-6 py-3">
             <p className="text-foreground text-[10px] font-mono uppercase tracking-wider">
               LOCATION
             </p>
           </div>
 
           {/* Bottom coordinates */}
-          <div className="absolute bottom-0 left-0 right-0 border-t-2 border-card-border bg-card px-6 py-3">
+          <div className="absolute bottom-0 left-0 right-0 border-t-2 border-card-border bg-primary-foreground px-6 py-3">
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 bg-main rounded-full"></div>
               <p className="text-muted-foreground text-[10px] font-mono">

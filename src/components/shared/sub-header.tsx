@@ -10,7 +10,7 @@ interface SubHeaderProps {
 
 const SubHeader: React.FC<SubHeaderProps> = ({ stations, selectedStation, onStationChange }) => {
     return (
-      <div className="w-full sticky top-0 z-40 h-16 flex items-center bg-[color:var(--sub-header-bg)]/90 backdrop-blur-md border-b border-secondary">
+      <div className="w-full sticky top-0 z-40 h-16 flex items-center bg-card/70 backdrop-blur-md border-b border-secondary">
       <div className="max-w-7xl px-4 mx-auto w-full flex items-center gap-3">
         <div className="text-foreground text-xs font-mono uppercase tracking-wider">SELECT:</div>
         <Select value={selectedStation} onValueChange={onStationChange}>
