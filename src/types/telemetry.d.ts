@@ -26,16 +26,10 @@ export interface TelemetryMetrics {
 
 export interface TelemetryPublicDTO {
   station: StationPublicInfo;
-  telemetry: TelemetryMetrics;
+  telemetry: TelemetryMetrics | null;
 }
 
 export interface TelemetryHistoryDTO {
   station: StationPublicInfo;
   telemetry: TelemetryMetrics[];
-}
-
-export interface StationDashboardData {
-  station: StationPublicInfo;
-  latestTelemetry: TelemetryMetrics | null;
-  // recentHistory: TelemetryMetrics[] | null;
 }

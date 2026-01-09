@@ -3,6 +3,7 @@ import React from "react";
 import type { TelemetryPublicDTO } from "@/types/telemetry";
 import { Cloud, CloudSun, Navigation } from "lucide-react";
 import { formatDate } from "@/lib/utils/date";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface CurrentWeatherCardProps {
   telemetryData: TelemetryPublicDTO | null;
@@ -17,15 +18,16 @@ const StationCurrentWeatherCard: React.FC<CurrentWeatherCardProps> = ({
 }) => {
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center h-full px-8 py-12">
-        <div className="relative">
-          <div className="absolute inset-0 animate-ping">
-            <Cloud size={32} className="text-white/5" strokeWidth={1.5} />
-          </div>
-          <Cloud size={32} className="relative text-white/20" strokeWidth={1.5} />
-        </div>
-        <span className="mt-6 text-white/30 text-sm font-light tracking-wide">Loading</span>
-      </div>
+      // <div className="flex flex-col items-center justify-center h-full px-8 py-12">
+      //   <div className="relative">
+      //     <div className="absolute inset-0 animate-ping">
+      //       <Cloud size={32} className="text-white/5" strokeWidth={1.5} />
+      //     </div>
+      //     <Cloud size={32} className="relative text-white/20" strokeWidth={1.5} />
+      //   </div>
+      //   <span className="mt-6 text-white/30 text-sm font-light tracking-wide">Loading</span>
+      // </div>
+      <Skeleton className="w-full h-full rounded-lg" />
     );
   }
 
@@ -40,18 +42,20 @@ const StationCurrentWeatherCard: React.FC<CurrentWeatherCardProps> = ({
     );
   }
 
-  if (!telemetryData) {
+  if (!telemetryData || !telemetryData.telemetry) {
     return (
       <div className="flex flex-col items-center justify-center h-full px-8 py-12">
         <div className="p-5 rounded-full bg-white/2 border border-white/6 mb-5">
           <Cloud size={28} className="text-white/20" strokeWidth={1.5} />
         </div>
-        <span className="text-white/25 text-sm font-light tracking-wide text-center">Select a station</span>
+        <span className="text-white/25 text-sm font-light tracking-wide text-center">No data available</span>
       </div>
     );
   }
 
   const { telemetry } = telemetryData;
+
+  
 
   return (
     <div className="flex flex-col h-full justify-between text-white py-10 px-8">

@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import type { StationDashboardData, StationPublicInfo } from "@/types/telemetry";
+import type { StationPublicInfo, TelemetryPublicDTO } from "@/types/telemetry";
 import SubHeader from "@/components/shared/sub-header";
 import StationWeatherInsightsMerged from "./station-weather-insights-merged";
 import StationMapboxLocation from "./station-mapbox-location";
@@ -12,7 +12,7 @@ interface Props {
 
 export default function StationDashboardClient({ stations }: Props) {
   const [selectedStationId, setSelectedStationId] = useState(stations.length > 0 ? stations[0].stationPublicId : "");
-  const [stationData, setStationData] = useState<StationDashboardData | null>(null);
+  const [stationData, setStationData] = useState<TelemetryPublicDTO | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   // Fetch data for selected station
@@ -57,8 +57,8 @@ export default function StationDashboardClient({ stations }: Props) {
 
   // Derive all display data from current state
   const selectedStation = stationData?.station || null;
-  const telemetryData = stationData?.latestTelemetry
-    ? { station: stationData.station, telemetry: stationData.latestTelemetry }
+  const telemetryData = stationData?.telemetry
+    ? { station: stationData.station, telemetry: stationData.telemetry }
     : null;
 
   return (

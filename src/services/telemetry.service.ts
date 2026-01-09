@@ -8,7 +8,6 @@ import { AppError } from "../lib/utils/error";
 import {
   StationPublicInfo,
   TelemetryMetrics,
-  StationDashboardData,
   TelemetryPublicDTO,
 } from "../types/telemetry";
 // import { ParameterDataPoint } from "../types/parameter";
@@ -18,7 +17,7 @@ import { TelemetryMetricRaw } from "@/types/telemetry-raw";
 
 export class TelemetryService {
   // Cache for 60 seconds for individual station data
-  private stationCache = new InMemoryCache<StationDashboardData>(60);
+  private stationCache = new InMemoryCache<TelemetryPublicDTO>(60);
 
   // Cache for 5 minutes (300 seconds) for station list
   private stationsListCache = new InMemoryCache<StationPublicInfo[]>(300);
@@ -30,7 +29,7 @@ export class TelemetryService {
    * ORCHESTRATOR: Get complete dashboard data for a single station
    * Combines latest telemetry + recent history in parallel
    */
-  async getStationDashboardData(stationId: string): Promise<StationDashboardData> {
+  async getStationDashboardData(stationId: string): Promise<TelemetryPublicDTO> {
     const cacheKey = `station-dashboard-${stationId}`;
     const cached = this.stationCache.get(cacheKey);
 
@@ -43,17 +42,10 @@ export class TelemetryService {
       // Call both endpoints in parallel for better performance
       const latestData = await this.getLatestTelemetry(stationId);
 
-      // Combine the data into StationDashboardData format
-      const result: StationDashboardData = {
-        station: latestData.station,
-        latestTelemetry: latestData.telemetry,
-        // recentHistory: historyData,
-      };
-
       // Cache for 60 seconds
-      this.stationCache.set(cacheKey, result, 60);
+      this.stationCache.set(cacheKey, latestData, 60);
 
-      return result;
+      return latestData;
     } catch (error) {
       console.error(`Failed to fetch dashboard data for station ${stationId}:`, error);
       throw new AppError(`Failed to fetch dashboard data for station ${stationId}`, 500);
